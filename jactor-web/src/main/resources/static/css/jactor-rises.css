@@ -1,0 +1,59 @@
+body {
+    margin-bottom: 60px; /* margin at the bottom of the hotm page, should match footer height */
+    background: url(../images/backgrounds/wood04.jpg);
+}
+
+body > .container {
+    padding: 0 0 0;
+}
+
+/* header/footer
+-------------------------------------------------- */
+
+.header > .container > table {
+    table-layout: fixed;
+    min-width: 512px;
+}
+
+#alignLeft {
+    text-align: left;
+    align-content: left;
+    align-items: left;
+    align-self: left;
+    alignment: left;
+}
+
+#alignCenter {
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    alignment: center;
+}
+
+#alignRight {
+    text-align: right;
+    align-content: right;
+    align-items: right;
+    align-self: right;
+    alignment: right;
+}
+
+/* footer sticks to the bottom
+-------------------------------------------------- */
+.footer {
+    position: absolute;
+    font-size: 125%;
+    bottom: 0;
+    width: 2048px;
+    alignment: center;
+    height: 60px; /* the hight of the footer */
+    line-height: 60px; /* Vertically center the text there */
+    background-color: darkmagenta;
+    font-style: italic;
+}
+
+.footer > .container {
+    padding-right: 0;
+    padding-left: 0;
+}
