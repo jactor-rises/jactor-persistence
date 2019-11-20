@@ -40,6 +40,10 @@ jobs:
               >&2 echo ERROR: Found $COUNT SNAPSHOT dependencies
               exit 1;
           fi
+      - name: Run Maven release
+        run: ./release.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: build & test with maven
         run: |
           mvn -B install

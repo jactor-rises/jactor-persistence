@@ -18,6 +18,20 @@
   <name>jactor::persistence</name>
   <description>A spring-data-jpa microservice using in-memory database</description>
 
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/jactor-rises/jactor-persistence</url>
+    </repository>
+  </distributionManagement>
+
   <properties>
 
     <!-- languages -->
@@ -152,13 +166,20 @@
       </exclusions>
     </dependency>
 
-    <!-- artifaxcs that for some reason needs to be overridden from transient dependencies -->
+    <!-- artifacts that for some reason needs to be overridden from transient dependencies -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
     </dependency>
   </dependencies>
+
+  <scm>
+    <developerConnection>scm:git:git@github.com:jactor-rises/jactor-persistence.git</developerConnection>
+    <connection>scm:git:git@github.com:jactor-rises/jactor-persistence.git</connection>
+    <url>https://github.com/jactor-persistence/jactor-persistence</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <build>
     <finalName>jactor-persistence-${project.version}-app</finalName>
@@ -225,19 +246,4 @@
 
     </plugins>
   </build>
-
-  <repositories>
-    <repository>
-      <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>https://repo.spring.io/milestone</url>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>https://repo.spring.io/milestone</url>
-    </pluginRepository>
-  </pluginRepositories>
 </project>
