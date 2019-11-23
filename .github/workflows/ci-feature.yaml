@@ -29,10 +29,8 @@ jobs:
             ${{ runner.os }}-maven-
       - name: verify that maven artifact has no dependencies which is of type SNAPSHOT
         uses: jactor-rises/actions/verify-mvn-dependencies@master
-      - name: verify that no dependencies is of type SNAPSHOT
-        uses: jactor-rises/actions/verify-dependencies@master
-      - name: releases maven artifact
-        uses: jactor-rises/actions/verify-dependencies@master
+      - name: release maven artifact
+        uses: jactor-rises/actions/release-mvn-artifact@feature-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: build & test with maven
