@@ -27,19 +27,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: verify that no dependencies is of type SNAPSHOT
+        uses: jactor-rises/actions/verify-dependencies@master
+      - name: build & test with maven
         run: |
-          mvn -B dependency:tree | tee dependency.tree
-          export COUNT="$(cat dependency.tree | grep -e '|' -e '+' | grep -c SNAPSHOT)"
-          if [ $COUNT -eq 1 ]
-            then
-              >&2 echo ERROR: Found a SNAPSHOT dependency
-              exit 1;
-          elif [ $COUNT -gt 0 ]
-            then
-              >&2 echo ERROR: Found $COUNT SNAPSHOT dependencies
-              exit 1;
-          fi
+          mvn -B install
+      - name: prepare maven artifact for release
+        uses: jactor-rises/actions/prepare-mvn-release@master
       - name: Run Maven release
         run: ./release.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: commit new version
+        uses: EndBug/add-and-commit@v2.1.0
+        with:
+          author_name: Tor Egil Jacobsen
+          author_email: tor.egil.jacobsen@gmail.com
+          message: "Bumped to new version"
+          path: "."
+          pattern: "pom.xml"
+          force: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
