@@ -31,3 +31,11 @@ jobs:
         uses: jactor-rises/actions/verify-mvn-dependencies@master
       - name: build & test with maven
         run: mvn -B install
+      - name: prepare maven artifact for release
+        uses: jactor-rises/actions/prepare-mvn-release@master
+        env:
+          TAG_FILE_NAME: .tag-artifact
+      - id: commit
+        name: commit new version
+        uses: zwaldowski/git-commit-action@v1
+      - run: echo "${{ steps.commit.outputs.sha }}"

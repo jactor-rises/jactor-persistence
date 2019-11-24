@@ -34,14 +34,7 @@ jobs:
         uses: jactor-rises/actions/prepare-mvn-release@master
         env:
           TAG_FILE_NAME: .tag-artifact
-      - name: commit new version
-        uses: EndBug/add-and-commit@v2.1.0
-        with:
-          author_name: Tor Egil Jacobsen
-          author_email: tor.egil.jacobsen@gmail.com
-          message: "Bumped to new version"
-          path: "."
-          pattern: "pom.xml"
-          force: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: commit
+        name: commit new version
+        uses: zwaldowski/git-commit-action@v1
+      - run: echo "${{ steps.commit.outputs.sha }}"
