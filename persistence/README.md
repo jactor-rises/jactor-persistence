@@ -1,8 +1,9 @@
 # jactor-persistence
+Project is now part of https://github.com/jactor-rises/jactor-modules and is therefore archived...
 
-[![continuous integration](https://github.com/jactor-rises/jactor-persistence/actions/workflows/ci.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/ci.yaml)
-[![verify pull request](https://github.com/jactor-rises/jactor-persistence/actions/workflows/pr.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/pr.yaml)
-[![build run docker](https://github.com/jactor-rises/jactor-persistence/actions/workflows/docker-action.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/docker-action.yaml)
+[![continuous integration - jactor-persistence](https://github.com/jactor-rises/jactor-modules/actions/workflows/persistence-ci.yaml/badge.svg)](https://github.com/jactor-rises/jactor-modules/actions/workflows/persistence-ci.yaml)
+[![verify pull request](https://github.com/jactor-rises/jactor-modules/actions/workflows/pr.yaml/badge.svg)](https://github.com/jactor-rises/jactor-modules/actions/workflows/pr.yaml)
+[![build run docker](https://github.com/jactor-rises/jactor-modules/actions/workflows/docker-action.yaml/badge.svg)](https://github.com/jactor-rises/jactor-modules/actions/workflows/docker-action.yaml)
 
 ### What is this repository for?
 

@@ -1,5 +1,8 @@
-name: continuous integration
-on: push
+name: continuous integration on jactor-persistence
+on:
+  push:
+    paths:
+      - 'persistence/**'
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:latest
@@ -26,23 +29,27 @@ jobs:
           java-version: 17
       - uses: gradle/gradle-build-action@v2
         with:
-          arguments: build --scan -x test
+          arguments: :persistence:build --scan -x test
       - name: Verify dependencies
         run: |
-          COUNT=$(./gradlew -q dependencies | grep -c SNAPSHOT || true)
+          COUNT=$(./gradlew -q :persistence:dependencies | grep -c SNAPSHOT || true)
 
           echo "Found $COUNT SNAPSHOT dependencies"
 
           if [ "$COUNT" -gt 0 ]
           then
             >&2 echo ::error No SNAPSHOT dependencies allowed
+          ./gradlew -q :persistence:dependencies
             exit 1;
           fi
-      - run: ./gradlew test --tests "*"
+      - run: ./gradlew :persistence:test --tests "*"
       - name: Build and publish docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          cd persistence || exit 1
+          ls -la build
+          ls -la build/libs
           docker image build --tag ${IMAGE} .
           CONTAINER_ID=$(docker inspect --format="{{.Id}}" ${IMAGE})
           docker tag ${CONTAINER_ID} "ghcr.io/${GITHUB_REPOSITORY}:$(git rev-parse --short HEAD)"
@@ -71,7 +78,7 @@ jobs:
         run: cd jactor-cucumber && mvn test -P cucumber
 
   git:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/feature/modules'
     name: Bump dev version
     runs-on: ubuntu-latest
     needs: cucumber
@@ -82,7 +89,7 @@ jobs:
         id: current
         run: |
           git fetch --tags
-          CURRENT_SEMVER=$(git tag --sort=-v:refname --list "[0-9].[0-9].[0-9]*[-snapshot]" | sed 's;-snapshot;;'| head -n 1)
+          CURRENT_SEMVER=$(git tag --sort=-v:refname --list "[0-9].[0-9].[0-9]*[-snapshot-persistence]" | sed 's;-snapshot-persistence;;'| head -n 1)
           echo ::set-output name=semver::$CURRENT_SEMVER
       - uses: actions/setup-java@v2
         with:
@@ -90,11 +97,11 @@ jobs:
           java-version: 17
       - uses: gradle/gradle-build-action@v2
         with:
-          arguments: --build-cache assemble
+          arguments: --build-cache :persistence:assemble
       - name: Fetch current major/minor release
         id: version
         run: |
-          MAJOR_MINOR=$(./gradlew properties | grep version: | grep SNAPSHOT | awk '{print $2}' | sed 's;.x-SNAPSHOT;;')
+          MAJOR_MINOR=$(./gradlew :persistence:properties | grep version: | grep SNAPSHOT | awk '{print $2}' | sed 's;.x-SNAPSHOT;;')
           echo ::set-output name=toPatch::$MAJOR_MINOR
       - name: Create new semantic version
         id: semver
@@ -115,7 +122,7 @@ jobs:
           git config --global user.email "$AUTHOR_EMAIL"
           git config --global user.name "$AUTHOR_NAME"
 
-          git tag -a "$SEMANTIC_VERSION_NEW-snapshot" -m "New snapshot tagged. Previous snapshot: $SEMANTIC_VERSION_CURRENT"
+          git tag -a "$SEMANTIC_VERSION_NEW-snapshot-persistence" -m "New snapshot tagged. Previous snapshot: $SEMANTIC_VERSION_CURRENT"
           git push --tags
         env:
           AUTHOR_EMAIL: ${{ steps.metadata.outputs.email }}
