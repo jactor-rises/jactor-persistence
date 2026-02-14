@@ -7,11 +7,14 @@ plugins {
     alias(libs.plugins.versions)
 }
 
+val cliVersion = providers.gradleProperty("version").orNull?.trim()
+version = cliVersion.takeIf { !it.isNullOrBlank() } ?: "0.0.0-SNAPSHOT"
+
 dependencies {
     // spring-boot
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.jdbc)
+    implementation(libs.spring.boot.starter.webflux)
 
     // jetbrains-exposed
     implementation(libs.exposed.core)
@@ -49,6 +52,7 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(libs.versions.jvm.get().toInt())
     }
+
     withSourcesJar()
 }
 
@@ -57,6 +61,12 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url = uri("https://jitpack.io") }
+}
+
+tasks.register("printVersion") {
+    doLast {
+        println(project.version)
+    }
 }
 
 tasks.test {
