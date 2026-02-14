@@ -1,0 +1,29 @@
+name: build-test
+
+on:
+    push:
+        branches:
+            - '**'
+    workflow_dispatch: { }
+
+jobs:
+    build-test:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+
+            -   name: Set up JDK
+                uses: actions/setup-java@v4
+                with:
+                    distribution: temurin
+                    java-version: '25'
+                    cache: gradle
+
+            -   name: Set up Gradle
+                uses: gradle/actions/setup-gradle@v3
+
+            -   name: Build and test
+                run: ./gradlew clean ktlintCheck test build

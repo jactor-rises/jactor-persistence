@@ -1,0 +1,80 @@
+name: release
+
+on:
+    workflow_run:
+        workflows:
+            - build-test
+        types:
+            - completed
+
+permissions:
+    contents: write
+    packages: write
+
+jobs:
+    tag:
+        if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+                    fetch-tags: true
+                    ref: ${{ github.event.workflow_run.head_sha }}
+
+            -   name: Set up JDK
+                uses: actions/setup-java@v4
+                with:
+                    distribution: temurin
+                    java-version: '25'
+                    cache: gradle
+
+            -   name: Set up Gradle
+                uses: gradle/actions/setup-gradle@v3
+
+            -   name: Configure git user
+                run: |
+                    git config user.name "github-actions[bot]"
+                    git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            -   name: Git tag
+                id: git-tag
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    GROUP_ID: com.github.jactor-rises
+                    ARTIFACT_ID: jactor-persistence
+                run: |
+                    set -euo pipefail
+                    OWNER=${GITHUB_REPOSITORY%%/*}
+                    PACKAGE_NAME="${GROUP_ID}.${ARTIFACT_ID}"
+                    PKG_ENCODED=$(printf '%s' "${PACKAGE_NAME}" | jq -sRr @uri)
+
+                    TAG=$(./.github/scripts/bump_tag.sh --dry-run)
+                    VERSION=${TAG#v}
+                    EXISTS=false
+
+                    if gh api "/users/${OWNER}/packages/maven/${PKG_ENCODED}/versions" --paginate > /tmp/versions.json 2>/dev/null; then
+                      if jq -e --arg version "${VERSION}" '.[] | select(.name == $version)' /tmp/versions.json > /dev/null; then
+                        echo "Warning: package version ${VERSION} already exists"
+                        EXISTS=true
+                      fi
+                    fi
+
+                    echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+                    echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+                    echo "exists=${EXISTS}" >> "$GITHUB_OUTPUT"
+
+            -   name: Create tag
+                id: create-tag
+                env:
+                    TAG: ${{ steps.git-tag.outputs.tag }}
+                run: |
+                    if git rev-parse "${TAG}" >/dev/null 2>&1; then
+                      echo "Tag ${TAG} already exists, skipping"
+                      echo "created=false" >> "$GITHUB_OUTPUT"
+                      exit 0
+                    fi
+                    git tag -a "${TAG}" -m "Release ${TAG}"
+                    git push origin "${TAG}"
+                    echo "created=true" >> "$GITHUB_OUTPUT"
