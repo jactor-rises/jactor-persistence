@@ -12,14 +12,15 @@ import java.util.UUID
 internal class AddressTest {
     @Test
     fun `should have a copy constructor`() {
-        val address = initAddress(
-            addressLine1 = "address line one",
-            addressLine2 = "address line two",
-            addressLine3 = "address line three",
-            city = "oslo",
-            country = "NO",
-            zipCode = "1234",
-        ).toAddressDao()
+        val address =
+            initAddress(
+                addressLine1 = "address line one",
+                addressLine2 = "address line two",
+                addressLine3 = "address line three",
+                city = "oslo",
+                country = "NO",
+                zipCode = "1234",
+            ).toAddressDao()
 
         val (_, addressLine1, addressLine2, addressLine3, city, country, zipCode) = Address(dao = address)
 
@@ -35,23 +36,25 @@ internal class AddressTest {
 
     @Test
     fun `should give values to PersistentDto`() {
-        val persistent = Persistent(
-            createdBy = "jactor",
-            id = UUID.randomUUID(),
-            modifiedBy = "tip",
-            timeOfCreation = LocalDateTime.now(),
-            timeOfModification = LocalDateTime.now(),
-        )
+        val persistent =
+            Persistent(
+                createdBy = "jactor",
+                id = UUID.randomUUID(),
+                modifiedBy = "tip",
+                timeOfCreation = LocalDateTime.now(),
+                timeOfModification = LocalDateTime.now(),
+            )
 
-        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) = Address(
-            persistent = persistent,
-            addressLine1 = "address line one",
-            addressLine2 = "address line two",
-            addressLine3 = "address line three",
-            city = "oslo",
-            country = "NO",
-            zipCode = "1234",
-        ).persistent
+        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) =
+            Address(
+                persistent = persistent,
+                addressLine1 = "address line one",
+                addressLine2 = "address line two",
+                addressLine3 = "address line three",
+                city = "oslo",
+                country = "NO",
+                zipCode = "1234",
+            ).persistent
 
         assertAll {
             assertThat(createdBy).isEqualTo(persistent.createdBy)

@@ -12,11 +12,12 @@ import java.util.UUID
 internal class BlogTest {
     @Test
     fun `should have a copy constructor`() {
-        val blog = Blog(
-            created = LocalDate.now(),
-            title = "title",
-            userId = UUID.randomUUID(),
-        )
+        val blog =
+            Blog(
+                created = LocalDate.now(),
+                title = "title",
+                userId = UUID.randomUUID(),
+            )
 
         val (_, created, title, userId) = blog.copy()
 
@@ -29,20 +30,22 @@ internal class BlogTest {
 
     @Test
     fun `should give values to PersistentDto`() {
-        val persistent = Persistent(
-            createdBy = "jactor",
-            id = UUID.randomUUID(),
-            modifiedBy = "tip",
-            timeOfCreation = LocalDateTime.now(),
-            timeOfModification = LocalDateTime.now(),
-        )
+        val persistent =
+            Persistent(
+                createdBy = "jactor",
+                id = UUID.randomUUID(),
+                modifiedBy = "tip",
+                timeOfCreation = LocalDateTime.now(),
+                timeOfModification = LocalDateTime.now(),
+            )
 
-        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) = Blog(
-            persistent = persistent,
-            created = LocalDate.now(),
-            title = "title",
-            userId = null,
-        ).persistent
+        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) =
+            Blog(
+                persistent = persistent,
+                created = LocalDate.now(),
+                title = "title",
+                userId = null,
+            ).persistent
 
         assertAll {
             assertThat(createdBy).isEqualTo(persistent.createdBy)

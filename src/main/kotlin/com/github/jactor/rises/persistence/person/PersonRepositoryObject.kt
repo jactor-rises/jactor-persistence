@@ -9,43 +9,49 @@ import org.jetbrains.exposed.v1.jdbc.update
 import java.util.UUID
 
 object PersonRepositoryObject : PersonRepository {
-    override fun findById(id: UUID): PersonDao? = People
-        .selectAll()
-        .andWhere { People.id eq id }
-        .map { it.toPersonDao() }
-        .singleOrNull()
+    override fun findById(id: UUID): PersonDao? =
+        People
+            .selectAll()
+            .andWhere { People.id eq id }
+            .map { it.toPersonDao() }
+            .singleOrNull()
 
-    override fun save(personDao: PersonDao): PersonDao = when (personDao.isNotPersisted) {
-        true -> insert(personDao)
-        false -> update(personDao)
-    }
-
-    private fun insert(personDao: PersonDao): PersonDao = People.insertAndGetId { row ->
-        row[createdBy] = personDao.createdBy
-        row[modifiedBy] = personDao.modifiedBy
-        row[timeOfCreation] = personDao.timeOfCreation
-        row[timeOfModification] = personDao.timeOfModification
-        row[description] = personDao.description
-        row[firstName] = personDao.firstName
-        row[surname] = personDao.surname
-        row[locale] = personDao.locale
-        personDao.addressId?.let {
-            row[addressId] = it
+    override fun save(personDao: PersonDao): PersonDao =
+        when (personDao.isNotPersisted) {
+            true -> insert(personDao)
+            false -> update(personDao)
         }
-    }.let { newId -> personDao.also { it.id = newId.value } }
 
-    private fun update(personDao: PersonDao): PersonDao = People.update(
-        where = { People.id eq personDao.id },
-    ) { row ->
-        row[modifiedBy] = personDao.modifiedBy
-        row[timeOfModification] = personDao.timeOfModification
-        row[description] = personDao.description
-        row[firstName] = personDao.firstName
-        row[surname] = personDao.surname
-        row[locale] = personDao.locale
+    private fun insert(personDao: PersonDao): PersonDao =
+        People
+            .insertAndGetId { row ->
+                row[createdBy] = personDao.createdBy
+                row[modifiedBy] = personDao.modifiedBy
+                row[timeOfCreation] = personDao.timeOfCreation
+                row[timeOfModification] = personDao.timeOfModification
+                row[description] = personDao.description
+                row[firstName] = personDao.firstName
+                row[surname] = personDao.surname
+                row[locale] = personDao.locale
+                personDao.addressId?.let {
+                    row[addressId] = it
+                }
+            }.let { newId -> personDao.also { it.id = newId.value } }
 
-        personDao.addressId?.let {
-            row[addressId] = it
-        }
-    }.let { personDao }
+    private fun update(personDao: PersonDao): PersonDao =
+        People
+            .update(
+                where = { People.id eq personDao.id },
+            ) { row ->
+                row[modifiedBy] = personDao.modifiedBy
+                row[timeOfModification] = personDao.timeOfModification
+                row[description] = personDao.description
+                row[firstName] = personDao.firstName
+                row[surname] = personDao.surname
+                row[locale] = personDao.locale
+
+                personDao.addressId?.let {
+                    row[addressId] = it
+                }
+            }.let { personDao }
 }

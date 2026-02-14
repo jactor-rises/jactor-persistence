@@ -14,12 +14,15 @@ interface PersistentDao<T> {
     val timeOfModification: LocalDateTime
 
     fun copyWithoutId(): T
+
     fun modifiedBy(modifier: String): T
-    fun toPersistent() = Persistent(
-        id = id,
-        createdBy = createdBy,
-        modifiedBy = modifiedBy,
-        timeOfCreation = timeOfCreation,
-        timeOfModification = timeOfModification,
-    )
+
+    fun toPersistent() =
+        Persistent(
+            id = id,
+            createdBy = createdBy,
+            modifiedBy = modifiedBy,
+            timeOfCreation = timeOfCreation,
+            timeOfModification = timeOfModification,
+        )
 }

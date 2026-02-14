@@ -25,212 +25,253 @@ import java.time.LocalDate
 import java.util.UUID
 
 @WebFluxTest(BlogController::class)
-internal class BlogControllerTest @Autowired constructor(
-    private val webTestClient: WebTestClient,
-    @MockkBean private val blogServiceMockk: BlogService,
-) {
-    @Test
-    fun `should find a blog`() {
-        val uuid = UUID.randomUUID().also {
-            coEvery { blogServiceMockk.find(it) } returns initBlog()
+internal class BlogControllerTest
+    @Autowired
+    constructor(
+        private val webTestClient: WebTestClient,
+        @MockkBean private val blogServiceMockk: BlogService,
+    ) {
+        @Test
+        fun `should find a blog`() {
+            val uuid =
+                UUID.randomUUID().also {
+                    coEvery { blogServiceMockk.find(it) } returns initBlog()
+                }
+
+            val blogResponse =
+                webTestClient
+                    .get()
+                    .uri("/blog/$uuid")
+                    .exchange()
+                    .expectStatus()
+                    .isOk
+                    .expectBody(BlogDto::class.java)
+                    .returnResult()
+                    .responseBody
+
+            assertThat(blogResponse).isNotNull()
         }
 
-        val blogResponse = webTestClient
-            .get()
-            .uri("/blog/$uuid")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody(BlogDto::class.java)
-            .returnResult().responseBody
+        @Test
+        fun `should not find a blog`() {
+            val uuid =
+                UUID.randomUUID().also {
+                    coEvery { blogServiceMockk.find(id = it) } returns null
+                }
 
-        assertThat(blogResponse).isNotNull()
-    }
+            val blogResponse =
+                webTestClient
+                    .get()
+                    .uri("/blog/$uuid")
+                    .exchange()
+                    .expectStatus()
+                    .isNoContent
+                    .expectBody(BlogDto::class.java)
+                    .returnResult()
+                    .responseBody
 
-    @Test
-    fun `should not find a blog`() {
-        val uuid = UUID.randomUUID().also {
-            coEvery { blogServiceMockk.find(id = it) } returns null
+            assertThat(blogResponse).isNull()
         }
 
-        val blogResponse = webTestClient
-            .get()
-            .uri("/blog/$uuid")
-            .exchange()
-            .expectStatus().isNoContent
-            .expectBody(BlogDto::class.java)
-            .returnResult().responseBody
+        @Test
+        fun `should find a blog entry`() {
+            val uuid =
+                UUID.randomUUID().also {
+                    coEvery { blogServiceMockk.findEntryBy(it) } returns initBlogEntry()
+                }
 
-        assertThat(blogResponse).isNull()
-    }
+            val blogEntryDto =
+                webTestClient
+                    .get()
+                    .uri("/blog/entry/$uuid")
+                    .exchange()
+                    .expectStatus()
+                    .isOk
+                    .expectBody(BlogEntryDto::class.java)
+                    .returnResult()
+                    .responseBody
 
-    @Test
-    fun `should find a blog entry`() {
-        val uuid = UUID.randomUUID().also {
-            coEvery { blogServiceMockk.findEntryBy(it) } returns initBlogEntry()
+            assertThat(blogEntryDto).isNotNull()
         }
 
-        val blogEntryDto = webTestClient
-            .get()
-            .uri("/blog/entry/$uuid")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody(BlogEntryDto::class.java)
-            .returnResult().responseBody
+        @Test
+        fun `should not find a blog entry`() {
+            val uuid =
+                UUID.randomUUID().also {
+                    coEvery { blogServiceMockk.findEntryBy(it) } returns null
+                }
 
-        assertThat(blogEntryDto).isNotNull()
-    }
+            val result =
+                webTestClient
+                    .get()
+                    .uri("/blog/entry/$uuid")
+                    .exchange()
+                    .expectStatus()
+                    .isNoContent
+                    .expectBody(BlogEntryDto::class.java)
+                    .returnResult()
+                    .responseBody
 
-    @Test
-    fun `should not find a blog entry`() {
-        val uuid = UUID.randomUUID().also {
-            coEvery { blogServiceMockk.findEntryBy(it) } returns null
+            assertThat(result).isNull()
         }
 
-        val result = webTestClient
-            .get()
-            .uri("/blog/entry/$uuid")
-            .exchange()
-            .expectStatus().isNoContent
-            .expectBody(BlogEntryDto::class.java)
-            .returnResult().responseBody
+        @Test
+        fun `should not find blogs by title`() {
+            coEvery { blogServiceMockk.findBlogsBy(title = "Anything") } returns emptyList()
 
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun `should not find blogs by title`() {
-        coEvery { blogServiceMockk.findBlogsBy(title = "Anything") } returns emptyList()
-
-        webTestClient
-            .get()
-            .uri("/blog/title/Anything")
-            .exchange()
-            .expectStatus().isNoContent
-    }
-
-    @Test
-    fun `should find blogs by title`() {
-        coEvery { blogServiceMockk.findBlogsBy("Anything") } returns listOf(initBlog())
-
-        val blogs = webTestClient
-            .get()
-            .uri("/blog/title/Anything")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody(object : ParameterizedTypeReference<List<BlogDto>>() {})
-            .returnResult().responseBody
-
-        assertThat(blogs).isNotNull().hasSize(1)
-    }
-
-    @Test
-    fun `should not find blog entries by blog id`() {
-        val uuid = UUID.randomUUID().also {
-            coEvery { blogServiceMockk.findEntriesForBlog(blogId = it) } returns emptyList()
+            webTestClient
+                .get()
+                .uri("/blog/title/Anything")
+                .exchange()
+                .expectStatus()
+                .isNoContent
         }
 
-        webTestClient
-            .get()
-            .uri("/blog/$uuid/entries")
-            .exchange()
-            .expectStatus().isNoContent
-    }
+        @Test
+        fun `should find blogs by title`() {
+            coEvery { blogServiceMockk.findBlogsBy("Anything") } returns listOf(initBlog())
 
-    @Test
-    fun `should find blog entries by blog id`() {
-        val uuid = UUID.randomUUID().also {
-            coEvery { blogServiceMockk.findEntriesForBlog(it) } returns listOf(initBlogEntry())
+            val blogs =
+                webTestClient
+                    .get()
+                    .uri("/blog/title/Anything")
+                    .exchange()
+                    .expectStatus()
+                    .isOk
+                    .expectBody(object : ParameterizedTypeReference<List<BlogDto>>() {})
+                    .returnResult()
+                    .responseBody
+
+            assertThat(blogs).isNotNull().hasSize(1)
         }
 
-        val blogEntries = webTestClient
-            .get()
-            .uri("/blog/$uuid/entries")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody(object : ParameterizedTypeReference<List<BlogEntryDto>>() {})
-            .returnResult().responseBody
+        @Test
+        fun `should not find blog entries by blog id`() {
+            val uuid =
+                UUID.randomUUID().also {
+                    coEvery { blogServiceMockk.findEntriesForBlog(blogId = it) } returns emptyList()
+                }
 
-        assertThat(blogEntries).isNotNull().isNotEmpty()
-    }
-
-    @Test
-    fun `should persist changes to existing blog`() {
-        val updateBlogTitleCommand = UpdateBlogTitleCommand(
-            blogId = UUID.randomUUID(),
-            title = "A new title",
-        )
-
-        coEvery { blogServiceMockk.update(updateBlogTitle = any()) } returns initBlog()
-
-        val blogDto = webTestClient
-            .put()
-            .uri("/blog/${updateBlogTitleCommand.blogId}")
-            .bodyValue(updateBlogTitleCommand)
-            .exchange()
-            .expectStatus().isAccepted
-            .expectBody(BlogDto::class.java)
-            .returnResult().responseBody
-
-        assertThat(blogDto).isNotNull()
-
-        coVerify {
-            blogServiceMockk.update(
-                updateBlogTitle = withArg {
-                    assertThat(it.title).isEqualTo(updateBlogTitleCommand.title)
-                },
-            )
-        }
-    }
-
-    @Test
-    fun `should create a blog`() {
-        val blog = initBlog(
-            created = LocalDate.now(),
-            title = "Another title",
-            userId = UUID.randomUUID(),
-        )
-
-        coEvery { blogServiceMockk.saveOrUpdate(blog = any()) } returns blog
-
-        val createdBlog = webTestClient
-            .post()
-            .uri("/blog")
-            .bodyValue(blog.toBlogDto())
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody(BlogDto::class.java)
-            .returnResult().responseBody
-
-        assertThat(createdBlog).isNotNull().given {
-            assertThat(it.persistentDto.id).isEqualTo(blog.id)
+            webTestClient
+                .get()
+                .uri("/blog/$uuid/entries")
+                .exchange()
+                .expectStatus()
+                .isNoContent
         }
 
-        coVerify { blogServiceMockk.saveOrUpdate(blog = any()) }
-    }
+        @Test
+        fun `should find blog entries by blog id`() {
+            val uuid =
+                UUID.randomUUID().also {
+                    coEvery { blogServiceMockk.findEntriesForBlog(it) } returns listOf(initBlogEntry())
+                }
 
-    @Test
-    fun `should create blog entry`() {
-        val creatBlogEntryCommand = CreateBlogEntryCommand(
-            blogId = UUID.randomUUID(),
-            creatorName = "me",
-            entry = "hi",
-        )
+            val blogEntries =
+                webTestClient
+                    .get()
+                    .uri("/blog/$uuid/entries")
+                    .exchange()
+                    .expectStatus()
+                    .isOk
+                    .expectBody(object : ParameterizedTypeReference<List<BlogEntryDto>>() {})
+                    .returnResult()
+                    .responseBody
 
-        coEvery { blogServiceMockk.create(createBlogEntry = any()) } answers {
-            initBlogEntry(blog = initBlog().withId(), entry = (arg(0) as CreateBlogEntry).entry).withId()
+            assertThat(blogEntries).isNotNull().isNotEmpty()
         }
 
-        val blogEntry = webTestClient
-            .post()
-            .uri("/blog/entry")
-            .bodyValue(creatBlogEntryCommand)
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody(BlogEntryDto::class.java)
-            .returnResult().responseBody
+        @Test
+        fun `should persist changes to existing blog`() {
+            val updateBlogTitleCommand =
+                UpdateBlogTitleCommand(
+                    blogId = UUID.randomUUID(),
+                    title = "A new title",
+                )
 
-        assertThat(blogEntry?.entry).isEqualTo(creatBlogEntryCommand.entry)
+            coEvery { blogServiceMockk.update(updateBlogTitle = any()) } returns initBlog()
 
-        coVerify { blogServiceMockk.create(createBlogEntry = any()) }
+            val blogDto =
+                webTestClient
+                    .put()
+                    .uri("/blog/${updateBlogTitleCommand.blogId}")
+                    .bodyValue(updateBlogTitleCommand)
+                    .exchange()
+                    .expectStatus()
+                    .isAccepted
+                    .expectBody(BlogDto::class.java)
+                    .returnResult()
+                    .responseBody
+
+            assertThat(blogDto).isNotNull()
+
+            coVerify {
+                blogServiceMockk.update(
+                    updateBlogTitle =
+                        withArg {
+                            assertThat(it.title).isEqualTo(updateBlogTitleCommand.title)
+                        },
+                )
+            }
+        }
+
+        @Test
+        fun `should create a blog`() {
+            val blog =
+                initBlog(
+                    created = LocalDate.now(),
+                    title = "Another title",
+                    userId = UUID.randomUUID(),
+                )
+
+            coEvery { blogServiceMockk.saveOrUpdate(blog = any()) } returns blog
+
+            val createdBlog =
+                webTestClient
+                    .post()
+                    .uri("/blog")
+                    .bodyValue(blog.toBlogDto())
+                    .exchange()
+                    .expectStatus()
+                    .isCreated
+                    .expectBody(BlogDto::class.java)
+                    .returnResult()
+                    .responseBody
+
+            assertThat(createdBlog).isNotNull().given {
+                assertThat(it.persistentDto.id).isEqualTo(blog.id)
+            }
+
+            coVerify { blogServiceMockk.saveOrUpdate(blog = any()) }
+        }
+
+        @Test
+        fun `should create blog entry`() {
+            val creatBlogEntryCommand =
+                CreateBlogEntryCommand(
+                    blogId = UUID.randomUUID(),
+                    creatorName = "me",
+                    entry = "hi",
+                )
+
+            coEvery { blogServiceMockk.create(createBlogEntry = any()) } answers {
+                initBlogEntry(blog = initBlog().withId(), entry = (arg(0) as CreateBlogEntry).entry).withId()
+            }
+
+            val blogEntry =
+                webTestClient
+                    .post()
+                    .uri("/blog/entry")
+                    .bodyValue(creatBlogEntryCommand)
+                    .exchange()
+                    .expectStatus()
+                    .isCreated
+                    .expectBody(BlogEntryDto::class.java)
+                    .returnResult()
+                    .responseBody
+
+            assertThat(blogEntry?.entry).isEqualTo(creatBlogEntryCommand.entry)
+
+            coVerify { blogServiceMockk.create(createBlogEntry = any()) }
+        }
     }
-}

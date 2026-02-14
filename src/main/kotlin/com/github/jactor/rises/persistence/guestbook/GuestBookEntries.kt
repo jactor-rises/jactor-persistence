@@ -9,9 +9,10 @@ import org.jetbrains.exposed.v1.javatime.datetime
 import java.util.UUID
 
 object GuestBookEntries : IdTable<UUID>(name = "T_GUEST_BOOK_ENTRY") {
-    override val id: Column<EntityID<UUID>> = javaUUID("ID")
-        .clientDefault { UUIDv7.generate() }
-        .entityId()
+    override val id: Column<EntityID<UUID>> =
+        javaUUID("ID")
+            .clientDefault { UUIDv7.generate() }
+            .entityId()
 
     val createdBy = text("CREATED_BY")
     val guestName = text("GUEST_NAME")

@@ -25,7 +25,9 @@ import java.util.UUID
 
 @RestController
 @RequestMapping(value = ["/blog"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class BlogController(private val blogService: BlogService) {
+class BlogController(
+    private val blogService: BlogService,
+) {
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "En blogg for id"),
@@ -35,13 +37,13 @@ class BlogController(private val blogService: BlogService) {
             ),
         ],
     )
-
     @Operation(description = "Henter en blogg ved å angi id")
     @GetMapping("/{id}")
-    suspend operator fun get(@PathVariable("id") blogId: UUID): ResponseEntity<BlogDto> {
-        return blogService.find(blogId)?.let { ResponseEntity(it.toBlogDto(), HttpStatus.OK) }
+    suspend operator fun get(
+        @PathVariable("id") blogId: UUID,
+    ): ResponseEntity<BlogDto> =
+        blogService.find(blogId)?.let { ResponseEntity(it.toBlogDto(), HttpStatus.OK) }
             ?: ResponseEntity(HttpStatus.NO_CONTENT)
-    }
 
     @ApiResponses(
         value = [
@@ -52,13 +54,13 @@ class BlogController(private val blogService: BlogService) {
             ),
         ],
     )
-
     @Operation(description = "Henter et innslag i en blogg ved å angi id")
     @GetMapping("/entry/{id}")
-    suspend fun getEntryById(@PathVariable("id") blogEntryId: UUID): ResponseEntity<BlogEntryDto> {
-        return blogService.findEntryBy(blogEntryId)?.let { ResponseEntity(it.toBlogEntryDto(), HttpStatus.OK) }
+    suspend fun getEntryById(
+        @PathVariable("id") blogEntryId: UUID,
+    ): ResponseEntity<BlogEntryDto> =
+        blogService.findEntryBy(blogEntryId)?.let { ResponseEntity(it.toBlogEntryDto(), HttpStatus.OK) }
             ?: ResponseEntity(HttpStatus.NO_CONTENT)
-    }
 
     @ApiResponses(
         value = [
@@ -69,12 +71,15 @@ class BlogController(private val blogService: BlogService) {
             ),
         ],
     )
-
     @GetMapping("/title/{title}")
     @Operation(description = "Søker etter blogger basert på en blog tittel")
-    suspend fun findByTitle(@PathVariable("title") title: String): ResponseEntity<List<BlogDto>> {
-        val blogsByTitle = blogService.findBlogsBy(title)
-            .map { it.toBlogDto() }
+    suspend fun findByTitle(
+        @PathVariable("title") title: String,
+    ): ResponseEntity<List<BlogDto>> {
+        val blogsByTitle =
+            blogService
+                .findBlogsBy(title)
+                .map { it.toBlogDto() }
 
         return when (blogsByTitle.isNotEmpty()) {
             true -> ResponseEntity(blogsByTitle, HttpStatus.OK)
@@ -91,12 +96,15 @@ class BlogController(private val blogService: BlogService) {
             ),
         ],
     )
-
     @GetMapping("/{id}/entries")
     @Operation(description = "Søker etter blogg-innslag basert på en blogg id")
-    suspend fun findEntriesByBlogId(@PathVariable("id") blogId: UUID): ResponseEntity<List<BlogEntryDto>> {
-        val entriesForBlog = blogService.findEntriesForBlog(blogId)
-            .map { it.toBlogEntryDto() }
+    suspend fun findEntriesByBlogId(
+        @PathVariable("id") blogId: UUID,
+    ): ResponseEntity<List<BlogEntryDto>> {
+        val entriesForBlog =
+            blogService
+                .findEntriesForBlog(blogId)
+                .map { it.toBlogEntryDto() }
 
         return when (entriesForBlog.isNotEmpty()) {
             true -> ResponseEntity(entriesForBlog, HttpStatus.OK)
@@ -113,17 +121,18 @@ class BlogController(private val blogService: BlogService) {
             ),
         ],
     )
-
     @Operation(description = "Endre en blogg")
     @PutMapping("/{blogId}")
     suspend fun put(
-        @RequestBody updateBlogTitleCommand: UpdateBlogTitleCommand, @PathVariable blogId: UUID,
-    ): ResponseEntity<BlogDto> = (updateBlogTitleCommand.blogId ?: blogId).let {
-        ResponseEntity(
-            blogService.update(updateBlogTitle = updateBlogTitleCommand.toUpdateBlogTitle()).toBlogDto(),
-            HttpStatus.ACCEPTED,
-        )
-    }
+        @RequestBody updateBlogTitleCommand: UpdateBlogTitleCommand,
+        @PathVariable blogId: UUID,
+    ): ResponseEntity<BlogDto> =
+        (updateBlogTitleCommand.blogId ?: blogId).let {
+            ResponseEntity(
+                blogService.update(updateBlogTitle = updateBlogTitleCommand.toUpdateBlogTitle()).toBlogDto(),
+                HttpStatus.ACCEPTED,
+            )
+        }
 
     @ApiResponses(
         value = [
@@ -134,13 +143,17 @@ class BlogController(private val blogService: BlogService) {
     )
     @Operation(description = "Opprett en blogg")
     @PostMapping
-    suspend fun post(@RequestBody blogDto: BlogDto): ResponseEntity<BlogDto> = when (blogDto.harIdentifikator()) {
-        true -> ResponseEntity(HttpStatus.BAD_REQUEST)
-        false -> ResponseEntity(
-            blogService.saveOrUpdate(blog = blogDto.toBlog()).toBlogDto(),
-            HttpStatus.CREATED,
-        )
-    }
+    suspend fun post(
+        @RequestBody blogDto: BlogDto,
+    ): ResponseEntity<BlogDto> =
+        when (blogDto.harIdentifikator()) {
+            true -> ResponseEntity(HttpStatus.BAD_REQUEST)
+            false ->
+                ResponseEntity(
+                    blogService.saveOrUpdate(blog = blogDto.toBlog()).toBlogDto(),
+                    HttpStatus.CREATED,
+                )
+        }
 
     @ApiResponses(
         value = [
@@ -156,13 +169,15 @@ class BlogController(private val blogService: BlogService) {
     suspend fun putEntry(
         @RequestBody blogEntryDto: BlogEntryDto,
         @PathVariable blogEntryId: UUID,
-    ): ResponseEntity<BlogEntryDto> = when (blogEntryDto.harIkkeIdentifikator()) {
-        true -> ResponseEntity(HttpStatus.BAD_REQUEST)
-        false -> ResponseEntity(
-            blogService.saveOrUpdate(blogEntry = blogEntryDto.toBlogEntry()).toBlogEntryDto(),
-            HttpStatus.ACCEPTED,
-        )
-    }
+    ): ResponseEntity<BlogEntryDto> =
+        when (blogEntryDto.harIkkeIdentifikator()) {
+            true -> ResponseEntity(HttpStatus.BAD_REQUEST)
+            false ->
+                ResponseEntity(
+                    blogService.saveOrUpdate(blogEntry = blogEntryDto.toBlogEntry()).toBlogEntryDto(),
+                    HttpStatus.ACCEPTED,
+                )
+        }
 
     @ApiResponses(
         value = [
@@ -176,9 +191,13 @@ class BlogController(private val blogService: BlogService) {
     @PostMapping("/entry")
     suspend fun postEntry(
         @RequestBody createBlogEntryCommand: CreateBlogEntryCommand,
-    ): ResponseEntity<BlogEntryDto> = createBlogEntryCommand.toCreateBlogEntry().let {
-        blogService.create(createBlogEntry = it)
-    }.toBlogEntryDto().let {
-        ResponseEntity(it, HttpStatus.CREATED)
-    }
+    ): ResponseEntity<BlogEntryDto> =
+        createBlogEntryCommand
+            .toCreateBlogEntry()
+            .let {
+                blogService.create(createBlogEntry = it)
+            }.toBlogEntryDto()
+            .let {
+                ResponseEntity(it, HttpStatus.CREATED)
+            }
 }

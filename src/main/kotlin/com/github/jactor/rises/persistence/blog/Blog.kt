@@ -14,20 +14,22 @@ data class Blog(
 ) {
     val id: UUID? get() = persistent.id
 
-    fun toBlogDao() = BlogDao(
-        id = persistent.id,
-        created = created ?: persistent.timeOfCreation.toLocalDate(),
-        createdBy = persistent.createdBy,
-        modifiedBy = persistent.modifiedBy,
-        timeOfCreation = persistent.timeOfCreation,
-        timeOfModification = persistent.timeOfModification,
-        title = title,
-        userId = userId,
-    )
+    fun toBlogDao() =
+        BlogDao(
+            id = persistent.id,
+            created = created ?: persistent.timeOfCreation.toLocalDate(),
+            createdBy = persistent.createdBy,
+            modifiedBy = persistent.modifiedBy,
+            timeOfCreation = persistent.timeOfCreation,
+            timeOfModification = persistent.timeOfModification,
+            title = title,
+            userId = userId,
+        )
 
-    fun toBlogDto() = BlogDto(
-        persistentDto = persistent.toPersistentDto(),
-        title = title,
-        userId = userId,
-    )
+    fun toBlogDto() =
+        BlogDto(
+            persistentDto = persistent.toPersistentDto(),
+            title = title,
+            userId = userId,
+        )
 }

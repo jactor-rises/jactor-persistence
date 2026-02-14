@@ -22,7 +22,9 @@ import java.util.UUID
 
 @RestController
 @RequestMapping(path = ["/user"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class UserController(private val userService: UserService) {
+class UserController(
+    private val userService: UserService,
+) {
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "User found"),
@@ -31,10 +33,11 @@ class UserController(private val userService: UserService) {
     )
     @GetMapping("/name/{username}")
     @Operation(description = "Find a user by its username")
-    suspend fun find(@PathVariable("username") username: String): ResponseEntity<UserDto> {
-        return userService.find(username = username)?.let { ResponseEntity(it.toUserDto(), HttpStatus.OK) }
+    suspend fun find(
+        @PathVariable("username") username: String,
+    ): ResponseEntity<UserDto> =
+        userService.find(username = username)?.let { ResponseEntity(it.toUserDto(), HttpStatus.OK) }
             ?: ResponseEntity(HttpStatus.NO_CONTENT)
-    }
 
     @ApiResponses(
         value = [
@@ -44,10 +47,11 @@ class UserController(private val userService: UserService) {
     )
     @GetMapping("/{id}")
     @Operation(description = "Get a user by its id")
-    suspend operator fun get(@PathVariable("id") id: UUID): ResponseEntity<UserDto> {
-        return userService.find(id)?.let { ResponseEntity(it.toUserDto(), HttpStatus.OK) }
+    suspend operator fun get(
+        @PathVariable("id") id: UUID,
+    ): ResponseEntity<UserDto> =
+        userService.find(id)?.let { ResponseEntity(it.toUserDto(), HttpStatus.OK) }
             ?: ResponseEntity(HttpStatus.NOT_FOUND)
-    }
 
     @ApiResponses(
         value = [
@@ -59,13 +63,15 @@ class UserController(private val userService: UserService) {
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     suspend fun post(
         @RequestBody createUserCommand: CreateUserCommand,
-    ): ResponseEntity<UserDto> = when (userService.isAlreadyPersisted(username = createUserCommand.username)) {
-        true -> ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST)
-        false -> ResponseEntity(
-            userService.create(createUserCommand.toCreateUser()).toUserDto(),
-            HttpStatus.CREATED,
-        )
-    }
+    ): ResponseEntity<UserDto> =
+        when (userService.isAlreadyPersisted(username = createUserCommand.username)) {
+            true -> ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST)
+            false ->
+                ResponseEntity(
+                    userService.create(createUserCommand.toCreateUser()).toUserDto(),
+                    HttpStatus.CREATED,
+                )
+        }
 
     @ApiResponses(
         value = [
@@ -75,23 +81,28 @@ class UserController(private val userService: UserService) {
     )
     @Operation(description = "Update a user by its id")
     @PutMapping("/update")
-    suspend fun put(@RequestBody userDto: UserDto): ResponseEntity<UserDto> = when (userDto.harIkkeIdentifikator()) {
-        true -> ResponseEntity(HttpStatus.BAD_REQUEST)
-        false -> ResponseEntity(
-            userService.update(user = userDto.toUser()).toUserDto(),
-            HttpStatus.ACCEPTED,
-        )
-    }
+    suspend fun put(
+        @RequestBody userDto: UserDto,
+    ): ResponseEntity<UserDto> =
+        when (userDto.harIkkeIdentifikator()) {
+            true -> ResponseEntity(HttpStatus.BAD_REQUEST)
+            false ->
+                ResponseEntity(
+                    userService.update(user = userDto.toUser()).toUserDto(),
+                    HttpStatus.ACCEPTED,
+                )
+        }
 
     @ApiResponses(ApiResponse(responseCode = "200", description = "List of usernames found"))
     @GetMapping("/usernames")
     @Operation(description = "Find all usernames for a user type")
     suspend fun findAllUsernames(
         @RequestParam(required = false, defaultValue = "ACTIVE") userType: String,
-    ): ResponseEntity<List<String>> = userService.findUsernames(userType = UserType.valueOf(userType)).let {
-        when (it.isEmpty()) {
-            true -> ResponseEntity(HttpStatus.NO_CONTENT)
-            false -> ResponseEntity(it, HttpStatus.OK)
+    ): ResponseEntity<List<String>> =
+        userService.findUsernames(userType = UserType.valueOf(userType)).let {
+            when (it.isEmpty()) {
+                true -> ResponseEntity(HttpStatus.NO_CONTENT)
+                false -> ResponseEntity(it, HttpStatus.OK)
+            }
         }
-    }
 }

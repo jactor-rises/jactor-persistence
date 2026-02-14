@@ -10,9 +10,10 @@ import org.jetbrains.exposed.v1.javatime.datetime
 import java.util.UUID
 
 object People : IdTable<UUID>(name = "T_PERSON") {
-    override val id: Column<EntityID<UUID>> = javaUUID("ID")
-        .clientDefault { UUIDv7.generate() }
-        .entityId()
+    override val id: Column<EntityID<UUID>> =
+        javaUUID("ID")
+            .clientDefault { UUIDv7.generate() }
+            .entityId()
 
     val createdBy = text("CREATED_BY")
     val modifiedBy = text("UPDATED_BY")

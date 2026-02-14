@@ -14,8 +14,10 @@ data class BlogEntryDao(
     override val timeOfCreation: LocalDateTime = LocalDateTime.now(),
     override var timeOfModification: LocalDateTime = LocalDateTime.now(),
     internal var blogId: UUID,
-) : PersistentDao<BlogEntryDao>, EntryDao {
+) : PersistentDao<BlogEntryDao>,
+    EntryDao {
     override fun copyWithoutId(): BlogEntryDao = copy(id = null)
+
     override fun modifiedBy(modifier: String): BlogEntryDao {
         modifiedBy = modifier
         timeOfModification = LocalDateTime.now()
@@ -23,10 +25,11 @@ data class BlogEntryDao(
         return this
     }
 
-    fun toBlogEntry() = BlogEntry(
-        persistent = toPersistent(),
-        blogId = blogId,
-        creatorName = creatorName,
-        entry = entry,
-    )
+    fun toBlogEntry() =
+        BlogEntry(
+            persistent = toPersistent(),
+            blogId = blogId,
+            creatorName = creatorName,
+            entry = entry,
+        )
 }

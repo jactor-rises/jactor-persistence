@@ -21,128 +21,135 @@ internal class PersistenceHandlerTest {
     private val persistenceHandler = PersistenceHandler()
 
     @Test
-    fun `should modify timestamp on address when used`() = runTest {
-        val withId = initAddressDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
-        val withoutId = initAddressDao(id = null, timeOfModification = oneMinuteAgo)
+    fun `should modify timestamp on address when used`() =
+        runTest {
+            val withId = initAddressDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
+            val withoutId = initAddressDao(id = null, timeOfModification = oneMinuteAgo)
 
-        assertAll {
-            persistenceHandler.modifyAndSave(withId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
-                return@modifyAndSave dao
-            }
+            assertAll {
+                persistenceHandler.modifyAndSave(withId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
+                    return@modifyAndSave dao
+                }
 
-            persistenceHandler.modifyAndSave(withoutId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
-                return@modifyAndSave dao
+                persistenceHandler.modifyAndSave(withoutId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
+                    return@modifyAndSave dao
+                }
             }
         }
-    }
 
     @Test
-    fun `should modify timestamp on blog when used`() = runTest {
-        val withId = initBlogDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
-        val withoutId = initBlogDao(id = null, timeOfModification = oneMinuteAgo)
+    fun `should modify timestamp on blog when used`() =
+        runTest {
+            val withId = initBlogDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
+            val withoutId = initBlogDao(id = null, timeOfModification = oneMinuteAgo)
 
-        assertAll {
-            persistenceHandler.modifyAndSave(withId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
-                return@modifyAndSave dao
-            }
+            assertAll {
+                persistenceHandler.modifyAndSave(withId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
+                    return@modifyAndSave dao
+                }
 
-            persistenceHandler.modifyAndSave(withoutId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
-                return@modifyAndSave dao
+                persistenceHandler.modifyAndSave(withoutId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
+                    return@modifyAndSave dao
+                }
             }
         }
-    }
 
     @Test
-    fun `should modify timestamp on blogEntry when used`() = runTest {
-        val withId = initBlogEntryDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
-        val withoutId = initBlogEntryDao(id = null, timeOfModification = oneMinuteAgo)
+    fun `should modify timestamp on blogEntry when used`() =
+        runTest {
+            val withId = initBlogEntryDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
+            val withoutId = initBlogEntryDao(id = null, timeOfModification = oneMinuteAgo)
 
-        assertAll {
-            persistenceHandler.modifyAndSave(withId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
-                return@modifyAndSave dao
-            }
+            assertAll {
+                persistenceHandler.modifyAndSave(withId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
+                    return@modifyAndSave dao
+                }
 
-            persistenceHandler.modifyAndSave(withoutId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
-                return@modifyAndSave dao
+                persistenceHandler.modifyAndSave(withoutId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
+                    return@modifyAndSave dao
+                }
             }
         }
-    }
 
     @Test
-    fun `should modify timestamp on guestBook when used`() = runTest {
-        val withId = initGuestBookDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
-        val withoutId = initGuestBookDao(id = null, timeOfModification = oneMinuteAgo)
+    fun `should modify timestamp on guestBook when used`() =
+        runTest {
+            val withId = initGuestBookDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
+            val withoutId = initGuestBookDao(id = null, timeOfModification = oneMinuteAgo)
 
-        assertAll {
-            persistenceHandler.modifyAndSave(withId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
-                return@modifyAndSave dao
-            }
+            assertAll {
+                persistenceHandler.modifyAndSave(withId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
+                    return@modifyAndSave dao
+                }
 
-            persistenceHandler.modifyAndSave(withoutId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
-                return@modifyAndSave dao
+                persistenceHandler.modifyAndSave(withoutId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
+                    return@modifyAndSave dao
+                }
             }
         }
-    }
 
     @Test
-    fun `should modify timestamp on guestBookEntry when used`() = runTest {
-        val withId = initGuestBookEntryDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
-        val withoutId = initGuestBookEntryDao(id = null, timeOfModification = oneMinuteAgo)
+    fun `should modify timestamp on guestBookEntry when used`() =
+        runTest {
+            val withId = initGuestBookEntryDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
+            val withoutId = initGuestBookEntryDao(id = null, timeOfModification = oneMinuteAgo)
 
-        assertAll {
-            persistenceHandler.modifyAndSave(withId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
-                return@modifyAndSave dao
-            }
+            assertAll {
+                persistenceHandler.modifyAndSave(withId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
+                    return@modifyAndSave dao
+                }
 
-            persistenceHandler.modifyAndSave(withoutId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
-                return@modifyAndSave dao
+                persistenceHandler.modifyAndSave(withoutId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
+                    return@modifyAndSave dao
+                }
             }
         }
-    }
 
     @Test
-    fun `should modify timestamp on person when used`() = runTest {
-        val withId = initPersonDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
-        val withoutId = initPersonDao(id = null, timeOfModification = oneMinuteAgo)
+    fun `should modify timestamp on person when used`() =
+        runTest {
+            val withId = initPersonDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
+            val withoutId = initPersonDao(id = null, timeOfModification = oneMinuteAgo)
 
-        assertAll {
-            persistenceHandler.modifyAndSave(withId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
-                return@modifyAndSave dao
-            }
+            assertAll {
+                persistenceHandler.modifyAndSave(withId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
+                    return@modifyAndSave dao
+                }
 
-            persistenceHandler.modifyAndSave(withoutId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
-                return@modifyAndSave dao
+                persistenceHandler.modifyAndSave(withoutId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
+                    return@modifyAndSave dao
+                }
             }
         }
-    }
 
     @Test
-    fun `should modify timestamp on user when used`() = runTest {
-        val withId = initUserDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
-        val withoutId = initUserDao(id = null, timeOfModification = oneMinuteAgo)
+    fun `should modify timestamp on user when used`() =
+        runTest {
+            val withId = initUserDao(id = UUID.randomUUID(), timeOfModification = oneMinuteAgo)
+            val withoutId = initUserDao(id = null, timeOfModification = oneMinuteAgo)
 
-        assertAll {
-            persistenceHandler.modifyAndSave(withId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
-                return@modifyAndSave dao
-            }
+            assertAll {
+                persistenceHandler.modifyAndSave(withId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "with id").isEqualTo(0)
+                    return@modifyAndSave dao
+                }
 
-            persistenceHandler.modifyAndSave(withoutId) { dao ->
-                assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
-                return@modifyAndSave dao
+                persistenceHandler.modifyAndSave(withoutId) { dao ->
+                    assertThat(dao.timeOfModification.countSecondsUntilNow(), "without id").isEqualTo(60)
+                    return@modifyAndSave dao
+                }
             }
         }
-    }
 }

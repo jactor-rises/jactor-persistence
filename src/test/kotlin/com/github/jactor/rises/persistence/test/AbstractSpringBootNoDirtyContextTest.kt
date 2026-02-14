@@ -23,24 +23,36 @@ abstract class AbstractSpringBootNoDirtyContextTest {
     @Autowired
     private lateinit var jactorPersistenceRepositiesConfig: JactorPersistenceRepositiesConfig
 
-    protected fun save(address: Address): Address = AddressTestRepositoryObject.save(
-        addressDao = address.toAddressDao(),
-    ).toAddress()
+    protected fun save(address: Address): Address =
+        AddressTestRepositoryObject
+            .save(
+                addressDao = address.toAddressDao(),
+            ).toAddress()
 
-    protected fun save(blog: Blog): Blog = jactorPersistenceRepositiesConfig.blogRepository
-        .save(blogDao = blog.toBlogDao()).toBlog()
+    protected fun save(blog: Blog): Blog =
+        jactorPersistenceRepositiesConfig.blogRepository
+            .save(blogDao = blog.toBlogDao())
+            .toBlog()
 
-    protected fun save(blogEntry: BlogEntry): BlogEntry = jactorPersistenceRepositiesConfig.blogRepository
-        .save(blogEntryDao = blogEntry.toBlogEntryDao()).toBlogEntry()
+    protected fun save(blogEntry: BlogEntry): BlogEntry =
+        jactorPersistenceRepositiesConfig.blogRepository
+            .save(blogEntryDao = blogEntry.toBlogEntryDao())
+            .toBlogEntry()
 
-    protected fun save(guestBook: GuestBook): GuestBook = jactorPersistenceRepositiesConfig.guestBookRepository
-        .save(guestBookDao = guestBook.toGuestBookDao()).toGuestBook()
+    protected fun save(guestBook: GuestBook): GuestBook =
+        jactorPersistenceRepositiesConfig.guestBookRepository
+            .save(guestBookDao = guestBook.toGuestBookDao())
+            .toGuestBook()
 
-    protected fun save(person: Person): Person = jactorPersistenceRepositiesConfig.personRepository
-        .save(personDao = person.toPersonDao()).toPerson()
+    protected fun save(person: Person): Person =
+        jactorPersistenceRepositiesConfig.personRepository
+            .save(personDao = person.toPersonDao())
+            .toPerson()
 
-    protected fun save(user: User): User = jactorPersistenceRepositiesConfig.userRepository
-        .save(userDao = user.toUserDao()).toUser()
+    protected fun save(user: User): User =
+        jactorPersistenceRepositiesConfig.userRepository
+            .save(userDao = user.toUserDao())
+            .toUser()
 
     protected fun resetFetchRelations() {
         jactorPersistenceRepositiesConfig.initFetchRelations()

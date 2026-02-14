@@ -15,10 +15,11 @@ data class UserDao(
     internal var personId: UUID? = null,
     internal var username: String = "na",
 ) : PersistentDao<UserDao> {
-    override fun copyWithoutId(): UserDao = copy(
-        id = null,
-        personId = null,
-    )
+    override fun copyWithoutId(): UserDao =
+        copy(
+            id = null,
+            personId = null,
+        )
 
     override fun modifiedBy(modifier: String): UserDao {
         modifiedBy = modifier
@@ -27,12 +28,14 @@ data class UserDao(
         return this
     }
 
-    fun toUser() = User(
-        persistent = toPersistent(),
-        username = username,
-        emailAddress = emailAddress,
-        personId = personId,
-        userType = UserType.entries.firstOrNull { it.name == userType.name }
-            ?: error("Unknown UserType: $userType"),
-    )
+    fun toUser() =
+        User(
+            persistent = toPersistent(),
+            username = username,
+            emailAddress = emailAddress,
+            personId = personId,
+            userType =
+                UserType.entries.firstOrNull { it.name == userType.name }
+                    ?: error("Unknown UserType: $userType"),
+        )
 }

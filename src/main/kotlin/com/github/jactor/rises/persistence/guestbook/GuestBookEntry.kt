@@ -21,21 +21,23 @@ data class GuestBookEntry(
         guestBookId = guestBookEntryDto.guestBookId,
     )
 
-    fun toGuestBookEntryDto() = GuestBookEntryDto(
-        entry = entry,
-        creatorName = guestName,
-        guestBookId = guestBookId,
-        persistentDto = persistent.toPersistentDto(),
-    )
+    fun toGuestBookEntryDto() =
+        GuestBookEntryDto(
+            entry = entry,
+            creatorName = guestName,
+            guestBookId = guestBookId,
+            persistentDto = persistent.toPersistentDto(),
+        )
 
-    fun toGuestBookEntryDao() = GuestBookEntryDao(
-        id = id,
-        createdBy = persistent.createdBy,
-        modifiedBy = persistent.modifiedBy,
-        timeOfCreation = persistent.timeOfCreation,
-        timeOfModification = persistent.timeOfModification,
-        guestName = guestName,
-        entry = entry,
-        guestBookId = guestBookId,
-    )
+    fun toGuestBookEntryDao() =
+        GuestBookEntryDao(
+            id = id,
+            createdBy = persistent.createdBy,
+            modifiedBy = persistent.modifiedBy,
+            timeOfCreation = persistent.timeOfCreation,
+            timeOfModification = persistent.timeOfModification,
+            guestName = guestName,
+            entry = entry,
+            guestBookId = guestBookId,
+        )
 }

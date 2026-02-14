@@ -16,25 +16,27 @@ data class Person(
 ) {
     val id: UUID? @JsonIgnore get() = persistent.id
 
-    fun toPersonDao() = PersonDao(
-        id = persistent.id,
-        createdBy = persistent.createdBy,
-        timeOfCreation = persistent.timeOfCreation,
-        modifiedBy = persistent.modifiedBy,
-        timeOfModification = persistent.timeOfModification,
-        description = description,
-        firstName = firstName,
-        surname = surname,
-        locale = locale,
-        addressId = addressId,
-    )
+    fun toPersonDao() =
+        PersonDao(
+            id = persistent.id,
+            createdBy = persistent.createdBy,
+            timeOfCreation = persistent.timeOfCreation,
+            modifiedBy = persistent.modifiedBy,
+            timeOfModification = persistent.timeOfModification,
+            description = description,
+            firstName = firstName,
+            surname = surname,
+            locale = locale,
+            addressId = addressId,
+        )
 
-    fun toPersonDto() = PersonDto(
-        persistentDto = persistent.toPersistentDto(),
-        addressId = addressId,
-        locale = locale,
-        firstName = firstName,
-        surname = surname,
-        description = description,
-    )
+    fun toPersonDto() =
+        PersonDto(
+            persistentDto = persistent.toPersistentDto(),
+            addressId = addressId,
+            locale = locale,
+            firstName = firstName,
+            surname = surname,
+            description = description,
+        )
 }

@@ -12,5 +12,6 @@ internal class ScenarioValues {
     lateinit var restService: RestService
 
     fun hentStatusKode(): HttpStatusCode = entityExchangeResult.status
+
     fun hentResponse(): String? = entityExchangeResult.responseBody
 }

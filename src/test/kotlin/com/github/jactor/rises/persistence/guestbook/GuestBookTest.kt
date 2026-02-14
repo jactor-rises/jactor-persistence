@@ -14,10 +14,11 @@ import java.util.UUID
 internal class GuestBookTest {
     @Test
     fun `should have a copy constructor`() {
-        val guestBook = initGuestBook(
-            title = "title",
-            user = initUser().withId(),
-        )
+        val guestBook =
+            initGuestBook(
+                title = "title",
+                user = initUser().withId(),
+            )
 
         val (_, title, userId) = GuestBook(guestBook.persistent, guestBook)
 
@@ -29,18 +30,20 @@ internal class GuestBookTest {
 
     @Test
     fun `should give values to PersistentDto`() {
-        val persistent = Persistent(
-            createdBy = "jactor",
-            id = UUID.randomUUID(),
-            modifiedBy = "tip",
-            timeOfCreation = LocalDateTime.now(),
-            timeOfModification = LocalDateTime.now(),
-        )
+        val persistent =
+            Persistent(
+                createdBy = "jactor",
+                id = UUID.randomUUID(),
+                modifiedBy = "tip",
+                timeOfCreation = LocalDateTime.now(),
+                timeOfModification = LocalDateTime.now(),
+            )
 
-        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) = GuestBook(
-            persistent,
-            guestBook = initGuestBook(),
-        ).persistent
+        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) =
+            GuestBook(
+                persistent,
+                guestBook = initGuestBook(),
+            ).persistent
 
         assertAll {
             assertThat(createdBy).isEqualTo(persistent.createdBy)

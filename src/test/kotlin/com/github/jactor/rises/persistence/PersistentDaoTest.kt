@@ -50,11 +50,12 @@ internal class PersistentDaoTest {
 
     @Test
     fun `should be able to copy a user without the id`() {
-        persistentDaoToTest = initUser(
-            persistent = Persistent(id = UUID.randomUUID()),
-            emailAddress = "i.am@home",
-            username = "jactor",
-        ).withId().toUserDao()
+        persistentDaoToTest =
+            initUser(
+                persistent = Persistent(id = UUID.randomUUID()),
+                emailAddress = "i.am@home",
+                username = "jactor",
+            ).withId().toUserDao()
 
         val copy = persistentDaoToTest.copyWithoutId() as PersistentDao<*>
 
@@ -68,10 +69,11 @@ internal class PersistentDaoTest {
 
     @Test
     fun `should be able to copy a blog without the id`() {
-        persistentDaoToTest = initBlog(
-            title = "general ignorance",
-            userId = UUID.randomUUID(),
-        ).withId().toBlogDao()
+        persistentDaoToTest =
+            initBlog(
+                title = "general ignorance",
+                userId = UUID.randomUUID(),
+            ).withId().toBlogDao()
 
         val copy = persistentDaoToTest.copyWithoutId() as PersistentDao<*>
 
@@ -85,11 +87,12 @@ internal class PersistentDaoTest {
 
     @Test
     fun `should be able to copy a blog entry without the id`() {
-        val blogEntry = BlogEntry(
-            blogId = UUID.randomUUID(),
-            creatorName = "jactor",
-            entry = "the one",
-        ).withId()
+        val blogEntry =
+            BlogEntry(
+                blogId = UUID.randomUUID(),
+                creatorName = "jactor",
+                entry = "the one",
+            ).withId()
 
         persistentDaoToTest = blogEntry.toBlogEntryDao()
         val copy = persistentDaoToTest.copyWithoutId() as PersistentDao<*>
@@ -104,10 +107,11 @@ internal class PersistentDaoTest {
 
     @Test
     fun `should be able to copy a guest book without the id`() {
-        persistentDaoToTest = initGuestBook(
-            title = "enter when applied",
-            user = initUser(persistent = Persistent(id = UUID.randomUUID())),
-        ).withId().toGuestBookDao()
+        persistentDaoToTest =
+            initGuestBook(
+                title = "enter when applied",
+                user = initUser(persistent = Persistent(id = UUID.randomUUID())),
+            ).withId().toGuestBookDao()
 
         val copy = persistentDaoToTest.copyWithoutId() as PersistentDao<*>
 

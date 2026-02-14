@@ -16,25 +16,29 @@ data class User(
     val id: UUID
         get() = persistent.id ?: error("User is not persisted!")
 
-    fun toUserDao() = UserDao(
-        id = persistent.id,
-        createdBy = persistent.createdBy,
-        modifiedBy = persistent.modifiedBy,
-        timeOfCreation = persistent.timeOfCreation,
-        timeOfModification = persistent.timeOfModification,
-        emailAddress = emailAddress,
-        personId = personId,
-        username = username ?: "na",
-        userType = UserType.entries.firstOrNull { it.name == userType.name }
-            ?: error(message = "Unknown UserType: $userType"),
-    )
+    fun toUserDao() =
+        UserDao(
+            id = persistent.id,
+            createdBy = persistent.createdBy,
+            modifiedBy = persistent.modifiedBy,
+            timeOfCreation = persistent.timeOfCreation,
+            timeOfModification = persistent.timeOfModification,
+            emailAddress = emailAddress,
+            personId = personId,
+            username = username ?: "na",
+            userType =
+                UserType.entries.firstOrNull { it.name == userType.name }
+                    ?: error(message = "Unknown UserType: $userType"),
+        )
 
-    fun toUserDto() = UserDto(
-        persistentDto = persistent.toPersistentDto(),
-        emailAddress = emailAddress,
-        personId = personId,
-        username = username,
-        userType = (userType == UserType.ADMIN).whenTrue { UserTypeDto.ACTIVE }
-            ?: UserTypeDto.valueOf(userType.name),
-    )
+    fun toUserDto() =
+        UserDto(
+            persistentDto = persistent.toPersistentDto(),
+            emailAddress = emailAddress,
+            personId = personId,
+            username = username,
+            userType =
+                (userType == UserType.ADMIN).whenTrue { UserTypeDto.ACTIVE }
+                    ?: UserTypeDto.valueOf(userType.name),
+        )
 }

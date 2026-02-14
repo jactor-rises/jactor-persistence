@@ -25,25 +25,28 @@ data class GuestBook(
         userId = guestBookDto.userId,
     )
 
-    fun toDto(): GuestBookDto = GuestBookDto(
-        persistentDto = persistent.toPersistentDto(),
-        title = title,
-        userId = userId,
-    )
+    fun toDto(): GuestBookDto =
+        GuestBookDto(
+            persistentDto = persistent.toPersistentDto(),
+            title = title,
+            userId = userId,
+        )
 
-    fun toGuestBookDao() = GuestBookDao(
-        id = persistent.id,
-        createdBy = persistent.createdBy,
-        modifiedBy = persistent.modifiedBy,
-        timeOfCreation = persistent.timeOfCreation,
-        timeOfModification = persistent.timeOfModification,
-        title = requireNotNull(title) { "Title cannot be null!" },
-        userId = userId,
-    )
+    fun toGuestBookDao() =
+        GuestBookDao(
+            id = persistent.id,
+            createdBy = persistent.createdBy,
+            modifiedBy = persistent.modifiedBy,
+            timeOfCreation = persistent.timeOfCreation,
+            timeOfModification = persistent.timeOfModification,
+            title = requireNotNull(title) { "Title cannot be null!" },
+            userId = userId,
+        )
 
-    fun toGuestBookDto() = GuestBookDto(
-        persistentDto = persistent.toPersistentDto(),
-        title = title,
-        userId = userId,
-    )
+    fun toGuestBookDto() =
+        GuestBookDto(
+            persistentDto = persistent.toPersistentDto(),
+            title = title,
+            userId = userId,
+        )
 }

@@ -16,19 +16,21 @@ data class PersonDao(
     var surname: String,
     var addressId: UUID? = null,
 ) : PersistentDao<PersonDao> {
-    fun toPerson() = Person(
-        persistent = toPersistent(),
-        addressId = addressId,
-        locale = locale,
-        firstName = firstName,
-        surname = surname,
-        description = description,
-    )
+    fun toPerson() =
+        Person(
+            persistent = toPersistent(),
+            addressId = addressId,
+            locale = locale,
+            firstName = firstName,
+            surname = surname,
+            description = description,
+        )
 
-    override fun copyWithoutId(): PersonDao = copy(
-        id = null,
-        addressId = null,
-    )
+    override fun copyWithoutId(): PersonDao =
+        copy(
+            id = null,
+            addressId = null,
+        )
 
     override fun modifiedBy(modifier: String): PersonDao {
         modifiedBy = modifier

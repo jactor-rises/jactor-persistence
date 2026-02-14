@@ -16,6 +16,7 @@ data class BlogDao(
     internal var userId: UUID? = null,
 ) : PersistentDao<BlogDao> {
     override fun copyWithoutId(): BlogDao = copy(id = null)
+
     override fun modifiedBy(modifier: String): BlogDao {
         modifiedBy = modifier
         timeOfModification = LocalDateTime.now()
@@ -23,10 +24,11 @@ data class BlogDao(
         return this
     }
 
-    fun toBlog(): Blog = Blog(
-        created = created,
-        persistent = toPersistent(),
-        title = title,
-        userId = userId,
-    )
+    fun toBlog(): Blog =
+        Blog(
+            created = created,
+            persistent = toPersistent(),
+            title = title,
+            userId = userId,
+        )
 }

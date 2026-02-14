@@ -14,7 +14,10 @@ private val logger = KotlinLogging.logger {}
 @OpenAPIDefinition(info = Info(title = "jactor-persistence", version = "v2"))
 class JactorPersistence {
     companion object {
-        fun inspect(applicationContext: ApplicationContext, args: Array<String>) {
+        fun inspect(
+            applicationContext: ApplicationContext,
+            args: Array<String>,
+        ) {
             logger.debug {
                 logger.debug { "Starting application ${list(args)}" }
                 SpringBeanNames().also { springBeanNames ->
@@ -33,10 +36,11 @@ class JactorPersistence {
     }
 }
 
-private fun list(args: Array<String>) = when (args.isEmpty()) {
-    true -> "without arguments!"
-    false -> "with arguments: ${args.joinToString { " " }}!"
-}
+private fun list(args: Array<String>) =
+    when (args.isEmpty()) {
+        true -> "without arguments!"
+        false -> "with arguments: ${args.joinToString { " " }}!"
+    }
 
 fun main(args: Array<String>) {
     runApplication<JactorPersistence>(*args)

@@ -47,10 +47,11 @@ fun Throwable.exceptionMessageMedCause(): String {
     return "$exceptionMessage$causeMessage".take(10000)
 }
 
-private fun Throwable.exceptionMessage() = when (this is HttpClientErrorException) {
-    true -> "Internal client, $statusCode: ${simpleExceptionMessage()}"
-    false -> simpleExceptionMessage()
-}
+private fun Throwable.exceptionMessage() =
+    when (this is HttpClientErrorException) {
+        true -> "Internal client, $statusCode: ${simpleExceptionMessage()}"
+        false -> simpleExceptionMessage()
+    }
 
 private fun Throwable?.findRootCauseMessage(): String? {
     var rootCause: Throwable? = this
