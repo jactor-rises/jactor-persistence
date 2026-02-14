@@ -11,18 +11,20 @@ import java.util.UUID
 internal class BlogEntryTest {
     @Test
     fun `should have a copy constructor`() {
-        val blogEntry = BlogEntry(
-            blogId = UUID.randomUUID(),
-            creatorName = "someone",
-            entry = "entry",
-        )
+        val blogEntry =
+            BlogEntry(
+                blogId = UUID.randomUUID(),
+                creatorName = "someone",
+                entry = "entry",
+            )
 
-        val (blog, creatorName, entry) = BlogEntry(
-            persistent = blogEntry.persistent,
-            blogId = blogEntry.blogId,
-            creatorName = blogEntry.creatorName,
-            entry = blogEntry.entry,
-        )
+        val (blog, creatorName, entry) =
+            BlogEntry(
+                persistent = blogEntry.persistent,
+                blogId = blogEntry.blogId,
+                creatorName = blogEntry.creatorName,
+                entry = blogEntry.entry,
+            )
 
         assertAll {
             assertThat(blog).isEqualTo(blogEntry.blogId)
@@ -33,20 +35,22 @@ internal class BlogEntryTest {
 
     @Test
     fun `should give values to PersistentDto`() {
-        val persistent = Persistent(
-            createdBy = "jactor",
-            id = UUID.randomUUID(),
-            modifiedBy = "tip",
-            timeOfCreation = LocalDateTime.now(),
-            timeOfModification = LocalDateTime.now(),
-        )
+        val persistent =
+            Persistent(
+                createdBy = "jactor",
+                id = UUID.randomUUID(),
+                modifiedBy = "tip",
+                timeOfCreation = LocalDateTime.now(),
+                timeOfModification = LocalDateTime.now(),
+            )
 
-        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) = BlogEntry(
-            persistent = persistent,
-            blogId = UUID.randomUUID(),
-            creatorName = persistent.createdBy,
-            entry = "test",
-        ).persistent
+        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) =
+            BlogEntry(
+                persistent = persistent,
+                blogId = UUID.randomUUID(),
+                creatorName = persistent.createdBy,
+                entry = "test",
+            ).persistent
 
         assertAll {
             assertThat(createdBy).isEqualTo(persistent.createdBy)

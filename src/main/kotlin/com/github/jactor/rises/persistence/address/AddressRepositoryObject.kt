@@ -7,9 +7,10 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import java.util.UUID
 
 object AddressRepositoryObject : AddressRepository {
-    override fun findById(id: UUID): AddressDao? = Addresses
-        .selectAll()
-        .andWhere { Addresses.id eq id }
-        .singleOrNull()
-        ?.toAddressDao()
+    override fun findById(id: UUID): AddressDao? =
+        Addresses
+            .selectAll()
+            .andWhere { Addresses.id eq id }
+            .singleOrNull()
+            ?.toAddressDao()
 }

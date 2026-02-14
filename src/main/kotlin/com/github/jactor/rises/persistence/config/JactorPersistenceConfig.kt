@@ -17,14 +17,16 @@ import java.text.SimpleDateFormat
 @OpenAPIDefinition(info = Info(title = "jactor-persistence.misc", version = "v2"))
 class JactorPersistenceConfig {
     @Bean
-    fun commandLineRunner(applicationContext: ApplicationContext): CommandLineRunner = CommandLineRunner {
-        JactorPersistence.inspect(applicationContext, it)
-    }
+    fun commandLineRunner(applicationContext: ApplicationContext): CommandLineRunner =
+        CommandLineRunner {
+            JactorPersistence.inspect(applicationContext, it)
+        }
 
     @Bean
-    fun objectMapper(): ObjectMapper = ObjectMapper()
-        .registerModule(JavaTimeModule())
-        .registerModule(Jdk8Module())
-        .setDateFormat(SimpleDateFormat("yyyy-MM-dd"))
-        .setSerializationInclusion(Include.NON_NULL)
+    fun objectMapper(): ObjectMapper =
+        ObjectMapper()
+            .registerModule(JavaTimeModule())
+            .registerModule(Jdk8Module())
+            .setDateFormat(SimpleDateFormat("yyyy-MM-dd"))
+            .setSerializationInclusion(Include.NON_NULL)
 }

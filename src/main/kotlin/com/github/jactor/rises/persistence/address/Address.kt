@@ -26,17 +26,18 @@ data class Address(
         zipCode = dao.zipCode,
     )
 
-    fun toAddressDao() = AddressDao(
-        id = null,
-        createdBy = persistent.createdBy,
-        timeOfCreation = persistent.timeOfCreation,
-        modifiedBy = persistent.modifiedBy,
-        timeOfModification = persistent.timeOfModification,
-        addressLine1 = addressLine1,
-        addressLine2 = addressLine2,
-        addressLine3 = addressLine3,
-        city = city,
-        country = country,
-        zipCode = zipCode,
-    )
+    fun toAddressDao() =
+        AddressDao(
+            id = null,
+            createdBy = persistent.createdBy,
+            timeOfCreation = persistent.timeOfCreation,
+            modifiedBy = persistent.modifiedBy,
+            timeOfModification = persistent.timeOfModification,
+            addressLine1 = addressLine1,
+            addressLine2 = addressLine2,
+            addressLine3 = addressLine3,
+            city = city,
+            country = country,
+            zipCode = zipCode,
+        )
 }

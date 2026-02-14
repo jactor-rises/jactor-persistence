@@ -14,18 +14,20 @@ import java.util.UUID
 internal class GuestBookEntryTest {
     @Test
     fun `should have a copy constructor`() {
-        val guestBookEntry = initGuestBookEntry(
-            creatorName = "me",
-            entry = "entry",
-            guestBook = initGuestBook().withId(),
-        )
+        val guestBookEntry =
+            initGuestBookEntry(
+                creatorName = "me",
+                entry = "entry",
+                guestBook = initGuestBook().withId(),
+            )
 
-        val (entry, creatorName, guestBookId) = GuestBookEntry(
-            guestName = guestBookEntry.guestName,
-            entry = guestBookEntry.entry,
-            persistent = guestBookEntry.persistent,
-            guestBookId = guestBookEntry.guestBookId,
-        )
+        val (entry, creatorName, guestBookId) =
+            GuestBookEntry(
+                guestName = guestBookEntry.guestName,
+                entry = guestBookEntry.entry,
+                persistent = guestBookEntry.persistent,
+                guestBookId = guestBookEntry.guestBookId,
+            )
 
         assertAll {
             assertThat(creatorName).isEqualTo(guestBookEntry.guestName)
@@ -36,20 +38,22 @@ internal class GuestBookEntryTest {
 
     @Test
     fun `should give values to PersistentDto`() {
-        val persistent = Persistent(
-            createdBy = "jactor",
-            id = UUID.randomUUID(),
-            modifiedBy = "tip",
-            timeOfCreation = LocalDateTime.now(),
-            timeOfModification = LocalDateTime.now(),
-        )
+        val persistent =
+            Persistent(
+                createdBy = "jactor",
+                id = UUID.randomUUID(),
+                modifiedBy = "tip",
+                timeOfCreation = LocalDateTime.now(),
+                timeOfModification = LocalDateTime.now(),
+            )
 
-        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) = GuestBookEntry(
-            guestName = persistent.createdBy,
-            entry = "entry",
-            persistent = persistent,
-            guestBookId = null,
-        ).persistent
+        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) =
+            GuestBookEntry(
+                guestName = persistent.createdBy,
+                entry = "entry",
+                persistent = persistent,
+                guestBookId = null,
+            ).persistent
 
         assertAll {
             assertThat(createdBy).isEqualTo(persistent.createdBy)

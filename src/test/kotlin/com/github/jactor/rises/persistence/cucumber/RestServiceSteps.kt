@@ -8,7 +8,9 @@ import io.cucumber.java8.No
 import org.springframework.http.HttpStatus
 
 @Suppress("unused", "LeakingThis") // bestemmes av cucumber
-internal class RestServiceSteps : No, PersistenceCucumberContextConfiguration() {
+internal class RestServiceSteps :
+    PersistenceCucumberContextConfiguration(),
+    No {
     init {
         Gitt("base url {string}") { baseUrl: String ->
             scenarioValues.restService = RestService(baseUrl)
@@ -27,13 +29,15 @@ internal class RestServiceSteps : No, PersistenceCucumberContextConfiguration() 
         }
 
         Når("en get gjøres på resttjenesten") {
-            scenarioValues.entityExchangeResult = scenarioValues.restService
-                .exchangeGet(parameternavn = null, parameter = null) { webTestClient }
+            scenarioValues.entityExchangeResult =
+                scenarioValues.restService
+                    .exchangeGet(parameternavn = null, parameter = null) { webTestClient }
         }
 
         Når("en get gjøres på resttjenesten med parameter {string} = {string}") { parameternavn: String, verdi: String ->
-            scenarioValues.entityExchangeResult = scenarioValues.restService
-                .exchangeGet(parameternavn, verdi) { webTestClient }
+            scenarioValues.entityExchangeResult =
+                scenarioValues.restService
+                    .exchangeGet(parameternavn, verdi) { webTestClient }
         }
 
         Når("en post gjøres med body:") { json: String ->

@@ -9,8 +9,11 @@ class PersonService(
     private val persistenceHandler: PersistenceHandler,
 ) {
     suspend fun createWhenNotExists(person: Person): PersonDao? = findExisting(person) ?: create(person)
+
     private suspend fun findExisting(person: Person): PersonDao? = person.id?.let { personRepository.findById(it) }
-    private suspend fun create(person: Person): PersonDao = persistenceHandler.modifyAndSave(
-        dao = person.toPersonDao(),
-    ) { personRepository.save(personDao = it) }
+
+    private suspend fun create(person: Person): PersonDao =
+        persistenceHandler.modifyAndSave(
+            dao = person.toPersonDao(),
+        ) { personRepository.save(personDao = it) }
 }

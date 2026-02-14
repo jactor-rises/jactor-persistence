@@ -12,11 +12,12 @@ data class Persistent(
     val timeOfCreation: LocalDateTime = LocalDateTime.now(),
     val timeOfModification: LocalDateTime = LocalDateTime.now(),
 ) {
-    fun toPersistentDto() = PersistentDto(
-        id = id,
-        createdBy = createdBy,
-        modifiedBy = modifiedBy,
-        timeOfCreation = timeOfCreation,
-        timeOfModification = timeOfModification,
-    )
+    fun toPersistentDto() =
+        PersistentDto(
+            id = id,
+            createdBy = createdBy,
+            modifiedBy = modifiedBy,
+            timeOfCreation = timeOfCreation,
+            timeOfModification = timeOfModification,
+        )
 }

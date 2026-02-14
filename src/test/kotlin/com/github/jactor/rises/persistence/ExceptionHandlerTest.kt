@@ -27,28 +27,31 @@ internal class ExceptionHandlerTest {
     }
 
     @Test
-    fun `skal hente kodelinjer fra vår kode når exception oppstår`() = runTest {
-        val userRepositoryMockk = mockk<UserRepository> {}
-        val avstemmingController = UserController(
-            userService = UserService(
-                userRepository = userRepositoryMockk,
-                persistenceHandler = PersistenceHandler(),
-            ),
-        )
+    fun `skal hente kodelinjer fra vår kode når exception oppstår`() =
+        runTest {
+            val userRepositoryMockk = mockk<UserRepository> {}
+            val avstemmingController =
+                UserController(
+                    userService =
+                        UserService(
+                            userRepository = userRepositoryMockk,
+                            persistenceHandler = PersistenceHandler(),
+                        ),
+                )
 
-        every { userRepositoryMockk.findById(any()) } answers { error("boom!") }
+            every { userRepositoryMockk.findById(any()) } answers { error("boom!") }
 
-        runCatching { avstemmingController.get(id = UUID.randomUUID()) }
-            .onSuccess { fail("Kjøring skulle feilet!") }
-            .onFailure {
-                val kodelinjer = it.finnFeiledeLinjer()
+            runCatching { avstemmingController.get(id = UUID.randomUUID()) }
+                .onSuccess { fail("Kjøring skulle feilet!") }
+                .onFailure {
+                    val kodelinjer = it.finnFeiledeLinjer()
 
-                assertThat(kodelinjer).all {
-                    containsSubstring("intern: ExceptionHandlerTest.kt (linje:")
-                    containsSubstring("intern: com.github.jactor.rises.persistence.user.UserRepository")
+                    assertThat(kodelinjer).all {
+                        containsSubstring("intern: ExceptionHandlerTest.kt (linje:")
+                        containsSubstring("intern: com.github.jactor.rises.persistence.user.UserRepository")
+                    }
                 }
-            }
-    }
+        }
 
     class TestController {
         fun illegalArgumentException() = IllegalArgumentException("feil input!!!")

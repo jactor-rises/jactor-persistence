@@ -7,14 +7,6 @@ plugins {
     alias(libs.plugins.versions)
 }
 
-description = "jactor::persistence"
-
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
     // spring-boot
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -36,7 +28,7 @@ dependencies {
     implementation(libs.springdoc.openapi.ui)
 
     // internal project dependencies
-    implementation(project(":shared"))
+    implementation(libs.jactor.shared)
 
     // runtime dependencies
     runtimeOnly(libs.flyway.core)
@@ -53,7 +45,29 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test)
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.jvm.get().toInt())
+    }
+    withSourcesJar()
+}
+
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    mavenLocal()
+    maven { url = uri("https://jitpack.io") }
+}
+
 tasks.test {
+    useJUnitPlatform()
+
     jvmArgs("--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED")
     exclude("**/RunCucumberTest*")
+
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }

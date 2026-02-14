@@ -13,40 +13,47 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
 
-internal class PersonServiceTest @Autowired constructor(
-    private val personService: PersonService,
-    private val personRepository: PersonRepository,
-) : AbstractSpringBootNoDirtyContextTest() {
-    @Test
-    fun `should create a new Person`() = runTest {
-        val dao = personService.createWhenNotExists(initPerson())
+internal class PersonServiceTest
+    @Autowired
+    constructor(
+        private val personService: PersonService,
+        private val personRepository: PersonRepository,
+    ) : AbstractSpringBootNoDirtyContextTest() {
+        @Test
+        fun `should create a new Person`() =
+            runTest {
+                val dao = personService.createWhenNotExists(initPerson())
 
-        assertThat(dao).isNotNull()
+                assertThat(dao).isNotNull()
+            }
+
+        @Test
+        fun `should find Person by id`() =
+            runTest {
+                val personDao = personRepository.save(initPerson().toPersonDao())
+
+                // when
+                val person =
+                    personService.createWhenNotExists(
+                        person =
+                            initPerson(
+                                persistent =
+                                    Persistent(
+                                        createdBy = "creator",
+                                        id = personDao.id,
+                                        modifiedBy = "modifier",
+                                        timeOfCreation = LocalDateTime.now(),
+                                        timeOfModification = LocalDateTime.now(),
+                                    ),
+                            ),
+                    )
+
+                // then
+                assertThat(person).all {
+                    id named "id" equals personDao.id
+                    surname named "surname" equals personDao.surname
+                    firstName named "firstName" equals personDao.firstName
+                    description named "description" equals personDao.description
+                }
+            }
     }
-
-    @Test
-    fun `should find Person by id`() = runTest {
-        val personDao = personRepository.save(initPerson().toPersonDao())
-
-        // when
-        val person = personService.createWhenNotExists(
-            person = initPerson(
-                persistent = Persistent(
-                    createdBy = "creator",
-                    id = personDao.id,
-                    modifiedBy = "modifier",
-                    timeOfCreation = LocalDateTime.now(),
-                    timeOfModification = LocalDateTime.now(),
-                ),
-            ),
-        )
-
-        // then
-        assertThat(person).all {
-            id named "id" equals personDao.id
-            surname named "surname" equals personDao.surname
-            firstName named "firstName" equals personDao.firstName
-            description named "description" equals personDao.description
-        }
-    }
-}

@@ -13,27 +13,37 @@ import com.github.jactor.rises.shared.api.UserDto
 import java.util.UUID
 
 fun Address.withId() = copy(persistent = persistent.copy(id = UUID.randomUUID()))
+
 fun Blog.withId() = copy(persistent = persistent.copy(id = UUID.randomUUID()))
+
 fun BlogEntry.withId() = copy(persistent = persistent.copy(id = UUID.randomUUID()))
+
 fun GuestBook.withId() = copy(persistent = persistent.copy(id = UUID.randomUUID()))
+
 fun Person.withId() = copy(persistent = persistent.copy(id = UUID.randomUUID()))
+
 fun User.withId() = copy(persistent = persistent.copy(id = UUID.randomUUID()))
-fun GuestBookEntry.withPersistedData(id: UUID): GuestBookEntry = copy(
-    persistent = Persistent().withPersistedData(id = id),
-)
 
-fun Persistent.withPersistedData(id: UUID? = UUID.randomUUID()) = copy(
-    id = id,
-    createdBy = "unit test",
-    modifiedBy = "user test",
-)
+fun GuestBookEntry.withPersistedData(id: UUID): GuestBookEntry =
+    copy(
+        persistent = Persistent().withPersistedData(id = id),
+    )
 
-fun PersistentDto.withPersistedData(id: UUID? = UUID.randomUUID()) = copy(
-    id = id,
-    createdBy = "unit test",
-    modifiedBy = "user test",
-)
+fun Persistent.withPersistedData(id: UUID? = UUID.randomUUID()) =
+    copy(
+        id = id,
+        createdBy = "unit test",
+        modifiedBy = "user test",
+    )
 
-fun UserDto.withPersistedData(id: UUID = UUID.randomUUID()): UserDto = copy(
-    persistentDto = persistentDto.withPersistedData(id = id),
-)
+fun PersistentDto.withPersistedData(id: UUID? = UUID.randomUUID()) =
+    copy(
+        id = id,
+        createdBy = "unit test",
+        modifiedBy = "user test",
+    )
+
+fun UserDto.withPersistedData(id: UUID = UUID.randomUUID()): UserDto =
+    copy(
+        persistentDto = persistentDto.withPersistedData(id = id),
+    )

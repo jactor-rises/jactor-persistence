@@ -11,20 +11,27 @@ class UserService(
     private val persistenceHandler: PersistenceHandler,
 ) {
     suspend fun find(username: String): User? = userRepository.findByUsername(username)?.toUser()
+
     suspend fun find(id: UUID): User? = userRepository.findById(id = id)?.toUser()
 
     @Transactional
-    suspend fun update(user: User): User = persistenceHandler.modifyAndSave(dao = user.toUserDao()) {
-        userRepository.save(userDao = it)
-    }.toUser()
+    suspend fun update(user: User): User =
+        persistenceHandler
+            .modifyAndSave(dao = user.toUserDao()) {
+                userRepository.save(userDao = it)
+            }.toUser()
 
-    suspend fun create(createUser: CreateUser): User = persistenceHandler.modifyAndSave(
-        dao = createUser.toUserDao(),
-    ) { userRepository.save(userDao = it) }.toUser()
+    suspend fun create(createUser: CreateUser): User =
+        persistenceHandler
+            .modifyAndSave(
+                dao = createUser.toUserDao(),
+            ) { userRepository.save(userDao = it) }
+            .toUser()
 
-    suspend fun findUsernames(userType: UserType): List<String> = userRepository.findUsernames(
-        userType = listOf(userType),
-    )
+    suspend fun findUsernames(userType: UserType): List<String> =
+        userRepository.findUsernames(
+            userType = listOf(userType),
+        )
 
     suspend fun isAlreadyPersisted(username: String): Boolean = userRepository.contains(username)
 }
