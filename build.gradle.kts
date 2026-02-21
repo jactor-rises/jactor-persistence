@@ -7,8 +7,7 @@ plugins {
     alias(libs.plugins.versions)
 }
 
-val cliVersion = providers.gradleProperty("version").orNull?.trim()
-version = cliVersion.takeIf { !it.isNullOrBlank() } ?: "0.0.0-SNAPSHOT"
+version = "0.0.0-SNAPSHOT"
 
 dependencies {
     // spring-boot
