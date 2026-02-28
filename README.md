@@ -51,7 +51,7 @@ java -jar build/lib/jactor-persistence-<version>-SNAPSHOT.jar
 #### Implementation
 
 * [spring-boot 3.5.x](https://spring.io/projects/spring-boot)
-    * with [jetbrains-exposed](https://www.jetbrains.com/exposed/)
+* [jetbrains-exposed](https://www.jetbrains.com/exposed/)
 * [h2](http://h2database.com)
 * [kotlin 2.x](https://kotlinlang.org)
 
