@@ -1,7 +1,7 @@
 # jactor-persistence
 
 [![build and test](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml)
-[![jactor-shared](https://jitpack.io/v/jactor-rises/jactor-shared.svg)](https://jitpack.io/#jactor-rises/jactor-shared)
+[![jactor-shared](https://jitpack.io/v/jactor-rises/jactor-shared.svg)](https://jitpack.io/#jactor-rises/jactor-shared) of jactor-shared as a dependency
 ### What is this repository for?
 
 The main purpose is to learn about programming microservices using Kotlin, (with REST and spring JPA). I also use GitHub
