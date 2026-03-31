@@ -33,7 +33,7 @@ dependencies {
     implementation(libs.jactor.shared)
 
     // runtime dependencies
-    runtimeOnly(libs.flyway.core)
+    runtimeOnly(libs.spring.boot.flyway)
     runtimeOnly(libs.h2database)
 
     // test implementations
@@ -45,6 +45,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.springmockk)
     testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.spring.boot.starter.webflux.test)
 }
 
 java {
