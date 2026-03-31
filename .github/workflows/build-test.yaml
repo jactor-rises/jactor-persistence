@@ -15,11 +15,17 @@ jobs:
                 with:
                     fetch-depth: 0
 
+            -   name: Extract JVM version from libs.versions.toml
+                id: java-version
+                run: |
+                    JVM_VERSION=$(grep '^\s*jvm\s*=' gradle/libs.versions.toml | sed 's/.*"\([^"]*\)".*/\1/')
+                    echo "version=$JVM_VERSION" >> $GITHUB_OUTPUT
+
             -   name: Set up JDK
                 uses: actions/setup-java@v4
                 with:
                     distribution: temurin
-                    java-version: '25'
+                    java-version: ${{ steps.java-version.outputs.version }}
                     cache: gradle
 
             -   name: Set up Gradle
