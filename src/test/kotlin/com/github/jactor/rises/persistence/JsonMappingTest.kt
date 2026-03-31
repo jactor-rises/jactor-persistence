@@ -3,7 +3,6 @@ package com.github.jactor.rises.persistence
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.jactor.rises.persistence.address.AddressRepository
 import com.github.jactor.rises.persistence.config.JactorPersistenceRepositiesConfig
 import com.github.jactor.rises.persistence.person.PersonRepository
@@ -17,6 +16,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import tools.jackson.databind.ObjectMapper
 import java.util.UUID
 
 internal class JsonMappingTest
