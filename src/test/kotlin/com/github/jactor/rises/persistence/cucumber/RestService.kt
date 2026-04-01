@@ -14,36 +14,34 @@ internal data class RestService(
         parameternavn: String?,
         parameter: String?,
         webTestClient: () -> WebTestClient,
-    ): EntityExchangeResult<String> =
-        initUrl(parameternavn, parameter).let {
-            webTestClient
-                .invoke()
-                .get()
-                .uri(it)
-                .exchange()
-                .expectStatus()
-                .isOk
-                .expectBody(String::class.java)
-                .returnResult()
-        }
+    ): EntityExchangeResult<String> = initUrl(parameternavn, parameter).let {
+        webTestClient
+            .invoke()
+            .get()
+            .uri(it)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(String::class.java)
+            .returnResult()
+    }
 
     fun exchangePost(
         json: String,
         webTestClient: () -> WebTestClient,
-    ): EntityExchangeResult<String> =
-        initUrl().let {
-            webTestClient
-                .invoke()
-                .post()
-                .uri(it)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .bodyValue(json)
-                .exchange()
-                .expectStatus()
-                .is2xxSuccessful
-                .expectBody(String::class.java)
-                .returnResult()
-        }
+    ): EntityExchangeResult<String> = initUrl().let {
+        webTestClient
+            .invoke()
+            .post()
+            .uri(it)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .bodyValue(json)
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .expectBody(String::class.java)
+            .returnResult()
+    }
 
     private fun initUrl() = initUrl(null, null)
 
@@ -56,10 +54,9 @@ internal data class RestService(
     private fun initUrlWithBuilder(
         navn: String,
         parameter: String?,
-    ): String =
-        UriComponentsBuilder
-            .fromUriString("$baseUrl$endpoint")
-            .queryParam(navn, parameter)
-            .build()
-            .toUriString()
+    ): String = UriComponentsBuilder
+        .fromUriString("$baseUrl$endpoint")
+        .queryParam(navn, parameter)
+        .build()
+        .toUriString()
 }
