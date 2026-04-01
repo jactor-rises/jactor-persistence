@@ -50,7 +50,7 @@ IFS='.' read -r gradle_major _ _ <<<"$base_version"
 # Check if last commit message contains "new-feature"
 COMMIT_MSG=$(git log -1 --format=%s)
 BUMP_MINOR=false
-if [[ "$COMMIT_MSG" == *"new-feature"* ]]; then
+if [[ "$COMMIT_MSG" == *"new feature:"* ]]; then
   BUMP_MINOR=true
 fi
 
