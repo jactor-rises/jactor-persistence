@@ -25,14 +25,13 @@ import java.util.UUID
 internal class BlogServiceTest {
     private val blogRepositoryMockk: BlogRepository = mockk {}
     private val userRepositoryMockk: UserRepository = mockk {}
-    private val blogServiceToTest: BlogService =
-        BlogServiceImpl(
-            blogRepository = blogRepositoryMockk,
-            persistenceHandler = PersistenceHandler(),
-        ).also {
-            JactorPersistenceRepositiesConfig.fetchBlogRelation = { id -> blogRepositoryMockk.findBlogById(id = id) }
-            JactorPersistenceRepositiesConfig.fetchUserRelation = { id -> userRepositoryMockk.findById(id = id) }
-        }
+    private val blogServiceToTest: BlogService = BlogServiceImpl(
+        blogRepository = blogRepositoryMockk,
+        persistenceHandler = PersistenceHandler(),
+    ).also {
+        JactorPersistenceRepositiesConfig.fetchBlogRelation = { id -> blogRepositoryMockk.findBlogById(id = id) }
+        JactorPersistenceRepositiesConfig.fetchUserRelation = { id -> userRepositoryMockk.findById(id = id) }
+    }
 
     private val uuid: UUID = UUID.randomUUID()
 

@@ -14,19 +14,17 @@ import java.util.UUID
 internal class PersonTest {
     @Test
     fun `should have a copy constructor`() {
-        val person =
-            initPerson(
-                address = initAddress().withId(),
-                firstName = "first name",
-                description = "description",
-                locale = "no",
-                surname = "surname",
-            )
+        val person = initPerson(
+            address = initAddress().withId(),
+            firstName = "first name",
+            description = "description",
+            locale = "no",
+            surname = "surname",
+        )
 
-        val (_, addressId, locale, firstName, surname, description) =
-            person.copy(
-                persistent = person.persistent,
-            )
+        val (_, addressId, locale, firstName, surname, description) = person.copy(
+            persistent = person.persistent,
+        )
 
         assertAll {
             assertThat(addressId).isEqualTo(person.addressId)
@@ -39,19 +37,17 @@ internal class PersonTest {
 
     @Test
     fun `should give values to PersistentDto`() {
-        val persistent =
-            Persistent(
-                createdBy = "jactor",
-                id = UUID.randomUUID(),
-                modifiedBy = "tip",
-                timeOfModification = LocalDateTime.now(),
-                timeOfCreation = LocalDateTime.now(),
-            )
+        val persistent = Persistent(
+            createdBy = "jactor",
+            id = UUID.randomUUID(),
+            modifiedBy = "tip",
+            timeOfModification = LocalDateTime.now(),
+            timeOfCreation = LocalDateTime.now(),
+        )
 
-        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) =
-            initPerson(
-                persistent = persistent,
-            ).persistent
+        val (id, createdBy, modifiedBy, timeOfCreation, timeOfModification) = initPerson(
+            persistent = persistent,
+        ).persistent
 
         assertAll {
             assertThat(createdBy).isEqualTo(persistent.createdBy)

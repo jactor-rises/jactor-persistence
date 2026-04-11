@@ -26,14 +26,13 @@ data class AddressDao(
         return this
     }
 
-    fun toAddress() =
-        Address(
-            persistent = toPersistent(),
-            addressLine1 = addressLine1,
-            addressLine2 = addressLine2,
-            addressLine3 = addressLine3,
-            city = city,
-            country = country,
-            zipCode = zipCode,
-        )
+    fun toAddress() = Address(
+        persistent = toPersistent(),
+        addressLine1 = addressLine1,
+        addressLine2 = addressLine2,
+        addressLine3 = addressLine3,
+        city = city,
+        country = country,
+        zipCode = zipCode,
+    )
 }

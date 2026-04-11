@@ -22,19 +22,17 @@ data class GuestBookEntryDao(
             guestName = value
         }
 
-    fun toGuestBookEntry() =
-        GuestBookEntry(
-            persistent = toPersistent(),
-            guestName = guestName,
-            entry = entry,
-            guestBookId = guestBookId,
-        )
+    fun toGuestBookEntry() = GuestBookEntry(
+        persistent = toPersistent(),
+        guestName = guestName,
+        entry = entry,
+        guestBookId = guestBookId,
+    )
 
-    override fun copyWithoutId() =
-        copy(
-            id = null,
-            guestBookId = null,
-        )
+    override fun copyWithoutId() = copy(
+        id = null,
+        guestBookId = null,
+    )
 
     override fun modifiedBy(modifier: String): GuestBookEntryDao {
         modifiedBy = modifier

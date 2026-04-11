@@ -28,28 +28,24 @@ internal class GuestBookRepositoryTest
 
         @Test
         fun `should write then read guest book`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "Adder"))
-            val user =
-                save(
-                    user =
-                        initUser(
-                            person = person,
-                            emailAddress = "casuel@tantooine.com",
-                            username = "causual",
-                        ),
-                )
+            val user = save(
+                user = initUser(
+                    person = person,
+                    emailAddress = "casuel@tantooine.com",
+                    username = "causual",
+                ),
+            )
 
             guestBookRepository.save(
-                guestBookDao =
-                    GuestBookDao(
-                        title = "home sweet home",
-                        userId = user.id,
-                    ),
+                guestBookDao = GuestBookDao(
+                    title = "home sweet home",
+                    userId = user.id,
+                ),
             )
 
             val guestBookDao = GuestBookTestRepositoryObject.findGuestBookByUserId(id = user.id)
@@ -62,78 +58,66 @@ internal class GuestBookRepositoryTest
 
         @Test
         fun `should write then update and read guest book`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
-                )
-
-            val person = save(person = initPerson(address = address, surname = "Adder"))
-            val user =
-                save(
-                    user =
-                        initUser(
-                            person = person,
-                            emailAddress = "casuel@tantooine.com",
-                            username = "causual",
-                        ),
-                )
-
-            guestBookRepository.save(
-                guestBookDao =
-                    initGuestBook(
-                        title = "home sweet home",
-                        user = user,
-                    ).toGuestBookDao(),
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
             )
 
-            val guestBookDaoToUpdate =
-                GuestBookTestRepositoryObject.findGuestBookByUserId(id = user.id)
-                    ?: fail(message = "Should have found a guest book for user ${user.username}")
+            val person = save(person = initPerson(address = address, surname = "Adder"))
+            val user = save(
+                user = initUser(
+                    person = person,
+                    emailAddress = "casuel@tantooine.com",
+                    username = "causual",
+                ),
+            )
+
+            guestBookRepository.save(
+                guestBookDao = initGuestBook(
+                    title = "home sweet home",
+                    user = user,
+                ).toGuestBookDao(),
+            )
+
+            val guestBookDaoToUpdate = GuestBookTestRepositoryObject.findGuestBookByUserId(id = user.id)
+                ?: fail(message = "Should have found a guest book for user ${user.username}")
 
             guestBookDaoToUpdate.title = "5000 thousands miles away from home"
 
             guestBookRepository.save(guestBookDaoToUpdate)
 
-            val guestBookDao =
-                GuestBookTestRepositoryObject.findGuestBookByUserId(id = user.id)
-                    ?: fail(message = "Should have found a guest book for user ${user.username}")
+            val guestBookDao = GuestBookTestRepositoryObject.findGuestBookByUserId(id = user.id)
+                ?: fail(message = "Should have found a guest book for user ${user.username}")
 
             assertThat(guestBookDao.title).isEqualTo("5000 thousands miles away from home")
         }
 
         @Test
         fun `should save then read dao for guest book entry`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "AA"))
-            val user =
-                save(
-                    user =
-                        initUser(
-                            person = person,
-                            emailAddress = "casuel@tantooine.com",
-                            username = "causual",
-                        ),
-                )
+            val user = save(
+                user = initUser(
+                    person = person,
+                    emailAddress = "casuel@tantooine.com",
+                    username = "causual",
+                ),
+            )
 
-            val guestBook =
-                save(
-                    guestBook =
-                        initGuestBook(
-                            title = "home sweet home",
-                            user = user,
-                        ),
-                )
+            val guestBook = save(
+                guestBook = initGuestBook(
+                    title = "home sweet home",
+                    user = user,
+                ),
+            )
 
-            val guestBookEntry =
-                initGuestBookEntry(
-                    guestBook = guestBook,
-                    creatorName = "Harry",
-                    entry = "Draco Dormiens Nunquam Tittilandus",
-                ).toGuestBookEntryDao()
+            val guestBookEntry = initGuestBookEntry(
+                guestBook = guestBook,
+                creatorName = "Harry",
+                entry = "Draco Dormiens Nunquam Tittilandus",
+            ).toGuestBookEntryDao()
 
             guestBookRepository.save(guestBookEntryDao = guestBookEntry)
 
@@ -149,61 +133,52 @@ internal class GuestBookRepositoryTest
 
         @Test
         fun `should write two entries to a guest book and then find one entry`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
-                )
-
-            val person = save(person = initPerson(address = address, surname = "AA"))
-            val user =
-                save(
-                    user =
-                        initUser(
-                            person = person,
-                            emailAddress = "casuel@tantooine.com",
-                            username = "causual",
-                        ),
-                )
-
-            val guestBook =
-                save(
-                    guestBook =
-                        initGuestBook(
-                            title = "home sweet home",
-                            user = user,
-                        ),
-                )
-
-            guestBookRepository.save(
-                guestBookEntryDao =
-                    initGuestBookEntry(
-                        creatorName = "somone",
-                        entry = "jadda",
-                        guestBook = guestBook,
-                    ).toGuestBookEntryDao(),
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
             )
 
-            val anEntry =
-                initGuestBookEntry(
-                    guestBook = guestBook,
-                    creatorName = "shriek",
-                    entry = "i am out there",
-                )
+            val person = save(person = initPerson(address = address, surname = "AA"))
+            val user = save(
+                user = initUser(
+                    person = person,
+                    emailAddress = "casuel@tantooine.com",
+                    username = "causual",
+                ),
+            )
 
-            val anotherEntry =
-                initGuestBookEntry(
+            val guestBook = save(
+                guestBook = initGuestBook(
+                    title = "home sweet home",
+                    user = user,
+                ),
+            )
+
+            guestBookRepository.save(
+                guestBookEntryDao = initGuestBookEntry(
+                    creatorName = "somone",
+                    entry = "jadda",
                     guestBook = guestBook,
-                    creatorName = "shrek",
-                    entry = "far far away",
-                )
+                ).toGuestBookEntryDao(),
+            )
+
+            val anEntry = initGuestBookEntry(
+                guestBook = guestBook,
+                creatorName = "shriek",
+                entry = "i am out there",
+            )
+
+            val anotherEntry = initGuestBookEntry(
+                guestBook = guestBook,
+                creatorName = "shrek",
+                entry = "far far away",
+            )
 
             guestBookRepository.save(guestBookEntryDao = anEntry.toGuestBookEntryDao())
             guestBookRepository.save(guestBookEntryDao = anotherEntry.toGuestBookEntryDao())
 
-            val lastEntry =
-                guestBookRepository
-                    .findGuestBookEtriesByGuestBookId(id = guestBook.id)
-                    .lastOrNull()
+            val lastEntry = guestBookRepository
+                .findGuestBookEtriesByGuestBookId(id = guestBook.id)
+                .lastOrNull()
 
             assertAll {
                 assertThat(lastEntry, "last entry").isNotNull()

@@ -14,19 +14,17 @@ import javax.sql.DataSource
 @OpenAPIDefinition(info = Info(title = "jactor-persistence.exposed", version = "v2"))
 class ExposedConfig {
     @Bean
-    fun databaseConfig() =
-        DatabaseConfig.Companion {
-            useNestedTransactions = true
-        }
+    fun databaseConfig() = DatabaseConfig.Companion {
+        useNestedTransactions = true
+    }
 
     @Bean
     fun database(
         dataSource: DataSource,
         databaseConfig: DatabaseConfig,
-    ): Database =
-        Database.connect(dataSource, databaseConfig = databaseConfig).also {
-            TransactionManager.defaultDatabase = it
-        }
+    ): Database = Database.connect(dataSource, databaseConfig = databaseConfig).also {
+        TransactionManager.defaultDatabase = it
+    }
 
     @Bean
     fun transactionManager(dataSource: DataSource) = SpringTransactionManager(dataSource)

@@ -53,16 +53,15 @@ internal class UserControllerTest
         fun `should find a user by username`() {
             every { userRepositoryMockk.findByUsername(username = "me") } returns initUser().toUserDao()
 
-            val userDto =
-                webTestClient
-                    .get()
-                    .uri("/user/name/me")
-                    .exchange()
-                    .expectStatus()
-                    .isOk
-                    .expectBody<UserDto>()
-                    .returnResult()
-                    .responseBody
+            val userDto = webTestClient
+                .get()
+                .uri("/user/name/me")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody<UserDto>()
+                .returnResult()
+                .responseBody
 
             assertThat(userDto).isNotNull()
         }
@@ -85,16 +84,15 @@ internal class UserControllerTest
             val uuid = UUID.randomUUID()
             every { userRepositoryMockk.findById(id = any()) } returns initUserDao(id = uuid)
 
-            val userDto =
-                webTestClient
-                    .get()
-                    .uri("/user/$uuid")
-                    .exchange()
-                    .expectStatus()
-                    .isOk
-                    .expectBody<UserDto>()
-                    .returnResult()
-                    .responseBody
+            val userDto = webTestClient
+                .get()
+                .uri("/user/$uuid")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody<UserDto>()
+                .returnResult()
+                .responseBody
 
             assertThat(userDto).isNotNull()
         }
@@ -107,17 +105,16 @@ internal class UserControllerTest
             every { userRepositoryMockk.findById(uuid) } returns user.toUserDao()
             every { userRepositoryMockk.save(any()) } answers { arg(0) }
 
-            val userDto =
-                webTestClient
-                    .put()
-                    .uri("/user/update")
-                    .bodyValue(user.toUserDto())
-                    .exchange()
-                    .expectStatus()
-                    .isAccepted
-                    .expectBody<UserDto>()
-                    .returnResult()
-                    .responseBody
+            val userDto = webTestClient
+                .put()
+                .uri("/user/update")
+                .bodyValue(user.toUserDto())
+                .exchange()
+                .expectStatus()
+                .isAccepted
+                .expectBody<UserDto>()
+                .returnResult()
+                .responseBody
 
             assertThat(userDto).isNotNull()
         }
@@ -128,29 +125,27 @@ internal class UserControllerTest
                 userRepositoryMockk.findUsernames(userType = listOf(UserType.ACTIVE))
             } returns listOf("bart", "lisa")
 
-            val usernames =
-                webTestClient
-                    .get()
-                    .uri("/user/usernames")
-                    .exchange()
-                    .expectStatus()
-                    .isOk
-                    .expectBody<String>()
-                    .returnResult()
-                    .responseBody
+            val usernames = webTestClient
+                .get()
+                .uri("/user/usernames")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody<String>()
+                .returnResult()
+                .responseBody
 
             assertThat(usernames).isEqualTo("""["bart","lisa"]""")
         }
 
         @Test
         fun `should accept if user id is not null`() {
-            val uuid =
-                UUID.randomUUID().also {
-                    every { userRepositoryMockk.save(any()) } answers { arg(0) }
-                    every { userRepositoryMockk.findById(id = it) } returns
-                        initUser(persistent = Persistent(id = it))
-                            .toUserDao()
-                }
+            val uuid = UUID.randomUUID().also {
+                every { userRepositoryMockk.save(any()) } answers { arg(0) }
+                every { userRepositoryMockk.findById(id = it) } returns
+                    initUser(persistent = Persistent(id = it))
+                        .toUserDao()
+            }
 
             webTestClient
                 .put()
@@ -222,12 +217,11 @@ internal class UserControllerTest
 
         @Test
         fun `should create a new user with an email address`() {
-            val createUserCommand =
-                CreateUserCommand(
-                    username = timestamped("turbo"),
-                    surname = "Someone",
-                    emailAddress = "somewhere@somehow.com",
-                )
+            val createUserCommand = CreateUserCommand(
+                username = timestamped("turbo"),
+                surname = "Someone",
+                emailAddress = "somewhere@somehow.com",
+            )
 
             coEvery { userRepositoryMockk.contains(any()) } returns false
             coEvery { userRepositoryMockk.save(any()) } returns
@@ -236,17 +230,16 @@ internal class UserControllerTest
                     emailAddress = createUserCommand.emailAddress,
                 ).withId().toUserDao()
 
-            val userDto =
-                webTestClient
-                    .post()
-                    .uri("/user")
-                    .bodyValue(createUserCommand)
-                    .exchange()
-                    .expectStatus()
-                    .isCreated
-                    .expectBody<UserDto>()
-                    .returnResult()
-                    .responseBody ?: fail(message = "no user created")
+            val userDto = webTestClient
+                .post()
+                .uri("/user")
+                .bodyValue(createUserCommand)
+                .exchange()
+                .expectStatus()
+                .isCreated
+                .expectBody<UserDto>()
+                .returnResult()
+                .responseBody ?: fail(message = "no user created")
 
             assertThat(userDto).all {
                 emailAddress named "email address" equals "somewhere@somehow.com"

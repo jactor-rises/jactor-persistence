@@ -25,21 +25,18 @@ internal class BlogRepositoryTest
     ) : AbstractSpringBootNoDirtyContextTest() {
         @Test
         fun `should save and then read blog dao`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "Adder"))
-            val user =
-                save(
-                    user =
-                        initUser(
-                            person = person,
-                            emailAddress = "public@services.com",
-                            username = "black",
-                        ),
-                )
+            val user = save(
+                user = initUser(
+                    person = person,
+                    emailAddress = "public@services.com",
+                    username = "black",
+                ),
+            )
 
             blogRepository.save(
                 blogDao = BlogDao(created = LocalDate.now(), title = "Blah", userId = user.persistent.id),
@@ -55,29 +52,25 @@ internal class BlogRepositoryTest
 
         @Test
         fun `should save then update and read blog dao`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "Adder"))
-            val user =
-                save(
-                    user =
-                        initUser(
-                            person = person,
-                            emailAddress = "public@services.com",
-                            username = "black",
-                        ),
-                )
+            val user = save(
+                user = initUser(
+                    person = person,
+                    emailAddress = "public@services.com",
+                    username = "black",
+                ),
+            )
 
             val blogToSave = BlogDao(created = LocalDate.now(), title = "Blah", userId = user.persistent.id)
             blogRepository.save(blogDao = blogToSave)
 
-            val blogDaoSaved =
-                blogRepository.findBlogsByTitle(title = blogToSave.title).firstOrNull() ?: fail {
-                    "Unable to find any blogs by title $${blogToSave.title}"
-                }
+            val blogDaoSaved = blogRepository.findBlogsByTitle(title = blogToSave.title).firstOrNull() ?: fail {
+                "Unable to find any blogs by title $${blogToSave.title}"
+            }
 
             blogDaoSaved.title = "Duh"
 
@@ -95,22 +88,19 @@ internal class BlogRepositoryTest
 
         @Test
         fun `should find blog by title`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "Adder"))
-            val user =
-                save(
-                    user =
-                        User(
-                            personId = person.id,
-                            emailAddress = "public@services.com",
-                            username = "black",
-                            userType = UserType.ACTIVE,
-                        ),
-                )
+            val user = save(
+                user = User(
+                    personId = person.id,
+                    emailAddress = "public@services.com",
+                    username = "black",
+                    userType = UserType.ACTIVE,
+                ),
+            )
 
             val blogToSave = Blog(created = LocalDate.now(), title = "Blah", userId = user.id).toBlogDao()
 
@@ -127,29 +117,25 @@ internal class BlogRepositoryTest
 
         @Test
         fun `should save then read blog entry`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "Adder"))
-            val user =
-                save(
-                    user =
-                        initUser(
-                            person = person,
-                            emailAddress = "public@services.com",
-                            username = "white",
-                        ),
-                )
+            val user = save(
+                user = initUser(
+                    person = person,
+                    emailAddress = "public@services.com",
+                    username = "white",
+                ),
+            )
 
             val blog = save(blog = initBlog(created = LocalDate.now(), title = "and then some...", userId = user.id))
-            val blogEntryDao =
-                BlogEntryDao(
-                    blogId = blog.persistent.id ?: error("Blog is not persisted!"),
-                    creatorName = "smith",
-                    entry = "once upon a time",
-                )
+            val blogEntryDao = BlogEntryDao(
+                blogId = blog.persistent.id ?: error("Blog is not persisted!"),
+                creatorName = "smith",
+                entry = "once upon a time",
+            )
 
             blogRepository.save(blogEntryDao = blogEntryDao)
 

@@ -29,15 +29,13 @@ internal class RestServiceSteps :
         }
 
         Når("en get gjøres på resttjenesten") {
-            scenarioValues.entityExchangeResult =
-                scenarioValues.restService
-                    .exchangeGet(parameternavn = null, parameter = null) { webTestClient }
+            scenarioValues.entityExchangeResult = scenarioValues.restService
+                .exchangeGet(parameternavn = null, parameter = null) { webTestClient }
         }
 
         Når("en get gjøres på resttjenesten med parameter {string} = {string}") { parameternavn: String, verdi: String ->
-            scenarioValues.entityExchangeResult =
-                scenarioValues.restService
-                    .exchangeGet(parameternavn, verdi) { webTestClient }
+            scenarioValues.entityExchangeResult = scenarioValues.restService
+                .exchangeGet(parameternavn, verdi) { webTestClient }
         }
 
         Når("en post gjøres med body:") { json: String ->

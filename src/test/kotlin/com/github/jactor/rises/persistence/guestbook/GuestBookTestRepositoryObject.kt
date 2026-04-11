@@ -7,10 +7,9 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import java.util.UUID
 
 object GuestBookTestRepositoryObject {
-    fun findGuestBookByUserId(id: UUID): GuestBookDao? =
-        GuestBooks
-            .selectAll()
-            .andWhere { GuestBooks.userId eq id }
-            .singleOrNull()
-            ?.toGuestBookDao()
+    fun findGuestBookByUserId(id: UUID): GuestBookDao? = GuestBooks
+        .selectAll()
+        .andWhere { GuestBooks.userId eq id }
+        .singleOrNull()
+        ?.toGuestBookDao()
 }

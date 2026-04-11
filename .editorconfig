@@ -10,6 +10,7 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.{kt,kts}]
+ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**,^
 ktlint_standard_annotation = disabled
 ktlint_standard_annotation-spacing = disabled
 ktlint_standard_blank-line-before-declaration = disabled
