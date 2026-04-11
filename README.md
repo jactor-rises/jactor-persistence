@@ -13,7 +13,7 @@ archived project [jactor-rises](https://github.com/jactor-rises/jactor-rises))
 
 ### Set up
 
-* a spring-boot 3 application
+* a spring-boot 4 application
     * build with [gradle](https://gradle.org).
     * is using [h2](http://h2database.com) (in-memory database)
     * run it with spring-boot
@@ -50,7 +50,7 @@ java -jar build/lib/jactor-persistence-<version>-SNAPSHOT.jar
 
 #### Implementation
 
-* [spring-boot 3.5.x](https://spring.io/projects/spring-boot)
+* [spring-boot 4.x](https://spring.io/projects/spring-boot)
 * [jetbrains-exposed](https://www.jetbrains.com/exposed/)
 * [h2](http://h2database.com)
 * [kotlin 2.x](https://kotlinlang.org)
