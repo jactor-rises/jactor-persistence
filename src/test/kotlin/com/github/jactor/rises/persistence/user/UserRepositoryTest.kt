@@ -26,20 +26,18 @@ internal class UserRepositoryTest
 
         @Test
         fun `should write then read a user dao`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "Solo"))
 
-            val userToPersist =
-                User(
-                    personId = person.id,
-                    emailAddress = "smuggle.fast@tantooine.com",
-                    username = "smuggler",
-                    userType = UserType.ACTIVE,
-                ).toUserDao()
+            val userToPersist = User(
+                personId = person.id,
+                emailAddress = "smuggle.fast@tantooine.com",
+                username = "smuggler",
+                userType = UserType.ACTIVE,
+            ).toUserDao()
 
             userRepository.save(userToPersist)
 
@@ -55,19 +53,17 @@ internal class UserRepositoryTest
 
         @Test
         fun `should write then update and read a user dao`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
+            )
 
             val person = save(person = initPerson(address = address, surname = "AA"))
-            val userToPersist =
-                initUser(
-                    persistent = Persistent(),
-                    person = person,
-                    emailAddress = "casuel@tantooine.com",
-                    username = "causual",
-                ).toUserDao()
+            val userToPersist = initUser(
+                persistent = Persistent(),
+                person = person,
+                emailAddress = "casuel@tantooine.com",
+                username = "causual",
+            ).toUserDao()
 
             userRepository.save(userToPersist)
 
@@ -87,20 +83,18 @@ internal class UserRepositoryTest
 
         @Test
         fun `should find active users and admins`() {
-            val address =
-                save(
-                    address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
-                )
+            val address = save(
+                address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
+            )
 
             val spidyPerson = save(person = initPerson(address = address, surname = "Parker"))
             val superPerson = save(person = initPerson(address = address, surname = "Kent"))
-            val userDao =
-                initUser(
-                    persistent = Persistent(),
-                    person = spidyPerson,
-                    emailAddress = null,
-                    username = "spiderman",
-                ).toUserDao()
+            val userDao = initUser(
+                persistent = Persistent(),
+                person = spidyPerson,
+                emailAddress = null,
+                username = "spiderman",
+            ).toUserDao()
 
             userRepository.save(userDao)
             userRepository.save(

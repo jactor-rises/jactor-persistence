@@ -64,20 +64,34 @@ repositories {
 }
 
 tasks.register("printVersion") {
-    doLast {
-        println(project.version)
-    }
+    doLast { println(project.version) }
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks {
+    val ktlintFormatAndCheck by registering {
+        dependsOn("ktlintFormat")
+        doLast {
+            ProcessBuilder("${project.rootDir}/gradlew", "ktlintCheck")
+                .directory(project.rootDir).inheritIO()
+                .start().waitFor() // venter på at prosessen skal fullføre før vi går videre til testene
+        }
+    }
 
-    jvmArgs("--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED")
-    exclude("**/RunCucumberTest*")
+    matching { it.name.startsWith("runKtlintCheck") }.configureEach {
+        mustRunAfter(project.tasks.matching { it.name.startsWith("runKtlintFormat") })
+    }
 
-    testLogging {
-        events("passed", "skipped", "failed")
-        showStandardStreams = true
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    test {
+        useJUnitPlatform()
+
+        jvmArgs("--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED")
+        exclude("**/RunCucumberTest*")
+        dependsOn(ktlintFormatAndCheck)
+
+        testLogging {
+            events("passed", "skipped", "failed")
+            showStandardStreams = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
     }
 }

@@ -55,15 +55,14 @@ internal class AddressRepositoryTest
 
         @Test
         fun `should write then read an address dao by id`() {
-            val addressToPersist =
-                initAddress(
-                    addressLine1 = "somewhere out there",
-                    addressLine2 = "where the streets have no name",
-                    addressLine3 = "in the middle of it",
-                    city = "Rud",
-                    country = "NO",
-                    zipCode = "1234",
-                ).toAddressDao()
+            val addressToPersist = initAddress(
+                addressLine1 = "somewhere out there",
+                addressLine2 = "where the streets have no name",
+                addressLine3 = "in the middle of it",
+                city = "Rud",
+                country = "NO",
+                zipCode = "1234",
+            ).toAddressDao()
 
             AddressTestRepositoryObject.save(addressToPersist)
 
@@ -83,15 +82,14 @@ internal class AddressRepositoryTest
 
         @Test
         fun `should write then update and read an address dao`() {
-            val addressToPersist =
-                initAddress(
-                    addressLine1 = "somewhere out there",
-                    addressLine2 = "where the streets have no name",
-                    addressLine3 = "in the middle of it",
-                    city = "Rud",
-                    country = "NO",
-                    zipCode = "1234",
-                ).toAddressDao()
+            val addressToPersist = initAddress(
+                addressLine1 = "somewhere out there",
+                addressLine2 = "where the streets have no name",
+                addressLine3 = "in the middle of it",
+                city = "Rud",
+                country = "NO",
+                zipCode = "1234",
+            ).toAddressDao()
 
             AddressTestRepositoryObject.save(addressToPersist)
 

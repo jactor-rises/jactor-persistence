@@ -55,10 +55,9 @@ internal class JsonMappingTest
         @Test
         fun `skal mappe BlogEntryDto til jason og tilbake til BlogEntryDto`() {
             val uuid = UUID.randomUUID()
-            val json =
-                objectMapper.writeValueAsString(
-                    BlogEntryDto(blogId = uuid),
-                )
+            val json = objectMapper.writeValueAsString(
+                BlogEntryDto(blogId = uuid),
+            )
 
             val blogEntry = objectMapper.readValue(json, BlogEntryDto::class.java)
 

@@ -25,11 +25,10 @@ data class BlogEntryDao(
         return this
     }
 
-    fun toBlogEntry() =
-        BlogEntry(
-            persistent = toPersistent(),
-            blogId = blogId,
-            creatorName = creatorName,
-            entry = entry,
-        )
+    fun toBlogEntry() = BlogEntry(
+        persistent = toPersistent(),
+        blogId = blogId,
+        creatorName = creatorName,
+        entry = entry,
+    )
 }

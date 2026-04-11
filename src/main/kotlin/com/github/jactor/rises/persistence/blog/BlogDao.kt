@@ -24,11 +24,10 @@ data class BlogDao(
         return this
     }
 
-    fun toBlog(): Blog =
-        Blog(
-            created = created,
-            persistent = toPersistent(),
-            title = title,
-            userId = userId,
-        )
+    fun toBlog(): Blog = Blog(
+        created = created,
+        persistent = toPersistent(),
+        title = title,
+        userId = userId,
+    )
 }

@@ -13,8 +13,7 @@ infix fun Assert<String?>.contains(substring: String) = isNotNull().given { it.c
 
 infix fun <T> Assert<T?>.equals(actual: T?): Unit = actual?.let { this.isEqualTo(it) } ?: this.isNull()
 
-fun Assert<LocalDateTime>.isNotOlderThan(seconds: Long) =
-    isStrictlyBetween(
-        LocalDateTime.now().minusSeconds(seconds),
-        LocalDateTime.now(),
-    )
+fun Assert<LocalDateTime>.isNotOlderThan(seconds: Long) = isStrictlyBetween(
+    LocalDateTime.now().minusSeconds(seconds),
+    LocalDateTime.now(),
+)

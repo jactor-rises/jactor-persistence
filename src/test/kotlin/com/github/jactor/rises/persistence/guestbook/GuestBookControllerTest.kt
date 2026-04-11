@@ -35,16 +35,15 @@ internal class GuestBookControllerTest
             val uuid = UUID.randomUUID()
             coEvery { guestBookServiceMockk.findGuestBook(id = uuid) } returns null
 
-            val guestBookExchangeBody =
-                webTestClient
-                    .get()
-                    .uri("/guestBook/$uuid")
-                    .exchange()
-                    .expectStatus()
-                    .isNoContent
-                    .expectBody(GuestBook::class.java)
-                    .returnResult()
-                    .responseBody
+            val guestBookExchangeBody = webTestClient
+                .get()
+                .uri("/guestBook/$uuid")
+                .exchange()
+                .expectStatus()
+                .isNoContent
+                .expectBody(GuestBook::class.java)
+                .returnResult()
+                .responseBody
 
             assertThat(guestBookExchangeBody).isNull()
         }
@@ -54,16 +53,15 @@ internal class GuestBookControllerTest
             val uuid = UUID.randomUUID()
             coEvery { guestBookServiceMockk.findGuestBook(id = uuid) } returns initGuestBook()
 
-            val guestBook =
-                webTestClient
-                    .get()
-                    .uri("/guestBook/$uuid")
-                    .exchange()
-                    .expectStatus()
-                    .isOk
-                    .expectBody(GuestBookDto::class.java)
-                    .returnResult()
-                    .responseBody
+            val guestBook = webTestClient
+                .get()
+                .uri("/guestBook/$uuid")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(GuestBookDto::class.java)
+                .returnResult()
+                .responseBody
 
             assertThat(guestBook).isNotNull()
         }
@@ -73,16 +71,15 @@ internal class GuestBookControllerTest
             val uuid = UUID.randomUUID()
             coEvery { guestBookServiceMockk.findEntry(id = uuid) } returns null
 
-            val guestBookEntry =
-                webTestClient
-                    .get()
-                    .uri("/guestBook/entry/$uuid")
-                    .exchange()
-                    .expectStatus()
-                    .isNoContent
-                    .expectBody(GuestBook::class.java)
-                    .returnResult()
-                    .responseBody
+            val guestBookEntry = webTestClient
+                .get()
+                .uri("/guestBook/entry/$uuid")
+                .exchange()
+                .expectStatus()
+                .isNoContent
+                .expectBody(GuestBook::class.java)
+                .returnResult()
+                .responseBody
 
             assertThat(guestBookEntry).isNull()
         }
@@ -94,16 +91,15 @@ internal class GuestBookControllerTest
                 initGuestBookEntry()
                     .withPersistedData(id = uuid)
 
-            val guestBookEntry =
-                webTestClient
-                    .get()
-                    .uri("/guestBook/entry/$uuid")
-                    .exchange()
-                    .expectStatus()
-                    .isOk
-                    .expectBody(GuestBookEntryDto::class.java)
-                    .returnResult()
-                    .responseBody
+            val guestBookEntry = webTestClient
+                .get()
+                .uri("/guestBook/entry/$uuid")
+                .exchange()
+                .expectStatus()
+                .isOk
+                .expectBody(GuestBookEntryDto::class.java)
+                .returnResult()
+                .responseBody
 
             assertThat(guestBookEntry).isNotNull()
         }
@@ -132,28 +128,26 @@ internal class GuestBookControllerTest
         @Test
         fun `should create a guest book`() {
             val createdId = UUID.randomUUID()
-            val createGuestBookCommand =
-                CreateGuestBookCommand(
-                    title = "A title",
-                    userId = UUID.randomUUID(),
-                )
+            val createGuestBookCommand = CreateGuestBookCommand(
+                title = "A title",
+                userId = UUID.randomUUID(),
+            )
 
             coEvery { guestBookServiceMockk.create(createGuestBook = any()) } returns
                 initGuestBook(
                     persistent = Persistent(id = createdId),
                 )
 
-            val guestbook =
-                webTestClient
-                    .post()
-                    .uri("/guestBook")
-                    .bodyValue(createGuestBookCommand)
-                    .exchange()
-                    .expectStatus()
-                    .isCreated
-                    .expectBody(GuestBookDto::class.java)
-                    .returnResult()
-                    .responseBody
+            val guestbook = webTestClient
+                .post()
+                .uri("/guestBook")
+                .bodyValue(createGuestBookCommand)
+                .exchange()
+                .expectStatus()
+                .isCreated
+                .expectBody(GuestBookDto::class.java)
+                .returnResult()
+                .responseBody
 
             assertThat(guestbook?.persistentDto?.id).isEqualTo(createdId)
 
@@ -167,17 +161,16 @@ internal class GuestBookControllerTest
 
             coEvery { guestBookServiceMockk.saveOrUpdate(guestBookEntry) } returns guestBookEntry
 
-            val guestbookEntry =
-                webTestClient
-                    .put()
-                    .uri("/guestBook/entry/update")
-                    .bodyValue(guestBookEntry.toGuestBookEntryDto())
-                    .exchange()
-                    .expectStatus()
-                    .isAccepted
-                    .expectBody(GuestBookEntryDto::class.java)
-                    .returnResult()
-                    .responseBody
+            val guestbookEntry = webTestClient
+                .put()
+                .uri("/guestBook/entry/update")
+                .bodyValue(guestBookEntry.toGuestBookEntryDto())
+                .exchange()
+                .expectStatus()
+                .isAccepted
+                .expectBody(GuestBookEntryDto::class.java)
+                .returnResult()
+                .responseBody
 
             assertAll {
                 assertThat(guestbookEntry?.persistentDto?.id).isEqualTo(guestBookEntry.id)
@@ -189,28 +182,26 @@ internal class GuestBookControllerTest
         @Test
         fun `should create a guest book entry`() {
             val createdId = UUID.randomUUID()
-            val createGuestBookEntryCommand =
-                CreateGuestBookEntryCommand(
-                    creatorName = "creator",
-                    entry = "an entry",
-                    guestBookId = UUID.randomUUID(),
-                )
+            val createGuestBookEntryCommand = CreateGuestBookEntryCommand(
+                creatorName = "creator",
+                entry = "an entry",
+                guestBookId = UUID.randomUUID(),
+            )
 
             coEvery { guestBookServiceMockk.create(createGuestBookEntry = any()) } returns
                 initGuestBookEntry()
                     .withPersistedData(id = createdId)
 
-            val guestbookEntry =
-                webTestClient
-                    .post()
-                    .uri("/guestBook/entry")
-                    .bodyValue(createGuestBookEntryCommand)
-                    .exchange()
-                    .expectStatus()
-                    .isCreated
-                    .expectBody(GuestBookEntryDto::class.java)
-                    .returnResult()
-                    .responseBody
+            val guestbookEntry = webTestClient
+                .post()
+                .uri("/guestBook/entry")
+                .bodyValue(createGuestBookEntryCommand)
+                .exchange()
+                .expectStatus()
+                .isCreated
+                .expectBody(GuestBookEntryDto::class.java)
+                .returnResult()
+                .responseBody
 
             assertAll {
                 assertThat(guestbookEntry?.persistentDto?.id).isEqualTo(createdId)

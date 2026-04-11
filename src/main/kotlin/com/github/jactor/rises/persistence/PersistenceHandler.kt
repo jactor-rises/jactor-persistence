@@ -8,9 +8,8 @@ class PersistenceHandler {
     suspend fun <T : PersistentDao<*>> modifyAndSave(
         dao: T,
         modifier: suspend (T) -> T,
-    ): T =
-        run {
-            dao.isPersisted.whenTrue { dao.modifiedBy(modifier = "todo") }
-            modifier(dao)
-        }
+    ): T = run {
+        dao.isPersisted.whenTrue { dao.modifiedBy(modifier = "todo") }
+        modifier(dao)
+    }
 }

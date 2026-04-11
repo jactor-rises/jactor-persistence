@@ -17,13 +17,12 @@ internal class DtoMapperTest {
     @Test
     fun `should map a user to json`() {
         val uuid = UUID.randomUUID()
-        val userDto =
-            UserDto(
-                persistentDto = PersistentDto(id = uuid),
-                emailAddress = "some@where",
-                username = "mine",
-                userType = UserType.ACTIVE,
-            )
+        val userDto = UserDto(
+            persistentDto = PersistentDto(id = uuid),
+            emailAddress = "some@where",
+            username = "mine",
+            userType = UserType.ACTIVE,
+        )
 
         val json = objectMapper.writeValueAsString(userDto)
 

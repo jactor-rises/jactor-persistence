@@ -22,17 +22,16 @@ data class CreateUser(
     val language: String?,
     val country: String?,
 ) {
-    fun toUserDao() =
-        UserDao(
-            createdBy = username,
-            modifiedBy = username,
-            timeOfCreation = LocalDateTime.now(),
-            timeOfModification = LocalDateTime.now(),
-            emailAddress = emailAddress,
-            personId = personId,
-            username = username,
-            userType = UserType.ACTIVE,
-        )
+    fun toUserDao() = UserDao(
+        createdBy = username,
+        modifiedBy = username,
+        timeOfCreation = LocalDateTime.now(),
+        timeOfModification = LocalDateTime.now(),
+        emailAddress = emailAddress,
+        personId = personId,
+        username = username,
+        userType = UserType.ACTIVE,
+    )
 }
 
 enum class UserType {

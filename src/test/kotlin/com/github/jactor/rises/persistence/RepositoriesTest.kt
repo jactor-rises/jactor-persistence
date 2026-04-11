@@ -30,37 +30,32 @@ internal class RepositoriesTest
 
         @Test
         fun `should use a BlogRepository to save blogs and find them on on user which was earlier saved`() {
-            val address =
-                save(
-                    address =
-                        initAddress(
-                            zipCode = "1001",
-                            addressLine1 = "Test Boulevard 1",
-                            city = "Testoplis",
-                        ),
-                )
+            val address = save(
+                address = initAddress(
+                    zipCode = "1001",
+                    addressLine1 = "Test Boulevard 1",
+                    city = "Testoplis",
+                ),
+            )
 
             val person = save(person = initPerson(address = address, locale = "no_NO", surname = "Skywalker"))
             save(
-                user =
-                    initUser(
-                        person = person,
-                        emailAddress = "brains@rebels.com",
-                        username = "r2d2",
-                    ),
+                user = initUser(
+                    person = person,
+                    emailAddress = "brains@rebels.com",
+                    username = "r2d2",
+                ),
             )
 
-            var userByUsername =
-                userRepository.findByUsername("r2d2")
-                    ?: fail { "User not found!" }
+            var userByUsername = userRepository.findByUsername("r2d2")
+                ?: fail { "User not found!" }
 
             save(
-                blog =
-                    Blog(
-                        created = LocalDate.now(),
-                        title = "Far, far, away...",
-                        userId = userByUsername.id,
-                    ),
+                blog = Blog(
+                    created = LocalDate.now(),
+                    title = "Far, far, away...",
+                    userId = userByUsername.id,
+                ),
             )
 
             userByUsername = userRepository.findByUsername("r2d2")

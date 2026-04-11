@@ -175,31 +175,29 @@ fun initUserDao(
     personId: UUID? = null,
     username: String = "whoami",
     timeOfModification: LocalDateTime = LocalDateTime.now(),
-): UserDao =
-    UserDao(
-        id = id,
-        createdBy = "unit test",
-        emailAddress = null,
-        modifiedBy = "unit test",
-        personId = personId,
-        username = username,
-        userType = UserType.ACTIVE,
-        timeOfCreation = LocalDateTime.now(),
-        timeOfModification = timeOfModification,
-    )
+): UserDao = UserDao(
+    id = id,
+    createdBy = "unit test",
+    emailAddress = null,
+    modifiedBy = "unit test",
+    personId = personId,
+    username = username,
+    userType = UserType.ACTIVE,
+    timeOfCreation = LocalDateTime.now(),
+    timeOfModification = timeOfModification,
+)
 
-fun initUserDao(createUserCommand: CreateUserCommand) =
-    UserDao(
-        id = UUID.randomUUID(),
-        createdBy = createUserCommand.username,
-        emailAddress = null,
-        modifiedBy = createUserCommand.username,
-        personId = createUserCommand.personId,
-        username = createUserCommand.username,
-        userType = UserType.ACTIVE,
-        timeOfCreation = LocalDateTime.now(),
-        timeOfModification = LocalDateTime.now(),
-    )
+fun initUserDao(createUserCommand: CreateUserCommand) = UserDao(
+    id = UUID.randomUUID(),
+    createdBy = createUserCommand.username,
+    emailAddress = null,
+    modifiedBy = createUserCommand.username,
+    personId = createUserCommand.personId,
+    username = createUserCommand.username,
+    userType = UserType.ACTIVE,
+    timeOfCreation = LocalDateTime.now(),
+    timeOfModification = LocalDateTime.now(),
+)
 
 fun initPerson(
     id: UUID? = null,
