@@ -14,7 +14,7 @@ ktlint = "14.0.1"
 spring-boot = "4.0.5"
 springdoc-openapi = "1.8.0"
 springmockk = "5.0.1"
-versions-plugin = "0.53.0"
+versions-plugin = "0.54.0"
 
 [libraries]
 
