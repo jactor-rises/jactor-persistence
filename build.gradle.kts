@@ -68,7 +68,8 @@ tasks.register("printVersion") {
 }
 
 tasks {
-    val ktlintFormatAndCheck by registering {
+    val ktlintFormatAndCheck = register("ktlintFormatAndCheck") {
+        description = "Run ktlintFormat and ktlintCheck before testing (and commit)"
         dependsOn("ktlintFormat")
         doLast {
             ProcessBuilder("${project.rootDir}/gradlew", "ktlintCheck")
