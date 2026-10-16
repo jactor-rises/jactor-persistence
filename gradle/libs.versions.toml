@@ -61,4 +61,4 @@ kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotl
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
+versions = { id = "io.github.ben-manes.versions", version.ref = "versions-plugin" }
