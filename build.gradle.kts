@@ -60,7 +60,14 @@ repositories {
     gradlePluginPortal()
     mavenCentral()
     mavenLocal()
-    maven { url = uri("https://jitpack.io") }
+    maven {
+        name = "GitHubPackages-jactor-shared"
+        url = uri("https://maven.pkg.github.com/jactor-rises/jactor-shared")
+        credentials {
+            username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user") as? String
+            password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key") as? String
+        }
+    }
 }
 
 tasks.register("printVersion") {
