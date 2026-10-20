@@ -1,7 +1,9 @@
 # jactor-persistence
 
 [![build and test](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml)
-[![jactor-shared](https://jitpack.io/v/jactor-rises/jactor-shared.svg)](https://jitpack.io/#jactor-rises/jactor-shared) of jactor-shared as a dependency
+
+[![jactor-shared](https://img.shields.io/github/v/release/jactor-rises/jactor-shared)](https://github.com/jactor-rises/jactor-shared/releases) of jactor-shared
+
 ### What is this repository for?
 
 The main purpose is to learn about programming microservices using Kotlin, (with REST and spring JPA). I also use GitHub
@@ -14,9 +16,7 @@ archived project [jactor-rises](https://github.com/jactor-rises/jactor-rises))
 ### Set up
 
 * a spring-boot 4 application
-    * build with [gradle](https://gradle.org).
-    * is using [h2](http://h2database.com) (in-memory database)
-    * run it with spring-boot
+    * run it with spring-boot or gradle `.gradlew bootRun`
 * this application is documented with swagger. After startup, use link
   [swagger ui](http://localhost:1099/jactor-persistence/swagger-ui/index.html?configUrl=/jactor-persistence/v3/api-docs/swagger-config#/)
 
