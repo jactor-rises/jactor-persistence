@@ -1,4 +1,4 @@
-name: release
+name: git-tag
 
 on:
     workflow_run:
