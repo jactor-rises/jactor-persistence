@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout
-                uses: actions/checkout@v4
+                uses: actions/checkout@v7
                 with:
                     fetch-depth: 0
 
@@ -22,15 +22,14 @@ jobs:
                     echo "version=$JVM_VERSION" >> $GITHUB_OUTPUT
 
             -   name: Set up JDK
-                uses: actions/setup-java@v5
+                uses: actions/setup-java@v6
                 with:
+                    cache: gradle
                     distribution: temurin
                     java-version: ${{ steps.java-version.outputs.version }}
 
             -   name: Set up Gradle
-                uses: gradle/actions/setup-gradle@v4
-                with:
-                    cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+                uses: gradle/actions/setup-gradle@v6
 
             -   name: Build and test
-                run: ./gradlew ktlintCheck test build
+                run: ./gradlew clean ktlintCheck test build
