@@ -1,3 +1,8 @@
+import java.net.URI
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
@@ -8,6 +13,11 @@ plugins {
 }
 
 version = "0.0.0-SNAPSHOT"
+
+val jactorSharedDependency = GithubPackageDependency(
+    project = "jactor-shared",
+    versionNameFromToml = "jactor-shared-lib",
+)
 
 dependencies {
     // spring-boot
@@ -30,7 +40,7 @@ dependencies {
     implementation(libs.springdoc.openapi.ui)
 
     // internal project dependencies
-    implementation(libs.jactor.shared)
+    implementation(files(jactorSharedDependency.jarFile))
 
     // runtime dependencies
     runtimeOnly(libs.spring.boot.flyway)
@@ -56,21 +66,8 @@ java {
     withSourcesJar()
 }
 
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    mavenLocal()
-    maven {
-        name = "GitHubPackages-jactor-shared"
-        url = uri("https://maven.pkg.github.com/jactor-rises/jactor-shared")
-        credentials {
-            username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user") as? String
-            password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key") as? String
-        }
-    }
-}
-
 tasks.register("printVersion") {
+    description = "Prints the version of jactor-persistence"
     doLast { println(project.version) }
 }
 
@@ -89,6 +86,28 @@ tasks {
         mustRunAfter(project.tasks.matching { it.name.startsWith("runKtlintFormat") })
     }
 
+    register("downloadJactorSharedJar") {
+        inputs.property("jactorSharedDownloadUrl", jactorSharedDependency.downloadUrl)
+        outputs.file(jactorSharedDependency.jarFile)
+
+        doLast {
+            val target = jactorSharedDependency.jarFile.get().asFile
+            target.parentFile.mkdirs()
+
+            jactorSharedDependency.downloadUriAsUrl().openStream().use { input ->
+                Files.copy(input, target.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            }
+        }
+    }
+
+    named("compileKotlin") {
+        dependsOn("downloadJactorSharedJar")
+    }
+
+    named("test") {
+        dependsOn("downloadJactorSharedJar")
+    }
+
     test {
         useJUnitPlatform()
 
@@ -102,4 +121,21 @@ tasks {
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
+}
+
+data class GithubPackageDependency(
+    private val owner: String = "jactor-rises",
+    private val project: String,
+    private val versionNameFromToml: String,
+    private val version: String = Regex("""(?m)^\s*$versionNameFromToml\s*=\s*"([^"]+)"""")
+        .find(file("gradle/libs.versions.toml").readText())
+        ?.groupValues?.get(1)
+        ?: error("Could not determine jactor-shared version from gradle/libs.versions.toml"),
+    private val artifactVersion: String = version.removePrefix("v"),
+    private val jarName: String = "jactor-shared-$artifactVersion.jar",
+) {
+    val jarFile: Provider<RegularFile> = layout.buildDirectory.file("downloaded-dependencies/$jarName")
+    val downloadUrl: String = "https://github.com/$owner/$project/releases/download/$version/$jarName"
+
+    fun downloadUriAsUrl(): URL = URI(downloadUrl).toURL()
 }
