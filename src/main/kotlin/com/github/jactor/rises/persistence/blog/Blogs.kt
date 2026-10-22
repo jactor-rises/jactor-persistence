@@ -13,6 +13,7 @@ import java.util.UUID
 object Blogs : IdTable<UUID>(name = "T_BLOG") {
     override val id: Column<EntityID<UUID>> = javaUUID("ID")
         .clientDefault { UUIDv7.generate() }
+        .autoGenerate()
         .entityId()
 
     val createdBy = text("CREATED_BY")
