@@ -12,6 +12,7 @@ import java.util.UUID
 object Users : IdTable<UUID>(name = "T_USER") {
     override val id: Column<EntityID<UUID>> = javaUUID("ID")
         .clientDefault { UUIDv7.generate() }
+        .autoGenerate()
         .entityId()
 
     val createdBy = text("CREATED_BY")
