@@ -11,6 +11,7 @@ import java.util.UUID
 object BlogEntries : IdTable<UUID>(name = "T_BLOG_ENTRY") {
     override val id: Column<EntityID<UUID>> = javaUUID("ID")
         .clientDefault { UUIDv7.generate() }
+        .autoGenerate()
         .entityId()
 
     val blogId = javaUUID("BLOG_ID").references(Blogs.id)

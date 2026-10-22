@@ -12,6 +12,7 @@ import java.util.UUID
 object GuestBooks : IdTable<UUID>(name = "T_GUEST_BOOK") {
     override val id: Column<EntityID<UUID>> = javaUUID("ID")
         .clientDefault { UUIDv7.generate() }
+        .autoGenerate()
         .entityId()
 
     val createdBy = text("CREATED_BY")
