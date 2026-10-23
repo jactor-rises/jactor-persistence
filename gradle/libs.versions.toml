@@ -5,7 +5,7 @@ coroutines = "1.10.2"
 exposed = "1.5.1"
 dependencyManagement = "1.1.7"
 h2Database = "2.5.252"
-jactor-shared-lib = "v2.0.2"
+jactor-shared-lib = "v3.0.1" # version number is being read in build.gradle.kts
 java-uuid-generator = "5.2.0"
 jvm = "25"
 kotlin = "2.3.21"
@@ -22,9 +22,6 @@ versions-plugin = "0.66.0"
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
-
-# internal dependencies
-jactor-shared = { module = "com.github.jactor-rises:jactor-shared", version.ref = "jactor-shared-lib" }
 
 # spring-boot
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
