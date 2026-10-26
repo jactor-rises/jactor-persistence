@@ -6,7 +6,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.Persistent
-import com.github.jactor.rises.persistence.config.JactorPersistenceRepositiesConfig
 import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.test.initAddress
 import com.github.jactor.rises.persistence.test.initCreateUserCommand
@@ -27,10 +26,7 @@ internal class UserServiceTest {
     private val userServiceToTest = UserService(
         userRepository = userRepositoryMockk,
         persistenceHandler = PersistenceHandler(),
-    ).also {
-        JactorPersistenceRepositiesConfig.fetchPersonRelation = { id -> personRepositoryMockk.findById(id = id) }
-        JactorPersistenceRepositiesConfig.fetchUserRelation = { id -> userRepositoryMockk.findById(id = id) }
-    }
+    )
 
     @Test
     fun `should map a user dao to a dto`() = runTest {

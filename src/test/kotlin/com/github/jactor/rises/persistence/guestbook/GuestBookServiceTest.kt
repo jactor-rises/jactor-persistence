@@ -6,7 +6,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.Persistent
-import com.github.jactor.rises.persistence.config.JactorPersistenceRepositiesConfig
 import com.github.jactor.rises.persistence.test.initGuestBook
 import com.github.jactor.rises.persistence.test.initGuestBookEntry
 import com.github.jactor.rises.persistence.test.initUser
@@ -26,12 +25,7 @@ internal class GuestBookServiceTest {
     private val guestBookServiceToTest: GuestBookService = GuestBookServiceBean(
         guestBookRepository = guestBookRepositoryMockk,
         persistenceHandler = PersistenceHandler(),
-    ).also {
-        JactorPersistenceRepositiesConfig.fetchUserRelation = { id -> userRepositoryMockk.findById(id = id) }
-        JactorPersistenceRepositiesConfig.fetchGuestBookRelation = { id ->
-            guestBookRepositoryMockk.findGuestBookById(id = id)
-        }
-    }
+    )
 
     private val uuid = UUID.randomUUID()
 
