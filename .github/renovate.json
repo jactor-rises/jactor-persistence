@@ -9,7 +9,7 @@
     "automergeType": "pr",
     "timezone": "Europe/Oslo",
     "schedule": [
-        "before 6:00am on monday"
+        "before 6:00am on tuesday"
     ],
     "prHourlyLimit": 2,
     "prConcurrentLimit": 3,
