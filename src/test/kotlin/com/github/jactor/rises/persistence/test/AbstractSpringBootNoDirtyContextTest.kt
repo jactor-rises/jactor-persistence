@@ -1,13 +1,16 @@
 package com.github.jactor.rises.persistence.test
 
 import com.github.jactor.rises.persistence.address.Address
-import com.github.jactor.rises.persistence.address.AddressTestRepositoryObject
+import com.github.jactor.rises.persistence.address.AddressRepository
 import com.github.jactor.rises.persistence.blog.Blog
 import com.github.jactor.rises.persistence.blog.BlogEntry
-import com.github.jactor.rises.persistence.config.JactorPersistenceRepositiesConfig
+import com.github.jactor.rises.persistence.blog.BlogRepository
 import com.github.jactor.rises.persistence.guestbook.GuestBook
+import com.github.jactor.rises.persistence.guestbook.GuestBookRepository
 import com.github.jactor.rises.persistence.person.Person
+import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.user.User
+import com.github.jactor.rises.persistence.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
@@ -21,34 +24,41 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 abstract class AbstractSpringBootNoDirtyContextTest {
     @Autowired
-    private lateinit var jactorPersistenceRepositiesConfig: JactorPersistenceRepositiesConfig
+    private lateinit var addressRepository: AddressRepository
 
-    protected fun save(address: Address): Address = AddressTestRepositoryObject
-        .save(
-            addressDao = address.toAddressDao(),
-        ).toAddress()
+    @Autowired
+    private lateinit var blogRepository: BlogRepository
 
-    protected fun save(blog: Blog): Blog = jactorPersistenceRepositiesConfig.blogRepository
+    @Autowired
+    private lateinit var guestBookRepository: GuestBookRepository
+
+    @Autowired
+    private lateinit var personRepository: PersonRepository
+
+    @Autowired
+    private lateinit var userRepository: UserRepository
+
+    protected fun save(address: Address): Address = addressRepository
+        .save(addressDao = address.toAddressDao())
+        .toAddress()
+
+    protected fun save(blog: Blog): Blog = blogRepository
         .save(blogDao = blog.toBlogDao())
         .toBlog()
 
-    protected fun save(blogEntry: BlogEntry): BlogEntry = jactorPersistenceRepositiesConfig.blogRepository
+    protected fun save(blogEntry: BlogEntry): BlogEntry = blogRepository
         .save(blogEntryDao = blogEntry.toBlogEntryDao())
         .toBlogEntry()
 
-    protected fun save(guestBook: GuestBook): GuestBook = jactorPersistenceRepositiesConfig.guestBookRepository
+    protected fun save(guestBook: GuestBook): GuestBook = guestBookRepository
         .save(guestBookDao = guestBook.toGuestBookDao())
         .toGuestBook()
 
-    protected fun save(person: Person): Person = jactorPersistenceRepositiesConfig.personRepository
+    protected fun save(person: Person): Person = personRepository
         .save(personDao = person.toPersonDao())
         .toPerson()
 
-    protected fun save(user: User): User = jactorPersistenceRepositiesConfig.userRepository
+    protected fun save(user: User): User = userRepository
         .save(userDao = user.toUserDao())
         .toUser()
-
-    protected fun resetFetchRelations() {
-        jactorPersistenceRepositiesConfig.initFetchRelations()
-    }
 }

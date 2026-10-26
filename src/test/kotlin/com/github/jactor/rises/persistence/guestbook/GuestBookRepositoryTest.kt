@@ -11,7 +11,6 @@ import com.github.jactor.rises.persistence.test.initGuestBook
 import com.github.jactor.rises.persistence.test.initGuestBookEntry
 import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,11 +20,6 @@ internal class GuestBookRepositoryTest
     constructor(
         private val guestBookRepository: GuestBookRepository,
     ) : AbstractSpringBootNoDirtyContextTest() {
-        @BeforeEach
-        fun `reset fetch relations`() {
-            resetFetchRelations()
-        }
-
         @Test
         fun `should write then read guest book`() {
             val address = save(

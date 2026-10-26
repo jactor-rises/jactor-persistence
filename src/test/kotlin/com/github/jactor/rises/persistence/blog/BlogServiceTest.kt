@@ -6,7 +6,6 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.Persistent
-import com.github.jactor.rises.persistence.config.JactorPersistenceRepositiesConfig
 import com.github.jactor.rises.persistence.test.initBlog
 import com.github.jactor.rises.persistence.test.initBlogEntry
 import com.github.jactor.rises.persistence.test.initUser
@@ -28,10 +27,7 @@ internal class BlogServiceTest {
     private val blogServiceToTest: BlogService = BlogServiceImpl(
         blogRepository = blogRepositoryMockk,
         persistenceHandler = PersistenceHandler(),
-    ).also {
-        JactorPersistenceRepositiesConfig.fetchBlogRelation = { id -> blogRepositoryMockk.findBlogById(id = id) }
-        JactorPersistenceRepositiesConfig.fetchUserRelation = { id -> userRepositoryMockk.findById(id = id) }
-    }
+    )
 
     private val uuid: UUID = UUID.randomUUID()
 
