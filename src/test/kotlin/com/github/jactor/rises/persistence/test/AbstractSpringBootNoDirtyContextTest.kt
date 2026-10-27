@@ -13,6 +13,7 @@ import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional
  * enhetstestene ikke skal ha innvirkning på spring-context<br>
  * Hvis test krever data i database, må det settes opp manuelt
  */
+@ActiveProfiles("test")
 @SpringBootTest
 @Transactional
 abstract class AbstractSpringBootNoDirtyContextTest {
