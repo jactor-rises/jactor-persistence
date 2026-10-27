@@ -8,7 +8,7 @@
     "platformAutomerge": true,
     "automergeType": "pr",
     "timezone": "Europe/Oslo",
-    "schedule": [ "before 6:00am on tuesday" ],
+    "schedule": [ "before 6:00am on wednesday" ],
     "prHourlyLimit": 2,
     "prConcurrentLimit": 3,
     "gradle": {
