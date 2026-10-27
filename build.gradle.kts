@@ -43,8 +43,10 @@ dependencies {
     implementation(files(jactorSharedDependency.jarFile))
 
     // runtime dependencies
+    runtimeOnly(libs.flywayPostgres)
+    runtimeOnly(libs.postgresql)
     runtimeOnly(libs.spring.boot.flyway)
-    runtimeOnly(libs.h2database)
+    testRuntimeOnly(libs.h2database)
 
     // test implementations
     testImplementation(libs.assertk)

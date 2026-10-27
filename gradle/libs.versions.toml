@@ -2,8 +2,9 @@
 assertk = "0.28.1"
 cucumber = "7.34.3"
 coroutines = "1.10.2"
-exposed = "1.5.1"
 dependencyManagement = "1.1.7"
+exposed = "1.5.1"
+flyway = "12.4.0" # version is syncronized with spring-boot
 h2Database = "2.5.252"
 jactor-shared-lib = "v3.0.1" # version number is being read in build.gradle.kts
 java-uuid-generator = "5.2.0"
@@ -11,6 +12,7 @@ jvm = "25"
 kotlin = "2.3.21"
 kotlin-logging = "8.0.4"
 ktlint = "14.2.0"
+postgresql = "42.7.14"
 spring-boot = "4.1.2"
 springdoc-openapi = "1.8.0"
 springmockk = "5.0.1"
@@ -36,8 +38,10 @@ exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datet
 exposed-spring-boot-starter = { module = "org.jetbrains.exposed:spring-transaction", version.ref = "exposed" }
 
 # misc third party
+flywayPostgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway"}
 h2database = { module = "com.h2database:h2", version.ref = "h2Database" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springdoc-openapi" }
 uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.ref = "java-uuid-generator" }
 
