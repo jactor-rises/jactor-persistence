@@ -6,9 +6,9 @@
 
 ### What is this repository for?
 
-The main purpose is to learn about programming microservices using Kotlin, (with REST and spring JPA). I also use GitHub
-to get a deeper understanding of continuous integration/DevOps using GitHub workflow/actions and gradle.
-integration testing with cucumber.
+The main purpose is to learn about programming microservices using spring-boot and Kotlin, (with REST and jetbrains
+exposed). I also use GitHub to get a deeper understanding of continuous integration/DevOps using GitHub workflow/actions
+and gradle. Integration testing to be done with cucumber.
 
 This project is a microservice dealing with persistence to a database using jetbrains exposed (formerly as part of the
 archived project [jactor-rises](https://github.com/jactor-rises/jactor-rises))
@@ -65,6 +65,7 @@ java -jar build/lib/jactor-persistence-<version>-SNAPSHOT.jar
 * [flyway](https://flywaydb.org)
 * [github actions](https://docs.github.com/en/actions/learn-github-actions)
 * [gradle](https://gradle.org) (9.x)
+* [podman](https://podman.io)
 * [swagger-ui](https://swagger.io/tools/swagger-ui/)
     * herunder [springdoc](https://springdoc.org)
 * [sdk man](https://sdkman.io)
