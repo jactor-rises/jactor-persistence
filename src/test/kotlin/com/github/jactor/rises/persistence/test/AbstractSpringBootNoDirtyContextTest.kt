@@ -11,6 +11,7 @@ import com.github.jactor.rises.persistence.person.Person
 import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRepository
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -22,6 +23,10 @@ import org.springframework.transaction.annotation.Transactional
  * Hvis test krever data i database, må det settes opp manuelt
  */
 @ActiveProfiles("test")
+@AutoConfigureEmbeddedDatabase(
+    provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.EMBEDDED,
+    type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES,
+)
 @SpringBootTest
 @Transactional
 abstract class AbstractSpringBootNoDirtyContextTest {

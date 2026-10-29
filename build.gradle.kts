@@ -46,7 +46,6 @@ dependencies {
     runtimeOnly(libs.flywayPostgres)
     runtimeOnly(libs.postgresql)
     runtimeOnly(libs.spring.boot.flyway)
-    testRuntimeOnly(libs.h2database)
 
     // test implementations
     testImplementation(libs.assertk)
@@ -58,6 +57,8 @@ dependencies {
     testImplementation(libs.springmockk)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.boot.starter.webflux.test)
+    testImplementation(libs.zonky)
+    testImplementation(libs.zonky.postgres)
 }
 
 java {

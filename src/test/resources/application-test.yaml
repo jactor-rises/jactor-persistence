@@ -2,8 +2,7 @@ spring:
     exposed:
         show-sql: true
     datasource:
-        driver-class-name: org.h2.Driver
-        url: jdbc:h2:mem:jactor
+        driver-class-name: org.postgresql.Driver
     sql:
         init:
             username: sa

@@ -52,7 +52,6 @@ java -jar build/lib/jactor-persistence-<version>-SNAPSHOT.jar
 
 * [spring-boot 4.x](https://spring.io/projects/spring-boot)
 * [jetbrains-exposed](https://www.jetbrains.com/exposed/)
-* [h2](http://h2database.com)
 * [kotlin 2.x](https://kotlinlang.org)
 
 #### Unit testing
