@@ -5,7 +5,6 @@ coroutines = "1.10.2"
 dependencyManagement = "1.1.7"
 exposed = "1.5.1"
 flyway = "12.4.0" # version is syncronized with spring-boot
-h2Database = "2.5.252"
 jactor-shared-lib = "v3.0.1" # version number is being read in build.gradle.kts
 java-uuid-generator = "5.2.0"
 jvm = "25"
@@ -17,6 +16,8 @@ spring-boot = "4.1.2"
 springdoc-openapi = "1.8.0"
 springmockk = "5.0.1"
 versions-plugin = "0.66.0"
+zonky-embedded-db = "2.8.0"
+zonky-postgres-db = "2.2.2"
 
 [libraries]
 
@@ -38,8 +39,7 @@ exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datet
 exposed-spring-boot-starter = { module = "org.jetbrains.exposed:spring-transaction", version.ref = "exposed" }
 
 # misc third party
-flywayPostgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway"}
-h2database = { module = "com.h2database:h2", version.ref = "h2Database" }
+flywayPostgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springdoc-openapi" }
@@ -55,6 +55,8 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-starter-webflux-test = { module = "org.springframework.boot:spring-boot-starter-webflux-test" }
+zonky = { module = "io.zonky.test:embedded-database-spring-test", version.ref = "zonky-embedded-db" }
+zonky-postgres = { module = "io.zonky.test:embedded-postgres", version.ref = "zonky-postgres-db"}
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
