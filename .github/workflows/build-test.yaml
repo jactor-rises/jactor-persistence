@@ -32,5 +32,8 @@ jobs:
             -   name: Set up Gradle
                 uses: gradle/actions/setup-gradle@v6
 
+            -   name: ktlint check
+                run: ./gradlew ktlintCheck
+
             -   name: Build and test
-                run: ./gradlew clean ktlintCheck test build --stacktrace
+                run: ./gradlew test build --stacktrace
