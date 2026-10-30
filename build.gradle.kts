@@ -49,10 +49,6 @@ dependencies {
 
     // test implementations
     testImplementation(libs.assertk)
-    testImplementation(libs.cucumber.java)
-    testImplementation(libs.cucumber.java8)
-    testImplementation(libs.cucumber.junit.platform.engine)
-    testImplementation(libs.cucumber.spring)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.springmockk)
     testImplementation(libs.spring.boot.starter.test)
