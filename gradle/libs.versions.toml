@@ -1,6 +1,5 @@
 [versions]
 assertk = "0.28.1"
-cucumber = "7.34.3"
 coroutines = "1.10.2"
 dependencyManagement = "1.1.7"
 exposed = "1.5.1"
@@ -47,10 +46,6 @@ uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.re
 
 # test
 assertk = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
-cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
-cucumber-java8 = { module = "io.cucumber:cucumber-java8", version.ref = "cucumber" }
-cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
-cucumber-spring = { module = "io.cucumber:cucumber-spring", version.ref = "cucumber" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }

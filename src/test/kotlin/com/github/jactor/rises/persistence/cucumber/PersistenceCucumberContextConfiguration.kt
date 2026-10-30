@@ -1,6 +1,0 @@
-package com.github.jactor.rises.persistence.cucumber
-
-import io.cucumber.spring.CucumberContextConfiguration
-
-@CucumberContextConfiguration
-internal class PersistenceCucumberContextConfiguration : AbstractSpringBootCucumberConfiguration()
