@@ -12,14 +12,10 @@ class RestClientStepDefs {
     private var baseUrl: String? = null
     private var endpoint: String? = null
     private var exchange: WebTestClient.ResponseSpec? = null
+    private var responseSpec: ResponseSpec? = null
 
-    val responseJson: String
-        get() = (exchange ?: assertionError("Ingen exchange er gjennomført!"))
-            .expectBody(String::class.java)
-            .returnResult().responseBody ?: assertionError("Ingen respons fra server!")
-    val statusCode: Int
-        get() = (exchange ?: assertionError("Ingen exchange er gjennomført!"))
-            .returnResult().status.value()
+    val responseJson: String get() = responseSpec?.responseJson ?: exchange.initAndReturnResponseSpec().responseJson
+    val statusCode: Int get() = responseSpec?.statusCode ?: exchange.initAndReturnResponseSpec().statusCode
 
     @Gitt("base url {string}")
     fun `gitt base url`(baseUrl: String) {
@@ -34,6 +30,11 @@ class RestClientStepDefs {
     @Når("man utfører en http get")
     fun `når man utfører en http get`() {
         performGet()
+    }
+
+    @Når("man utfører en http get med parameter {string} = {string}")
+    fun `når man utfører en http get med parameter {string} = {string}`(name: String, value: String) {
+        performGet(parameter = name to value)
     }
 
     @Når("en post gjøres for body:")
@@ -56,26 +57,46 @@ class RestClientStepDefs {
         .baseUrl(baseUrl ?: assertionError("baseUrl er ikke satt!"))
         .build()
 
-    private fun performGet() {
-        exchange = bindWebTestClientToServer ()
+    private fun performGet(parameter: Pair<String, String>? = null) {
+        exchange = bindWebTestClientToServer()
             .get()
-            .uri(endpoint ?: assertionError("endpoint er ikke satt!"))
-            .exchange()
+            .uri { builder ->
+                builder.path(endpoint ?: assertionError("endpoint er ikke satt!"))
+                parameter?.let { builder.queryParam(it.first, it.second) }
+                builder.build()
+            }.exchange()
     }
 
     private fun performPost(body: String?) {
         exchange = if (endpoint != null) {
-            bindWebTestClientToServer()
-                .post()
-                .uri(endpoint!!)
+            bindWebTestClientToServer().post().uri(endpoint!!)
         } else {
-            bindWebTestClientToServer()
-                .post()
+            bindWebTestClientToServer().post()
         }
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(body ?: throw AssertionFailedError("ingen body request til post!"))
+            .bodyValue(body ?: assertionError("ingen body request til post!"))
             .exchange()
     }
 
-    private fun assertionError(message: String): Nothing = throw AssertionFailedError(message)
+    private fun WebTestClient.ResponseSpec?.initAndReturnResponseSpec() = ResponseSpec(
+        responseSpec = this ?: assertionError("Ingen ResponseSpec i exchange")
+    ).also { responseSpec = it }
+}
+
+private fun assertionError(message: String): Nothing = throw AssertionFailedError(message)
+
+class ResponseSpec(responseSpec: WebTestClient.ResponseSpec) {
+    lateinit var responseJson: String
+    val statusCode: Int
+
+    init {
+        responseSpec.expectBody().returnResult().also {
+            println("> status=${it.status}")
+            println("> headers=${it.responseHeaders}")
+            println("> body=${it.responseBody?.decodeToString()}")
+        }
+
+        responseSpec.expectBody().returnResult().responseBody?.decodeToString()?.let { responseJson = it }
+        statusCode = responseSpec.expectBody().returnResult().status.value()
+    }
 }
