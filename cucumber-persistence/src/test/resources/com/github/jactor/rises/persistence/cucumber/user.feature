@@ -5,21 +5,21 @@ Egenskap: jactor-presistence behandler en bruker
     Gitt base url 'http://localhost:1099/jactor-persistence/user'
     Og endpoint '/usernames'
     Når man utfører en http get
-    Så skal statuskoden være 200
+    Så skal statuskode være 200
     Og responsen skal inneholde 'tip'
 
   Scenario: Hent administratorerer fra jactor-persistence
     Gitt base url 'http://localhost:1099/jactor-persistence/user'
     Og endpoint '/usernames'
     Når man utfører en http get med parameter 'userType' = 'ADMIN'
-    Så skal statuskoden være 200
+    Så skal statuskode være 200
     Og responsen skal inneholde 'jactor'
 
   Scenario: Hent en bruker etter brukernavn
     Gitt base url 'http://localhost:1099/jactor-persistence/user/name'
     Og endpoint '/jactor'
     Når man utfører en http get
-    Så skal statuskoden være 200
+    Så skal statuskode være 200
     Og responsen skal inneholde '"username":"jactor"'
 
   Scenario: Opprett en ny bruker, hent opprettet bruker, feil oppretting av ny bruker grunnet identisk brukernavn
@@ -40,10 +40,10 @@ Egenskap: jactor-presistence behandler en bruker
         "country":"no"
       }
     """
-    Så skal statuskoden være 201
+    Så skal statuskode være 201
     Og endpoint '/name/fish'
     Når man utfører en http get
-    Så skal statuskoden være 200
+    Så skal statuskode være 200
     Og responsen skal inneholde '"username":"fish"'
     Og responsen skal inneholde '"surname":"Fish"'
     Gitt base url 'http://localhost:1099/jactor-persistence/user'
@@ -63,4 +63,4 @@ Egenskap: jactor-presistence behandler en bruker
         "contry":"no"
       }
     """
-    Så skal statuskoden være 400
+    Så skal statuskode være 400
