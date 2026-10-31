@@ -1,3 +1,7 @@
+spring:
+    webflux:
+        base-path: /jactor-persistence
+
 logging:
     level:
         com.githnub.jactor: debug
