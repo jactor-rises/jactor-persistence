@@ -32,19 +32,15 @@ From the root of the source code:
 
 ### Run
 
-All commands are being executed from the root of the source code.
+How to build and run this application. All commands are being executed from the root of the source code.
 
-Run it with [gradle](https://gradle.org):
-
-```
-./gradlew bootRun
-```
-
-After a valid build one can execute the generated jar file as plain java:
-
-```
-java -jar build/lib/jactor-persistence-<version>-SNAPSHOT.jar
-```
+1. Set up and run the database with [podman](https://podman.io). If on mac, it can be found with
+[homebrew](https://brew.sh)
+   * ```brew install podman```
+2. Run the database with [podman-compose](https://docs.podman.io/en/latest/markdown/podman-compose.1.html)
+   * `podman-compose up -d` (-d option seperates the database in a separate process)
+3. Start the applicaiton with [gradle](https://gradle.org)
+   * `./gradlew bootRun`
 
 ### Some technologies used
 
