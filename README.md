@@ -49,6 +49,7 @@ How to build and run this application. All commands are being executed from the 
 * [spring-boot 4.x](https://spring.io/projects/spring-boot)
 * [jetbrains-exposed](https://www.jetbrains.com/exposed/)
 * [kotlin 2.x](https://kotlinlang.org)
+* [PostgreSQL](https://www.postgresql.org)
 
 #### Unit testing
 
