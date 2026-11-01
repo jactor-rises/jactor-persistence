@@ -14,8 +14,8 @@ class RestClientStepDefs {
     private var exchange: WebTestClient.ResponseSpec? = null
     private var responseSpec: ResponseSpec? = null
 
-    val responseJson: String get() = responseSpec?.responseJson ?: exchange.initAndReturnResponseSpec().responseJson
-    val statusCode: Int get() = responseSpec?.statusCode ?: exchange.initAndReturnResponseSpec().statusCode
+    val responseJson: String? get() = responseSpec?.responseJson ?: exchange.initAndReturnResponseSpec().responseJson
+    val statusCode: Int? get() = responseSpec?.statusCode ?: exchange.initAndReturnResponseSpec().statusCode
 
     @Gitt("base url {string}")
     fun `gitt base url`(baseUrl: String) {
@@ -86,17 +86,17 @@ class RestClientStepDefs {
 private fun assertionError(message: String): Nothing = throw AssertionFailedError(message)
 
 class ResponseSpec(responseSpec: WebTestClient.ResponseSpec) {
-    lateinit var responseJson: String
-    val statusCode: Int
+    var responseJson: String? = null
+    var statusCode: Int? = null
 
     init {
-        responseSpec.expectBody().returnResult().also {
+        val bodyContentSpec = responseSpec.expectBody().returnResult().also {
             println("> status=${it.status}")
             println("> headers=${it.responseHeaders}")
             println("> body=${it.responseBody?.decodeToString()}")
         }
 
-        responseSpec.expectBody().returnResult().responseBody?.decodeToString()?.let { responseJson = it }
-        statusCode = responseSpec.expectBody().returnResult().status.value()
+        bodyContentSpec.responseBody?.decodeToString()?.let { responseJson = it }
+        statusCode = bodyContentSpec.status.value()
     }
 }
