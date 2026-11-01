@@ -31,7 +31,8 @@
         },
         {
             "matchPackageNames": [
-                "com.github.jactor-rises:jactor-shared"
+                "com.github.jactor-rises:jactor-shared",
+                "org.flywaydb:flyway-database-postgresql"
             ],
             "enabled": false
         }
