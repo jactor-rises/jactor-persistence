@@ -32,7 +32,7 @@ From the root of the source code:
 
 ### Run
 
-How to build and run this application. All commands are being executed from the root of the source code.
+How to build and run this application. Gradle and podman commands are executed from the root of the source code.
 
 1. Set up and run the database with [podman](https://podman.io). If on mac, it can be found with
 [homebrew](https://brew.sh)
@@ -61,7 +61,7 @@ How to build and run this application. All commands are being executed from the 
 
 * [flyway](https://flywaydb.org)
 * [github actions](https://docs.github.com/en/actions/learn-github-actions)
-* [gradle](https://gradle.org) (9.x)
+* [gradle 9.x](https://gradle.org)
 * [podman](https://podman.io)
 * [swagger-ui](https://swagger.io/tools/swagger-ui/)
     * herunder [springdoc](https://springdoc.org)
