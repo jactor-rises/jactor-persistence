@@ -1,0 +1,11 @@
+- use Kotlin with immutability (val before var)
+- use JUnit Jupiter, mockk and assertk for unit testing
+- use functions with backticks to describe a function in a unit test
+- naming a function should always state its purpose
+- naming a variable should always state its purpose
+- use similar patterns as implemented in existing code if it makes sence
+- try avoiding comments (functions and variables should be self-descriptive)
+- answer short and concise in the chat
+  - use bulletpoints
+  - do not show code before asked
+  - do not change files before asking
