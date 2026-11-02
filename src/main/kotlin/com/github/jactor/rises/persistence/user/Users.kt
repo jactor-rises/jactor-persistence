@@ -24,5 +24,4 @@ object Users : IdTable<UUID>(name = "T_USER") {
     val username = text("USER_NAME")
     val personId = javaUUID("PERSON_ID").references(People.id)
     val userType = text("USER_TYPE")
-    val inactiveSince = datetime("INACTIVE_SINCE").nullable()
 }

@@ -11,6 +11,8 @@ import com.github.jactor.rises.persistence.person.Person
 import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRepository
+import com.github.jactor.rises.persistence.user.UserService
+import com.github.jactor.rises.persistence.util.suspendedTransaction
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -32,6 +34,9 @@ import org.springframework.transaction.annotation.Transactional
 abstract class AbstractSpringBootNoDirtyContextTest {
     @Autowired
     private lateinit var addressRepository: AddressRepository
+
+    @Autowired
+    private lateinit var userService: UserService
 
     @Autowired
     private lateinit var blogRepository: BlogRepository
@@ -68,4 +73,17 @@ abstract class AbstractSpringBootNoDirtyContextTest {
     protected fun save(user: User): User = userRepository
         .save(userDao = user.toUserDao())
         .toUser()
+
+    protected suspend fun createUser(username: String) = suspendedTransaction {
+        val surname = "Surefire"
+        val personId = save(person = initPerson(surname = surname)).id
+
+        userService.create(
+            createUser = initCreateUser(
+                personId = personId,
+                surname = surname,
+                username = username,
+            ),
+        )
+    }
 }

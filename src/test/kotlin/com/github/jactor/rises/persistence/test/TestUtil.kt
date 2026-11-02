@@ -13,6 +13,7 @@ import com.github.jactor.rises.persistence.guestbook.GuestBookEntry
 import com.github.jactor.rises.persistence.guestbook.GuestBookEntryDao
 import com.github.jactor.rises.persistence.person.Person
 import com.github.jactor.rises.persistence.person.PersonDao
+import com.github.jactor.rises.persistence.user.CreateUser
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserDao
 import com.github.jactor.rises.persistence.user.UserType
@@ -114,6 +115,38 @@ fun initBlogEntryDao(
     timeOfCreation = LocalDateTime.now(),
     timeOfModification = timeOfModification,
     blogId = blogId,
+)
+
+fun initCreateUser(
+    addressId: UUID? = null,
+    addressLine1: String? = null,
+    addressLine2: String? = null,
+    addressLine3: String? = null,
+    city: String? = null,
+    country: String? = null,
+    description: String? = null,
+    emailAddress: String? = null,
+    firstName: String? = null,
+    language: String? = null,
+    personId: UUID? = null,
+    surname: String = "Someone",
+    username: String = "allway",
+    zipCode: String? = null,
+) = CreateUser(
+    addressId = addressId,
+    addressLine1 = addressLine1,
+    addressLine2 = addressLine2,
+    addressLine3 = addressLine3,
+    city = city,
+    country = country,
+    description = description,
+    emailAddress = emailAddress,
+    firstName = firstName,
+    language = language,
+    personId = personId,
+    surname = surname,
+    username = username,
+    zipCode = zipCode,
 )
 
 fun initCreateUserCommand(
