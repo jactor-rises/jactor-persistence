@@ -4,12 +4,16 @@ import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.util.suspendedTransaction
 import org.springframework.stereotype.Service
 
+interface PersonService {
+    suspend fun createWhenNotExists(person: Person): PersonDao?
+}
+
 @Service
-class PersonService(
+class PersonServiceBean(
     private val personRepository: PersonRepository,
     private val persistenceHandler: PersistenceHandler,
-) {
-    suspend fun createWhenNotExists(person: Person): PersonDao? = findExisting(person) ?: create(person)
+) : PersonService {
+    override suspend fun createWhenNotExists(person: Person): PersonDao? = findExisting(person) ?: create(person)
 
     private suspend fun findExisting(person: Person): PersonDao? = suspendedTransaction {
         person.id?.let { personRepository.findById(it) }
