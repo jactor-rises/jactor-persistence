@@ -13,6 +13,7 @@ import com.github.jactor.rises.persistence.guestbook.GuestBooks
 import com.github.jactor.rises.persistence.person.People
 import com.github.jactor.rises.persistence.person.PersonDao
 import com.github.jactor.rises.persistence.user.UserDao
+import com.github.jactor.rises.persistence.user.UserType
 import com.github.jactor.rises.persistence.user.Users
 import org.jetbrains.exposed.v1.core.ResultRow
 
@@ -95,4 +96,5 @@ fun ResultRow.toUserDao(): UserDao = UserDao(
     username = this[Users.username],
     emailAddress = this[Users.emailAddress],
     personId = this[Users.personId],
+    userType = UserType.valueOf(this[Users.userType]),
 )

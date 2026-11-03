@@ -15,6 +15,11 @@ object PersonRepositoryObject : PersonRepository {
         .map { it.toPersonDao() }
         .singleOrNull()
 
+    override fun findBySurname(surname: String): List<PersonDao> = People
+        .selectAll()
+        .andWhere { People.surname eq surname }
+        .map { it.toPersonDao() }
+
     override fun save(personDao: PersonDao): PersonDao = when (personDao.isNotPersisted) {
         true -> insert(personDao)
         false -> update(personDao)
