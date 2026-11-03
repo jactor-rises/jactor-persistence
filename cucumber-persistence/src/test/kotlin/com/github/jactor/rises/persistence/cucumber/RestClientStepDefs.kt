@@ -32,6 +32,11 @@ class RestClientStepDefs {
         performGet()
     }
 
+    @Når("man utfører en http put")
+    fun `når man utfører en http put`() {
+        performPut()
+    }
+
     @Når("man utfører en http get med parameter {string} = {string}")
     fun `når man utfører en http get med parameter {string} = {string}`(name: String, value: String) {
         performGet(parameter = name to value)
@@ -45,6 +50,11 @@ class RestClientStepDefs {
     @Så("skal statuskode være {int}")
     fun `skal statuskode være`(kode: Int?) {
         assertThat(statusCode).isEqualTo(kode)
+    }
+
+    @Så("skal statuskode være enten {int} eller {int}")
+    fun `skal statuskode være enten-eller`(enKode: Int?, enAnnenKode: Int?) {
+        assertThat(statusCode).isIn(enKode, enAnnenKode)
     }
 
     @Så("responsen skal inneholde {string}")
@@ -63,6 +73,15 @@ class RestClientStepDefs {
             .uri { builder ->
                 builder.path(endpoint ?: assertionError("endpoint er ikke satt!"))
                 parameter?.let { builder.queryParam(it.first, it.second) }
+                builder.build()
+            }.exchange()
+    }
+
+    private fun performPut() {
+        exchange = bindWebTestClientToServer()
+            .put()
+            .uri { builder ->
+                builder.path(endpoint ?: assertionError("endpoint er ikke satt!"))
                 builder.build()
             }.exchange()
     }

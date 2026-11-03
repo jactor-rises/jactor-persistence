@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.info.Info
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContext
+import kotlin.collections.forEach
 
 private val logger = KotlinLogging.logger {}
 
@@ -18,21 +19,20 @@ class JactorPersistence {
             applicationContext: ApplicationContext,
             args: Array<String>,
         ) {
-            logger.debug {
-                logger.debug { "Starting application ${list(args)}" }
-                SpringBeanNames().also { springBeanNames ->
-                    applicationContext.beanDefinitionNames.sorted().forEach(springBeanNames::add)
-
-                    logger.debug { "Available beans (only simple names):" }
-
-                    springBeanNames.names.forEach {
-                        logger.debug { "> $it" }
-                    }
-                }
-
-                "Ready for service..."
-            }
+            logger.info { "Starting application ${list(args)}" }
+            SpringBeanNames().loggSimpleNames(applicationContext = applicationContext)
+            logger.info { "Ready for service..." }
         }
+    }
+}
+
+private fun SpringBeanNames.loggSimpleNames(applicationContext: ApplicationContext) {
+    applicationContext.beanDefinitionNames.sorted().forEach(this::add)
+
+    logger.info { "Available beans (only simple names):" }
+
+    names.forEach {
+        logger.info { "> $it" }
     }
 }
 

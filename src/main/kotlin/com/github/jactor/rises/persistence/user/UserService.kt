@@ -1,6 +1,7 @@
 package com.github.jactor.rises.persistence.user
 
 import com.github.jactor.rises.persistence.PersistenceHandler
+import com.github.jactor.rises.persistence.person.PersonService
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -15,6 +16,7 @@ interface UserService {
 
 @Service
 class UserServiceBean(
+    private val personService: PersonService,
     private val userRepository: UserRepository,
     private val persistenceHandler: PersistenceHandler,
 ) : UserService {
@@ -30,9 +32,13 @@ class UserServiceBean(
         persistenceHandler.modifyAndSave(dao = userDao) { userRepository.save(userDao = it) }
     }.toUser()
 
-    override suspend fun create(createUser: CreateUser): User = createUser.toUserDao().let { userDao ->
-        persistenceHandler.modifyAndSave(dao = userDao) { userRepository.save(userDao = it) }
-    }.toUser()
+    override suspend fun create(createUser: CreateUser): User = persistenceHandler.save {
+        val personId = createUser.personId ?: personService.create(person = createUser.toPerson()).id
+
+        createUser.toUserDao(personId = personId).let { userDao ->
+            persistenceHandler.modifyAndSave(dao = userDao) { userRepository.save(userDao = it) }
+        }.toUser()
+    }
 
     override suspend fun findUsernames(userType: UserType): List<String> = persistenceHandler.read {
         userRepository.findUsernames(userType = listOf(userType))
