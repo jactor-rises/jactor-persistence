@@ -84,6 +84,7 @@ object BlogRepositoryObject : BlogRepository {
         update[blogId] = requireNotNull(blogEntryDao.blogId) { "A blog entry must belong to a blog" }
         update[createdBy] = blogEntryDao.createdBy
         update[creatorName] = blogEntryDao.creatorName
+        update[entry] = blogEntryDao.entry
         update[modifiedBy] = blogEntryDao.modifiedBy
         update[timeOfCreation] = blogEntryDao.timeOfCreation
         update[timeOfModification] = blogEntryDao.timeOfModification

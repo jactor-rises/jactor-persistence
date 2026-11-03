@@ -147,4 +147,44 @@ internal class BlogRepositoryTest @Autowired constructor(
             assertThat(blogEntry?.entry).isEqualTo("once upon a time")
         }
     }
+
+    @Test
+    fun `should save blog and blog entry, then update and read blog entry`() {
+        val address = save(
+            address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
+        )
+
+        val person = save(person = initPerson(address = address, surname = "Adder"))
+        val user = save(
+            user = initUser(
+                person = person,
+                emailAddress = "public@services.com",
+                username = "white",
+            ),
+        )
+
+        val blog = save(blog = initBlog(created = LocalDate.now(), title = "and then some...", userId = user.id))
+        val blogEntryDao = BlogEntryDao(
+            blogId = blog.persistent.id ?: error("Blog is not persisted!"),
+            creatorName = "smith",
+            entry = "once upon a time",
+        ).let { blogRepository.save(blogEntryDao = it) }
+
+        blogRepository.save(
+            blogEntryDao = blogEntryDao.copy(
+                creatorName = "John Doe",
+                entry = "far far away...",
+            ),
+        )
+
+        val blogEntries = BlogTestRepositoryObject.findBlogEntries()
+
+        assertAll {
+            assertThat(blogEntries).hasSize(1)
+            val blogEntry = blogEntries.firstOrNull()
+            assertThat(blogEntry?.creatorName).isEqualTo("John Doe")
+            assertThat(blogEntry?.timeOfCreation).isNotNull().isNotOlderThan(seconds = 1)
+            assertThat(blogEntry?.entry).isEqualTo("far far away...")
+        }
+    }
 }

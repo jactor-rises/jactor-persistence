@@ -30,6 +30,7 @@ internal class ExceptionHandlerTest {
         val userRepositoryMockk = mockk<UserRepository> {}
         val avstemmingController = UserController(
             userService = UserServiceBean(
+                personService = mockk(relaxed = true),
                 userRepository = userRepositoryMockk,
                 persistenceHandler = object : PersistenceHandler {},
             ),

@@ -1,5 +1,7 @@
 package com.github.jactor.rises.persistence.user
 
+import com.github.jactor.rises.persistence.Persistent
+import com.github.jactor.rises.persistence.person.Person
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -22,15 +24,24 @@ data class CreateUser(
     val language: String?,
     val country: String?,
 ) {
-    fun toUserDao() = UserDao(
+    fun toUserDao(personId: UUID? = null) = UserDao(
         createdBy = username,
         modifiedBy = username,
         timeOfCreation = LocalDateTime.now(),
         timeOfModification = LocalDateTime.now(),
         emailAddress = emailAddress,
-        personId = personId,
+        personId = this.personId ?: personId,
         username = username,
         userType = UserType.ACTIVE,
+    )
+
+    fun toPerson() = Person(
+        addressId = addressId,
+        description = "From ${CreateUser::class.simpleName}: $username",
+        firstName = firstName,
+        locale = null,
+        persistent = Persistent(id = personId),
+        surname = surname,
     )
 }
 

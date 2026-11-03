@@ -2,39 +2,39 @@ package com.github.jactor.rises.persistence.user
 
 import assertk.assertAll
 import assertk.assertThat
-import assertk.assertions.containsAtLeast
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import assertk.assertions.isNull
-import com.github.jactor.rises.persistence.PersistenceHandlerBean
+import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.UUIDv7
-import com.github.jactor.rises.persistence.person.PersonRepository
-import com.github.jactor.rises.persistence.person.PersonRepositoryObject
 import com.github.jactor.rises.persistence.person.PersonService
-import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.test.initAddress
+import com.github.jactor.rises.persistence.test.initCreateUser
 import com.github.jactor.rises.persistence.test.initCreateUserCommand
 import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
 import com.github.jactor.rises.persistence.test.initUserDao
 import com.github.jactor.rises.persistence.util.toCreateUser
-import com.github.jactor.rises.shared.api.CreateUserCommand
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
-import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 internal class UserServiceTest {
-    private val personServiceMockk: PersonService = mockk {}
-    private val personRepositoryMockk: PersonRepository = mockk {}
-    private val userRepositoryMockk: UserRepository = mockk {}
+    private val personServiceMockk: PersonService = mockk {
+        coEvery { create(any()) } answers { firstArg() }
+    }
+
+    private val userRepositoryMockk: UserRepository = mockk { every { save(any()) } answers { firstArg() } }
     private val userServiceToTest = UserServiceBean(
+        personService = personServiceMockk,
         userRepository = userRepositoryMockk,
-        persistenceHandler = PersistenceHandlerBean(),
+        persistenceHandler = object : PersistenceHandler {},
     )
 
     @Test
@@ -95,81 +95,47 @@ internal class UserServiceTest {
         )
 
         every { userRepositoryMockk.save(userDao = any()) } returns initUserDao(createUserCommand = createUserCommand)
-        every { personRepositoryMockk.findById(id = createUserCommand.personId!!) } returns mockk {
-            every { toPerson() } returns initPerson(surname = "Jacobsen")
-        }
 
         val user = userServiceToTest.create(createUser = createUserCommand.toCreateUser())
 
         assertThat(user.username).isEqualTo("jactor")
     }
-}
-
-class UserServiceDbIntegrationTest @Autowired constructor(
-    private val userService: UserService,
-) : AbstractSpringBootNoDirtyContextTest() {
-    @Test
-    suspend fun `should find a user by username`() {
-        assertThat(userService.find(username = "jactor")).isNotNull()
-    }
 
     @Test
-    suspend fun `should not find a user by id`() {
-        assertThat(userService.find(id = UUIDv7.generate())).isNull()
-    }
-
-    @Test
-    suspend fun `should find a user by id`() {
-        val id = UserRepositoryObject.findByUsername(username = "jactor")?.id ?: fail { "UserId was not found" }
-        assertThat(userService.find(id = id)).isNotNull()
-    }
-
-    @Test
-    suspend fun `should modify an existing user`() {
-        val tip = UserRepositoryObject.findByUsername(username = "tip") ?: fail { "User was not found" }
-        assertThat(tip.userType).isEqualTo(UserType.ACTIVE)
-
-        val updated = userService.update(user = tip.copy(userType = UserType.INACTIVE).toUser())
-        assertThat(updated.userType).isEqualTo(UserType.INACTIVE)
-    }
-
-    @Test
-    suspend fun `should find all usernames of active users`() {
-        val jactor = UserRepositoryObject.findByUsername(username = "jactor") ?: fail { "User was not found" }
-        userService.update(user = jactor.copy(userType = UserType.ACTIVE).toUser())
-        val tip = UserRepositoryObject.findByUsername(username = "tip") ?: fail { "User was not found" }
-        userService.update(user = tip.copy(userType = UserType.ACTIVE).toUser())
-
-        val activeUsers = userService.findUsernames(userType = UserType.ACTIVE)
-
-        assertThat(activeUsers, "active users").containsAtLeast("jactor", "tip")
-    }
-
-    @Test
-    suspend fun `should create a new user`() {
-        val personId = PersonRepositoryObject.findBySurname(surname = "Jacobsen").firstOrNull()?.id
-            ?: fail { "PersonId was not found" }
-
-        val createUserCommand = CreateUserCommand(username = "turbo", surname = "Jacobsen", personId = personId)
-        val id = userService.create(createUser = createUserCommand.toCreateUser()).id
-
-        assertThat(userService.find(id = id)).isNotNull()
-    }
-
-    @Test
-    suspend fun `should create a new user with an email address`() {
-        val personId = PersonRepositoryObject.findBySurname(surname = "Jacobsen").firstOrNull()?.id
-            ?: fail { "PersonId was not found" }
-
-        val createUserCommand = CreateUserCommand(
-            username = "turbotape",
-            surname = "Jacobsen",
-            personId = personId,
-            emailAddress = "turbo@jacobsen.com",
+    suspend fun `should create Person for user if personId is not present in CreateUser`() {
+        val createUser = initCreateUser(
+            personId = null,
         )
 
-        val id = userService.create(createUser = createUserCommand.toCreateUser()).id
+        userServiceToTest.create(createUser = createUser)
 
-        assertThat(userService.find(id = id)?.emailAddress).isEqualTo("turbo@jacobsen.com")
+        coVerify { personServiceMockk.create(any()) }
+    }
+
+    @Test
+    suspend fun `should not create Person for user if personId is present in CreateUser`() {
+        val createUser = initCreateUser(
+            personId = UUIDv7.generate(),
+        )
+
+        userServiceToTest.create(createUser = createUser)
+
+        coVerify(exactly = 0) { personServiceMockk.createWhenNotExists(any()) }
+    }
+
+    @Test
+    suspend fun `should use created personId when creating user`() {
+        val personId = UUIDv7.generate()
+        val createUser = initCreateUser(
+            personId = null,
+        )
+
+        coEvery { personServiceMockk.create(any()) } returns initPerson(id = personId)
+
+        userServiceToTest.create(createUser = createUser)
+
+        val userSlot = slot<UserDao>()
+        coVerify { userRepositoryMockk.save(userDao = capture(userSlot)) }
+        assertThat(userSlot.captured.personId).isEqualTo(personId)
     }
 }
