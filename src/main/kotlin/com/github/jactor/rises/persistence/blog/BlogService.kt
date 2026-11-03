@@ -25,7 +25,7 @@ interface BlogService {
 }
 
 @Service
-class BlogServiceImpl(
+class BlogServiceBean(
     private val blogRepository: BlogRepository,
     private val persistenceHandler: PersistenceHandler,
 ) : BlogService {
@@ -53,33 +53,26 @@ class BlogServiceImpl(
     }
 
     override suspend fun findBlogsBy(title: String): List<Blog> = suspendedTransaction {
-        blogRepository.findBlogsByTitle(title)
-            .map { it.toBlog() }
+        blogRepository.findBlogsByTitle(title).map { it.toBlog() }
     }
 
     override suspend fun findEntriesForBlog(blogId: UUID): List<BlogEntry> = suspendedTransaction {
-        blogRepository.findBlogEntriesByBlogId(blogId).map {
-            it.toBlogEntry()
-        }
+        blogRepository.findBlogEntriesByBlogId(blogId).map { it.toBlogEntry() }
     }
 
     override suspend fun saveOrUpdate(blog: Blog): Blog = suspendedTransaction {
-        persistenceHandler.modifyAndSave(dao = blog.toBlogDao()) {
-            blogRepository.save(blogDao = it)
-        }.toBlog()
+        persistenceHandler.modifyAndSave(dao = blog.toBlogDao()) { blogRepository.save(blogDao = it) }.toBlog()
     }
 
     override suspend fun saveOrUpdate(blogEntry: BlogEntry): BlogEntry = suspendedTransaction {
-        persistenceHandler
-            .modifyAndSave(dao = blogEntry.toBlogEntryDao()) {
-                blogRepository.save(blogEntryDao = it)
-            }.toBlogEntry()
+        persistenceHandler.modifyAndSave(dao = blogEntry.toBlogEntryDao()) { blogRepository.save(blogEntryDao = it) }
+            .toBlogEntry()
     }
 
     override suspend fun update(updateBlogTitle: UpdateBlogTitle): Blog = suspendedTransaction {
-        val blog = requireNotNull(blogRepository.findBlogById(updateBlogTitle.blogId)) {
-            "Cannot find blog to update"
-        }.apply { this.title = updateBlogTitle.title }
+        val blog = requireNotNull(
+            blogRepository.findBlogById(updateBlogTitle.blogId),
+        ) { "Cannot find blog to update" }.apply { this.title = updateBlogTitle.title }
 
         persistenceHandler.modifyAndSave(dao = blog) { blogRepository.save(blogDao = it) }.toBlog()
     }
