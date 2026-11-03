@@ -5,7 +5,7 @@ import java.util.UUID
 
 interface PersonRepository {
     fun findById(id: UUID): PersonDao?
-
+    fun findBySurname(surname: String): List<PersonDao>
     fun save(personDao: PersonDao): PersonDao
 }
 

@@ -7,7 +7,7 @@ import assertk.fail
 import com.github.jactor.rises.persistence.test.containsSubstring
 import com.github.jactor.rises.persistence.user.UserController
 import com.github.jactor.rises.persistence.user.UserRepository
-import com.github.jactor.rises.persistence.user.UserService
+import com.github.jactor.rises.persistence.user.UserServiceBean
 import com.github.jactor.rises.shared.finnFeiledeLinjer
 import io.mockk.every
 import io.mockk.mockk
@@ -30,7 +30,7 @@ internal class ExceptionHandlerTest {
     fun `skal hente kodelinjer fra vår kode når exception oppstår`() = runTest {
         val userRepositoryMockk = mockk<UserRepository> {}
         val avstemmingController = UserController(
-            userService = UserService(
+            userService = UserServiceBean(
                 userRepository = userRepositoryMockk,
                 persistenceHandler = PersistenceHandler(),
             ),

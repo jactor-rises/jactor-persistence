@@ -4,13 +4,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.fail
-import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.test.all
 import com.github.jactor.rises.persistence.test.contains
 import com.github.jactor.rises.persistence.test.equals
 import com.github.jactor.rises.persistence.test.initUser
-import com.github.jactor.rises.persistence.test.initUserDao
 import com.github.jactor.rises.persistence.test.named
 import com.github.jactor.rises.persistence.test.timestamped
 import com.github.jactor.rises.persistence.test.withId
@@ -20,24 +18,21 @@ import com.github.jactor.rises.shared.api.PersistentDto
 import com.github.jactor.rises.shared.api.UserDto
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
-import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest
-import org.springframework.context.annotation.Import
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import java.util.UUID
 
 @WebFluxTest(UserController::class)
-@Import(UserService::class, UserRepository::class, PersistenceHandler::class)
 internal class UserControllerTest @Autowired constructor(
     private val webTestClient: WebTestClient,
-    @MockkBean private val userRepositoryMockk: UserRepository,
+    @MockkBean private val userServiceMockk: UserService,
 ) {
     @Test
     fun `should not find a user by username`() {
-        every { userRepositoryMockk.findByUsername(username = "me") } returns null
+        coEvery { userServiceMockk.find(username = "me") } returns null
 
         webTestClient
             .get()
@@ -49,7 +44,7 @@ internal class UserControllerTest @Autowired constructor(
 
     @Test
     fun `should find a user by username`() {
-        every { userRepositoryMockk.findByUsername(username = "me") } returns initUser().toUserDao()
+        coEvery { userServiceMockk.find(username = "me") } returns initUser()
 
         val userDto = webTestClient
             .get()
@@ -67,7 +62,7 @@ internal class UserControllerTest @Autowired constructor(
     @Test
     fun `should not get a user by id`() {
         val uuid = UUID.randomUUID()
-        every { userRepositoryMockk.findById(id = any()) } returns null
+        coEvery { userServiceMockk.find(id = any()) } returns null
 
         webTestClient
             .get()
@@ -80,7 +75,7 @@ internal class UserControllerTest @Autowired constructor(
     @Test
     fun `should find a user by id`() {
         val uuid = UUID.randomUUID()
-        every { userRepositoryMockk.findById(id = any()) } returns initUserDao(id = uuid)
+        coEvery { userServiceMockk.find(id = any()) } returns initUser()
 
         val userDto = webTestClient
             .get()
@@ -100,8 +95,7 @@ internal class UserControllerTest @Autowired constructor(
         val uuid = UUID.randomUUID()
         val user = initUser(persistent = Persistent(id = uuid))
 
-        every { userRepositoryMockk.findById(uuid) } returns user.toUserDao()
-        every { userRepositoryMockk.save(any()) } answers { arg(0) }
+        coEvery { userServiceMockk.update(any()) } answers { arg(0) }
 
         val userDto = webTestClient
             .put()
@@ -119,9 +113,7 @@ internal class UserControllerTest @Autowired constructor(
 
     @Test
     fun `should find all usernames of active users`() {
-        every {
-            userRepositoryMockk.findUsernames(userType = listOf(UserType.ACTIVE))
-        } returns listOf("bart", "lisa")
+        coEvery { userServiceMockk.findUsernames(userType = UserType.ACTIVE) } returns listOf("bart", "lisa")
 
         val usernames = webTestClient
             .get()
@@ -138,12 +130,9 @@ internal class UserControllerTest @Autowired constructor(
 
     @Test
     fun `should accept if user id is not null`() {
-        val uuid = UUID.randomUUID().also {
-            every { userRepositoryMockk.save(any()) } answers { arg(0) }
-            every { userRepositoryMockk.findById(id = it) } returns
-                initUser(persistent = Persistent(id = it))
-                    .toUserDao()
-        }
+        val uuid = UUID.randomUUID()
+
+        coEvery { userServiceMockk.update(any()) } answers { arg(0) }
 
         webTestClient
             .put()
@@ -167,7 +156,7 @@ internal class UserControllerTest @Autowired constructor(
 
     @Test
     fun `should return BAD_REQUEST when username is occupied`() {
-        every { userRepositoryMockk.contains(username = "turbo") } returns true
+        coEvery { userServiceMockk.isAlreadyPersisted(username = "turbo") } returns true
 
         webTestClient
             .post()
@@ -182,10 +171,9 @@ internal class UserControllerTest @Autowired constructor(
     fun `should create a new user`() {
         val createUserCommand = CreateUserCommand(username = timestamped(username = "turbo"), surname = "Someone")
 
-        every { userRepositoryMockk.contains(any()) } returns false
-        every { userRepositoryMockk.save(any()) } returns
-            initUserDao(
-                id = UUID.randomUUID(),
+        coEvery { userServiceMockk.isAlreadyPersisted(any()) } returns false
+        coEvery { userServiceMockk.create(any()) } returns
+            initUser(
                 username = createUserCommand.username,
             )
 
@@ -202,7 +190,7 @@ internal class UserControllerTest @Autowired constructor(
     fun `should get a BAD_REQUEST if trying to create an existing user`() {
         val createUserCommand = CreateUserCommand(username = timestamped(username = "turbo"), surname = "Someone")
 
-        every { userRepositoryMockk.contains(any()) } returns true
+        coEvery { userServiceMockk.isAlreadyPersisted(any()) } returns true
 
         webTestClient
             .post()
@@ -221,12 +209,11 @@ internal class UserControllerTest @Autowired constructor(
             emailAddress = "somewhere@somehow.com",
         )
 
-        coEvery { userRepositoryMockk.contains(any()) } returns false
-        coEvery { userRepositoryMockk.save(any()) } returns
-            initUser(
-                username = createUserCommand.username,
-                emailAddress = createUserCommand.emailAddress,
-            ).withId().toUserDao()
+        coEvery { userServiceMockk.isAlreadyPersisted(any()) } returns false
+        coEvery { userServiceMockk.create(any()) } returns initUser(
+            username = createUserCommand.username,
+            emailAddress = createUserCommand.emailAddress,
+        ).withId()
 
         val userDto = webTestClient
             .post()
