@@ -6,17 +6,23 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.Persistent
+import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.test.initGuestBook
 import com.github.jactor.rises.persistence.test.initGuestBookEntry
 import com.github.jactor.rises.persistence.test.initUser
 import com.github.jactor.rises.persistence.test.withId
 import com.github.jactor.rises.persistence.user.UserRepository
+import com.github.jactor.rises.persistence.user.UserRepositoryObject
+import com.github.jactor.rises.persistence.util.toCreateGuestBook
+import com.github.jactor.rises.shared.api.CreateGuestBookCommand
+import com.github.jactor.rises.shared.api.CreateGuestBookEntryCommand
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
+import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 internal class GuestBookServiceTest {
@@ -112,5 +118,54 @@ internal class GuestBookServiceTest {
             assertThat(guestBookEntryDao.guestName).isEqualTo("me")
             assertThat(guestBookEntryDao.entry).isEqualTo("if i where a rich man...")
         }
+    }
+}
+
+class GuestBookServiceDbIntegrationTest @Autowired constructor(
+    private val guestBookService: GuestBookService,
+) : AbstractSpringBootNoDirtyContextTest() {
+    @Test
+    suspend fun `should create a GuestBook`() {
+        val jactorId = UserRepositoryObject.findByUsername(username = "jactor")?.id ?: fail { "Could not find user!" }
+
+        val guestBookId = guestBookService.create(
+            createGuestBook = CreateGuestBookCommand(title = "home sweet home", userId = jactorId).toCreateGuestBook(),
+        ).id
+
+        val guestBook = guestBookService.findGuestBook(id = guestBookId) ?: fail {
+            "Unable to find guest book with id $guestBookId"
+        }
+
+        assertThat(guestBook.title).isEqualTo("home sweet home")
+    }
+
+    @Test
+    suspend fun `should create a GuestBookEntry`() {
+        val guestBookId = createGuestBook()
+
+        val guestBookEntryId = guestBookService.create(
+            createGuestBookEntry = CreateGuestBookEntryCommand(
+                guestBookId = guestBookId,
+                creatorName = "sus",
+                entry = "shitty, but true",
+            ).toCreateGuestBook(),
+        ).id ?: fail { "Unable to create guest book entry!" }
+
+        val entry = guestBookService.findEntry(id = guestBookEntryId) ?: fail {
+            "Unable to find guest book entry with id $guestBookEntryId"
+        }
+
+        assertAll {
+            assertThat(entry.guestName).isEqualTo("sus")
+            assertThat(entry.entry).isEqualTo("shitty, but true")
+        }
+    }
+
+    private suspend fun createGuestBook(): UUID {
+        val jactorId = UserRepositoryObject.findByUsername(username = "jactor")?.id
+
+        return guestBookService.create(
+            createGuestBook = CreateGuestBookCommand(title = "home sweet home", userId = jactorId).toCreateGuestBook(),
+        ).id
     }
 }
