@@ -6,15 +6,10 @@ import java.util.UUID
 
 interface GuestBookService {
     suspend fun create(createGuestBook: CreateGuestBook): GuestBook
-
     suspend fun create(createGuestBookEntry: CreateGuestBookEntry): GuestBookEntry
-
     suspend fun findGuestBook(id: UUID): GuestBook?
-
     suspend fun findEntry(id: UUID): GuestBookEntry?
-
     suspend fun saveOrUpdate(guestBook: GuestBook): GuestBook
-
     suspend fun saveOrUpdate(guestBookEntry: GuestBookEntry): GuestBookEntry
 }
 
@@ -25,8 +20,7 @@ class GuestBookServiceBean(
 ) : GuestBookService {
     override suspend fun create(createGuestBook: CreateGuestBook): GuestBook = persistenceHandler.modifyAndSave(
         dao = GuestBookDao(title = createGuestBook.title, userId = createGuestBook.userId),
-    ) { guestBookRepository.save(guestBookDao = it) }
-        .toGuestBook()
+    ) { guestBookRepository.save(guestBookDao = it) }.toGuestBook()
 
     override suspend fun create(
         createGuestBookEntry: CreateGuestBookEntry,
@@ -36,21 +30,15 @@ class GuestBookServiceBean(
             entry = createGuestBookEntry.entry,
             guestBookId = createGuestBookEntry.guestBookId,
         ),
-    ) {
-        guestBookRepository.save(guestBookEntryDao = it)
-    }.toGuestBookEntry()
+    ) { guestBookRepository.save(guestBookEntryDao = it) }.toGuestBookEntry()
 
     override suspend fun findGuestBook(id: UUID): GuestBook? = guestBookRepository.findGuestBookById(id)?.toGuestBook()
-
-    override suspend fun findEntry(
-        id: UUID,
-    ): GuestBookEntry? = guestBookRepository.findGuestBookEntryById(id)?.toGuestBookEntry()
+    override suspend fun findEntry(id: UUID): GuestBookEntry? = guestBookRepository.findGuestBookEntryById(id)
+        ?.toGuestBookEntry()
 
     override suspend fun saveOrUpdate(guestBook: GuestBook): GuestBook = persistenceHandler.modifyAndSave(
         dao = guestBook.toGuestBookDao(),
-    ) {
-        guestBookRepository.save(guestBookDao = it)
-    }.toGuestBook()
+    ) { guestBookRepository.save(guestBookDao = it) }.toGuestBook()
 
     override suspend fun saveOrUpdate(
         guestBookEntry: GuestBookEntry,
