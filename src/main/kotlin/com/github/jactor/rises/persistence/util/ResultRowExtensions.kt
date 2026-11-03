@@ -15,7 +15,6 @@ import com.github.jactor.rises.persistence.person.PersonDao
 import com.github.jactor.rises.persistence.user.UserDao
 import com.github.jactor.rises.persistence.user.Users
 import org.jetbrains.exposed.v1.core.ResultRow
-import java.util.UUID
 
 fun ResultRow.toAddressDao(): AddressDao = AddressDao(
     id = this[Addresses.id].value,
@@ -87,8 +86,8 @@ fun ResultRow.toPersonDao() = PersonDao(
     addressId = this[People.addressId],
 )
 
-fun ResultRow.toUserDao(id: UUID? = null): UserDao = UserDao(
-    id = id ?: this[Users.id].value,
+fun ResultRow.toUserDao(): UserDao = UserDao(
+    id = this[Users.id].value,
     createdBy = this[Users.createdBy],
     timeOfCreation = this[Users.timeOfCreation],
     modifiedBy = this[Users.modifiedBy],
