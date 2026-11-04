@@ -6,11 +6,12 @@ import assertk.assertions.containsAtLeast
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
-import com.github.jactor.rises.persistence.PersistenceHandler
+import com.github.jactor.rises.persistence.PersistenceHandlerBean
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.UUIDv7
 import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.person.PersonRepositoryObject
+import com.github.jactor.rises.persistence.person.PersonService
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.test.initAddress
 import com.github.jactor.rises.persistence.test.initCreateUserCommand
@@ -28,11 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 internal class UserServiceTest {
+    private val personServiceMockk: PersonService = mockk {}
     private val personRepositoryMockk: PersonRepository = mockk {}
     private val userRepositoryMockk: UserRepository = mockk {}
     private val userServiceToTest = UserServiceBean(
         userRepository = userRepositoryMockk,
-        persistenceHandler = PersistenceHandler(),
+        persistenceHandler = PersistenceHandlerBean(),
     )
 
     @Test

@@ -11,7 +11,6 @@ import com.github.jactor.rises.persistence.user.UserServiceBean
 import com.github.jactor.rises.shared.finnFeiledeLinjer
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import java.util.UUID
@@ -27,12 +26,12 @@ internal class ExceptionHandlerTest {
     }
 
     @Test
-    fun `skal hente kodelinjer fra vår kode når exception oppstår`() = runTest {
+    suspend fun `skal hente kodelinjer fra vår kode når exception oppstår`() {
         val userRepositoryMockk = mockk<UserRepository> {}
         val avstemmingController = UserController(
             userService = UserServiceBean(
                 userRepository = userRepositoryMockk,
-                persistenceHandler = PersistenceHandler(),
+                persistenceHandler = object : PersistenceHandler {},
             ),
         )
 

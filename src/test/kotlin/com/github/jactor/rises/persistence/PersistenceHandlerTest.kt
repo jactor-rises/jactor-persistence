@@ -18,7 +18,7 @@ import java.util.UUID
 
 internal class PersistenceHandlerTest {
     private val oneMinuteAgo = LocalDateTime.now().minusMinutes(1)
-    private val persistenceHandler = PersistenceHandler()
+    private val persistenceHandler = object : PersistenceHandler {}
 
     @Test
     fun `should modify timestamp on address when used`() = runTest {

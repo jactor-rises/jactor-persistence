@@ -1,5 +1,6 @@
 package com.github.jactor.rises.persistence.test
 
+import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.address.Address
 import com.github.jactor.rises.persistence.address.AddressRepository
 import com.github.jactor.rises.persistence.blog.Blog
@@ -12,7 +13,6 @@ import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.user.UserService
-import com.github.jactor.rises.persistence.util.suspendedTransaction
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,9 +20,9 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 /**
- * For å unngå å starte en spring-boot applikasjon og eventuelt laste spring-context på ny og når endringer som gjøres i
- * enhetstestene ikke skal ha innvirkning på spring-context<br>
- * Hvis test krever data i database, må det settes opp manuelt
+ * To avoid starting a spring-boot application and potentially reloading the spring-context when changes are made
+ * in the unit tests that should not have an impact on the spring-context<br>
+ * If the test requires data in the database, it must be set up in the test.
  */
 @ActiveProfiles("test")
 @AutoConfigureEmbeddedDatabase(
@@ -43,6 +43,9 @@ abstract class AbstractSpringBootNoDirtyContextTest {
 
     @Autowired
     private lateinit var guestBookRepository: GuestBookRepository
+
+    @Autowired
+    private lateinit var persistenceHandler: PersistenceHandler
 
     @Autowired
     private lateinit var personRepository: PersonRepository
@@ -74,7 +77,7 @@ abstract class AbstractSpringBootNoDirtyContextTest {
         .save(userDao = user.toUserDao())
         .toUser()
 
-    protected suspend fun createUser(username: String) = suspendedTransaction {
+    protected suspend fun createUser(username: String) = persistenceHandler.save {
         val surname = "Surefire"
         val personId = save(person = initPerson(surname = surname)).id
 

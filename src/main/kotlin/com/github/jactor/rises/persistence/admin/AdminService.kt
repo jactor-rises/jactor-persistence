@@ -1,6 +1,6 @@
 package com.github.jactor.rises.persistence.admin
 
-import com.github.jactor.rises.persistence.util.suspendedTransaction
+import com.github.jactor.rises.persistence.PersistenceHandler
 import org.springframework.stereotype.Service
 
 interface AdminService {
@@ -8,8 +8,11 @@ interface AdminService {
 }
 
 @Service
-class AdminServiceBean(private val adminRepository: AdminRepository) : AdminService {
-    override suspend fun moveInactiveUser(username: String): Boolean = suspendedTransaction {
+class AdminServiceBean(
+    private val adminRepository: AdminRepository,
+    private val persistenceHandler: PersistenceHandler,
+) : AdminService {
+    override suspend fun moveInactiveUser(username: String): Boolean = persistenceHandler.save {
         adminRepository.moveInactiveUser(username = username)
     }
 }
