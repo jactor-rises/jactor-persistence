@@ -8,14 +8,18 @@ interface PersistenceHandler {
     suspend fun <T : PersistentDao<*>> modifyAndSave(
         dao: T,
         modifier: suspend (T) -> T,
-    ): T {
-        modify(dao = dao)
-        return modifier.invoke(dao)
-    }
+    ): T = modifyAndSaveWithoutTransaction(dao, modifier)
 
-    suspend fun <T : PersistentDao<*>> modify(dao: T) = dao.isPersisted.whenTrue { dao.modifiedBy(modifier = "todo") }
     suspend fun <T> read(fetch: suspend () -> T): T = fetch.invoke()
     suspend fun <T> save(saveOrUpdate: suspend () -> T): T = saveOrUpdate.invoke()
+}
+
+private suspend fun <T : PersistentDao<*>> modifyAndSaveWithoutTransaction(
+    dao: T,
+    modifier: suspend (T) -> T,
+): T {
+    dao.isPersisted.whenTrue { dao.modifiedBy(modifier = "todo") }
+    return modifier.invoke(dao)
 }
 
 @Component
@@ -23,10 +27,7 @@ class PersistenceHandlerBean : PersistenceHandler {
     override suspend fun <T : PersistentDao<*>> modifyAndSave(
         dao: T,
         modifier: suspend (T) -> T,
-    ): T = save {
-        modify(dao = dao)
-        suspendTransaction { modifier(dao) }
-    }
+    ): T = suspendTransaction { modifyAndSaveWithoutTransaction(dao, modifier) }
 
     override suspend fun <T> read(fetch: suspend () -> T): T = suspendTransaction(readOnly = true) { fetch.invoke() }
     override suspend fun <T> save(saveOrUpdate: suspend () -> T): T = suspendTransaction { saveOrUpdate.invoke() }
