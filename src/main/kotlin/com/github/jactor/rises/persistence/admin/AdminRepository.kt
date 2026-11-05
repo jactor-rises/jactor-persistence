@@ -10,7 +10,7 @@ interface AdminRepository {
 }
 
 @Repository
-class AdminRepositoryImpl : AdminRepository {
+class AdminRepositoryBean : AdminRepository {
     override suspend fun moveInactiveUser(username: String): Boolean {
         return suspendTransaction {
             exec(

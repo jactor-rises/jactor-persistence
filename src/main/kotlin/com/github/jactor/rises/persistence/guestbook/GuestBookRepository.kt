@@ -5,19 +5,13 @@ import java.util.UUID
 
 interface GuestBookRepository {
     fun findAllGuestBooks(): List<GuestBookDao>
-
     fun findByUserId(userId: UUID): GuestBookDao?
-
     fun findGuestBookById(id: UUID): GuestBookDao?
-
     fun findGuestBookEntryById(id: UUID): GuestBookEntryDao?
-
     fun findGuestBookEtriesByGuestBookId(id: UUID): List<GuestBookEntryDao>
-
     fun save(guestBookDao: GuestBookDao): GuestBookDao
-
     fun save(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao
 }
 
 @Repository
-class GuestBookRepositoryImpl : GuestBookRepository by GuestBookRepositoryObject
+class GuestBookRepositoryBean : GuestBookRepository by GuestBookRepositoryObject

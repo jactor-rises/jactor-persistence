@@ -10,4 +10,4 @@ interface AddressRepository {
 }
 
 @Repository
-class AddressRepositoryImpl : AddressRepository by AddressRepositoryObject
+class AddressRepositoryBean : AddressRepository by AddressRepositoryObject

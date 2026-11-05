@@ -13,4 +13,4 @@ interface UserRepository {
 }
 
 @Repository
-class UserRepositoryImpl : UserRepository by UserRepositoryObject
+class UserRepositoryBean : UserRepository by UserRepositoryObject

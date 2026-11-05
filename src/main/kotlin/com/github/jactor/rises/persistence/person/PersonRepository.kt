@@ -10,4 +10,4 @@ interface PersonRepository {
 }
 
 @Repository
-class PersonRepositoryImpl : PersonRepository by PersonRepositoryObject
+class PersonRepositoryBean : PersonRepository by PersonRepositoryObject

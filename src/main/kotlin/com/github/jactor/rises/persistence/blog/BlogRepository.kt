@@ -20,4 +20,4 @@ interface BlogRepository {
 }
 
 @Repository
-class BlogRepositoryImpl : BlogRepository by BlogRepositoryObject
+class BlogRepositoryBean : BlogRepository by BlogRepositoryObject
