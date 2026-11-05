@@ -20,19 +20,34 @@ class JactorPersistence {
             args: Array<String>,
         ) {
             logger.info { "Starting application ${list(args)}" }
-            SpringBeanNames().loggSimpleNames(applicationContext = applicationContext)
+
+            val springBeanNames = SpringBeanNames(splitExternalNames = true)
+            springBeanNames.addBeanNames(applicationContext = applicationContext)
+            springBeanNames.logBeanNamesBasedOnPackage(applicationContext = applicationContext)
+
             logger.info { "Ready for service..." }
         }
     }
 }
 
-private fun SpringBeanNames.loggSimpleNames(applicationContext: ApplicationContext) {
-    applicationContext.beanDefinitionNames.sorted().forEach(this::add)
+private fun SpringBeanNames.addBeanNames(applicationContext: ApplicationContext) {
+    applicationContext.beanDefinitionNames.sorted().forEach { beanName ->
+        val packageOfClass = applicationContext.getType(beanName)?.name?.substringBeforeLast(delimiter = '.')
+        add("$packageOfClass.$beanName")
+    }
+}
 
+private fun SpringBeanNames.logBeanNamesBasedOnPackage(applicationContext: ApplicationContext) {
     logger.info { "Available beans (only simple names):" }
 
     names.forEach {
         logger.info { "> $it" }
+    }
+
+    logger.debug { "Available external beans (only simple names):" }
+
+    externalNames.forEach {
+        logger.debug { "> $it" }
     }
 }
 
