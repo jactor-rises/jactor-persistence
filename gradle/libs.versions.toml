@@ -4,7 +4,7 @@ coroutines = "1.10.2"
 dependencyManagement = "1.1.7"
 exposed = "1.6.0"
 flyway = "12.4.0" # version is syncronized with spring-boot, see renovate.json for excluded components (packages)
-jactor-shared-lib = "v3.1.1" # version number is being read in build.gradle.kts
+jactor-shared-lib = "v3.3.0" # version number is being read in build.gradle.kts
 java-uuid-generator = "5.2.0"
 jvm = "25"
 kotlin = "2.3.21"
@@ -12,7 +12,7 @@ kotlin-logging = "8.0.4"
 ktlint = "14.2.0"
 postgresql = "42.7.14"
 spring-boot = "4.1.2"
-springdoc-openapi = "1.8.0"
+springdoc-openapi = "3.2.0"
 springmockk = "5.0.1"
 versions-plugin = "0.67.0"
 zonky-embedded-db = "2.8.0"
@@ -41,7 +41,8 @@ exposed-spring-boot-starter = { module = "org.jetbrains.exposed:spring-transacti
 flywayPostgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
-springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "springdoc-openapi" }
+springdoc-openapi-starter-webflux-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc-openapi" }
+
 uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.ref = "java-uuid-generator" }
 
 # test

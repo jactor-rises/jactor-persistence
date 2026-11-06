@@ -18,7 +18,7 @@ archived project [jactor-rises](https://github.com/jactor-rises/jactor-rises))
 * a spring-boot 4 application
     * run it with spring-boot or gradle `.gradlew bootRun`
 * this application is documented with swagger. After startup, use link
-  [swagger ui](http://localhost:1099/jactor-persistence/swagger-ui/index.html?configUrl=/jactor-persistence/v3/api-docs/swagger-config#/)
+  [swagger ui](http://localhost:1099/jactor-persistence/swagger-ui.html)
 
 ### Build
 
