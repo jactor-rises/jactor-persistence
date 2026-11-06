@@ -2,7 +2,6 @@ package com.github.jactor.rises.persistence.user
 
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.shared.api.UserDto
-import com.github.jactor.rises.shared.whenTrue
 import java.util.UUID
 
 @JvmRecord
@@ -34,7 +33,6 @@ data class User(
         emailAddress = emailAddress,
         personId = personId,
         username = username,
-        userType = (userType == UserType.ADMIN).whenTrue { UserTypeDto.ACTIVE }
-            ?: UserTypeDto.valueOf(userType.name),
+        userType = UserTypeDto.valueOf(userType.name),
     )
 }
