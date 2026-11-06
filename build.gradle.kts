@@ -37,7 +37,7 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.reactor)
-    implementation(libs.springdoc.openapi.ui)
+    implementation(libs.springdoc.openapi.starter.webflux.ui)
 
     // internal project dependencies
     implementation(files(jactorSharedDependency.jarFile))

@@ -17,8 +17,6 @@ management:
 
 server:
     port: 1099
-    servlet:
-        context-path: "/jactor-persistence"
 
     threads:
         virtual:
@@ -28,6 +26,8 @@ springdoc:
     packages-to-scan: com.github.jactor.rises.persistence
     swagger-ui:
         path: /swagger-ui.html
+        config-url: /jactor-persistence/v3/api-docs/swagger-config
+        url: /jactor-persistence/v3/api-docs
 
 ---
 spring:
