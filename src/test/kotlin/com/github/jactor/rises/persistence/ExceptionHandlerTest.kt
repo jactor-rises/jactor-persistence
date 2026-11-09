@@ -9,7 +9,7 @@ import com.github.jactor.rises.persistence.user.UserController
 import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.user.UserServiceBean
 import com.github.jactor.rises.shared.finnFeiledeLinjer
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -36,7 +36,7 @@ internal class ExceptionHandlerTest {
             ),
         )
 
-        every { userRepositoryMockk.findById(any()) } answers { error("boom!") }
+        coEvery { userRepositoryMockk.findById(any()) } answers { error("boom!") }
 
         runCatching { avstemmingController.get(id = UUID.randomUUID()) }
             .onSuccess { fail("Kjøring skulle feilet!") }

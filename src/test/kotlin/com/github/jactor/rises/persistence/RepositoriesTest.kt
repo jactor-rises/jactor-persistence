@@ -21,7 +21,7 @@ internal class RepositoriesTest @Autowired constructor(
     private val userRepository: UserRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
-    fun `should use a BlogRepository to save blogs and find them on on user which was earlier saved`() {
+    suspend fun `should use a BlogRepository to save blogs and find them on on user which was earlier saved`() {
         val address = save(
             address = initAddress(
                 zipCode = "1001",

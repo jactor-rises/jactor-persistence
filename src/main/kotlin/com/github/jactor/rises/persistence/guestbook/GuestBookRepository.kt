@@ -4,13 +4,13 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 interface GuestBookRepository {
-    fun findAllGuestBooks(): List<GuestBookDao>
-    fun findByUserId(userId: UUID): GuestBookDao?
-    fun findGuestBookById(id: UUID): GuestBookDao?
-    fun findGuestBookEntryById(id: UUID): GuestBookEntryDao?
-    fun findGuestBookEtriesByGuestBookId(id: UUID): List<GuestBookEntryDao>
-    fun save(guestBookDao: GuestBookDao): GuestBookDao
-    fun save(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao
+    suspend fun findAllGuestBooks(): List<GuestBookDao>
+    suspend fun findByUserId(userId: UUID): GuestBookDao?
+    suspend fun findGuestBookById(id: UUID): GuestBookDao?
+    suspend fun findGuestBookEntryById(id: UUID): GuestBookEntryDao?
+    suspend fun findGuestBookEtriesByGuestBookId(id: UUID): List<GuestBookEntryDao>
+    suspend fun save(guestBookDao: GuestBookDao): GuestBookDao
+    suspend fun save(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao
 }
 
 @Repository

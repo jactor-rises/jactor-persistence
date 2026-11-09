@@ -4,12 +4,12 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 interface UserRepository {
-    fun contains(username: String): Boolean
-    fun findById(id: UUID): UserDao?
-    fun findByPersonId(id: UUID): List<UserDao>
-    fun findByUsername(username: String): UserDao?
-    fun findUsernames(userType: List<UserType>): List<String>
-    fun save(userDao: UserDao): UserDao
+    suspend fun contains(username: String): Boolean
+    suspend fun findById(id: UUID): UserDao?
+    suspend fun findByPersonId(id: UUID): List<UserDao>
+    suspend fun findByUsername(username: String): UserDao?
+    suspend fun findUsernames(userType: List<UserType>): List<String>
+    suspend fun save(userDao: UserDao): UserDao
 }
 
 @Repository

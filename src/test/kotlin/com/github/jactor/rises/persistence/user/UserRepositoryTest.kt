@@ -16,14 +16,14 @@ internal class UserRepositoryTest @Autowired constructor(
     private val userRepository: UserRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
-    fun `should find user with username jactor`() {
+    suspend fun `should find user with username jactor`() {
         val userDao = userRepository.findByUsername("jactor")
 
         assertThat(userDao?.emailAddress).isEqualTo("tor.egil.jacobsen@gmail.com")
     }
 
     @Test
-    fun `should write then read a user dao`() {
+    suspend fun `should write then read a user dao`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
         )
@@ -50,7 +50,7 @@ internal class UserRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should write then update and read a user dao`() {
+    suspend fun `should write then update and read a user dao`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
         )
@@ -80,7 +80,7 @@ internal class UserRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should find active users and admins`() {
+    suspend fun `should find active users and admins`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
         )

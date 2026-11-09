@@ -17,7 +17,6 @@ import com.github.jactor.rises.persistence.test.initUserDao
 import com.github.jactor.rises.persistence.util.toCreateUser
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.test.runTest
@@ -30,7 +29,7 @@ internal class UserServiceTest {
         coEvery { create(any()) } answers { firstArg() }
     }
 
-    private val userRepositoryMockk: UserRepository = mockk { every { save(any()) } answers { firstArg() } }
+    private val userRepositoryMockk: UserRepository = mockk { coEvery { save(any()) } answers { firstArg() } }
     private val userServiceToTest = UserServiceBean(
         personService = personServiceMockk,
         userRepository = userRepositoryMockk,
@@ -42,7 +41,7 @@ internal class UserServiceTest {
         val addressDto = initAddress()
         val personDto = initPerson(address = addressDto)
 
-        every { userRepositoryMockk.findByUsername("jactor") } returns initUser(
+        coEvery { userRepositoryMockk.findByUsername("jactor") } returns initUser(
             person = personDto,
             username = "jactor",
         ).toUserDao()
@@ -61,7 +60,7 @@ internal class UserServiceTest {
         val addressDto = initAddress()
         val personDto = initPerson(address = addressDto)
 
-        every { userRepositoryMockk.findById(uuid) } returns initUser(
+        coEvery { userRepositoryMockk.findById(uuid) } returns initUser(
             person = personDto,
             username = "jactor",
         ).toUserDao()
@@ -79,8 +78,8 @@ internal class UserServiceTest {
         val uuid = UUID.randomUUID()
         val user = initUser(persistent = Persistent(id = uuid), username = "marley")
 
-        every { userRepositoryMockk.findById(id = uuid) } returns user.toUserDao()
-        every { userRepositoryMockk.save(any()) } returns user.toUserDao()
+        coEvery { userRepositoryMockk.findById(id = uuid) } returns user.toUserDao()
+        coEvery { userRepositoryMockk.save(any()) } returns user.toUserDao()
 
         val updatedUser = userServiceToTest.update(user)
 
@@ -94,7 +93,7 @@ internal class UserServiceTest {
             username = "jactor",
         )
 
-        every { userRepositoryMockk.save(userDao = any()) } returns initUserDao(createUserCommand = createUserCommand)
+        coEvery { userRepositoryMockk.save(userDao = any()) } returns initUserDao(createUserCommand = createUserCommand)
 
         val user = userServiceToTest.create(createUser = createUserCommand.toCreateUser())
 

@@ -19,7 +19,7 @@ internal class PersonRepositoryTest
         private val personRepository: PersonRepository,
     ) : AbstractSpringBootNoDirtyContextTest() {
         @Test
-        fun `should find default persons`() {
+        suspend fun `should find default persons`() {
             val firstNames = PersonTestRepositoryObject
                 .findBySurname("Jacobsen")
                 .map { it.firstName }
@@ -31,7 +31,7 @@ internal class PersonRepositoryTest
         }
 
         @Test
-        fun `should save then read a person dao`() {
+        suspend fun `should save then read a person dao`() {
             val addressId = save(
                 address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevar 1", city = "Testington"),
             ).persistent.id ?: fail { "not persisted?!!!" }
@@ -64,7 +64,7 @@ internal class PersonRepositoryTest
         }
 
         @Test
-        fun `should save then update and read a person dao`() {
+        suspend fun `should save then update and read a person dao`() {
             val addressId = save(
                 address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevar 1", city = "Testington"),
             ).persistent.id ?: fail { "not persisted?!!!" }

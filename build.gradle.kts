@@ -22,20 +22,22 @@ val jactorSharedDependency = GithubPackageDependency(
 dependencies {
     // spring-boot
     implementation(libs.spring.boot.starter.actuator)
-    implementation(libs.spring.boot.starter.jdbc)
+    implementation(libs.spring.boot.starter.r2dbc)
     implementation(libs.spring.boot.starter.webflux)
 
     // jetbrains-exposed
     implementation(libs.exposed.core)
     implementation(libs.exposed.java.time)
     implementation(libs.exposed.kotlin.datetime)
-    implementation(libs.exposed.spring.boot.starter)
+    implementation(libs.exposed.r2dbc)
     implementation(libs.uuid.generator)
 
     // misc third party dependencies
     implementation(libs.kotlin.logging)
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.core.jvm)
+    implementation(libs.kotlinx.coroutines.reactive)
     implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.springdoc.openapi.starter.webflux.ui)
 
@@ -43,15 +45,19 @@ dependencies {
     implementation(files(jactorSharedDependency.jarFile))
 
     // runtime dependencies
+    runtimeOnly(libs.spring.boot.starter.jdbc)
     runtimeOnly(libs.flywayPostgres)
     runtimeOnly(libs.postgresql)
+    runtimeOnly(libs.r2dbc.postgresql)
     runtimeOnly(libs.spring.boot.flyway)
 
     // test implementations
     testImplementation(libs.assertk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.test.jvm)
     testImplementation(libs.springmockk)
     testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.spring.boot.starter.jdbc)
     testImplementation(libs.spring.boot.starter.webflux.test)
     testImplementation(libs.zonky)
     testImplementation(libs.zonky.postgres)

@@ -1,51 +1,67 @@
 package com.github.jactor.rises.persistence.user
 
 import com.github.jactor.rises.persistence.util.toUserDao
+import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.toList
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
-import org.jetbrains.exposed.v1.jdbc.andWhere
-import org.jetbrains.exposed.v1.jdbc.insertAndGetId
-import org.jetbrains.exposed.v1.jdbc.select
-import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.update
+import org.jetbrains.exposed.v1.r2dbc.andWhere
+import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
+import org.jetbrains.exposed.v1.r2dbc.select
+import org.jetbrains.exposed.v1.r2dbc.selectAll
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object UserRepositoryObject : UserRepository {
-    override fun contains(username: String): Boolean = Users
-        .select(column = Users.username)
-        .andWhere { Users.username eq username }
-        .count() > 0
+    override suspend fun contains(username: String): Boolean = suspendTransaction {
+        Users
+            .select(column = Users.username)
+            .andWhere { Users.username eq username }
+            .count() > 0
+    }
 
-    override fun findById(id: UUID): UserDao? = Users
-        .selectAll()
-        .andWhere { Users.id eq id }
-        .map { it.toUserDao() }
-        .singleOrNull()
+    override suspend fun findById(id: UUID): UserDao? = suspendTransaction {
+        Users
+            .selectAll()
+            .andWhere { Users.id eq id }
+            .singleOrNull()
+            ?.toUserDao()
+    }
 
-    override fun findByPersonId(id: UUID): List<UserDao> = Users
-        .selectAll()
-        .andWhere { Users.personId eq id }
-        .map { it.toUserDao() }
+    override suspend fun findByPersonId(id: UUID): List<UserDao> = suspendTransaction {
+        Users
+            .selectAll()
+            .andWhere { Users.personId eq id }
+            .toList()
+            .map { it.toUserDao() }
+    }
 
-    override fun findByUsername(username: String): UserDao? = Users
-        .selectAll()
-        .andWhere { Users.username eq username }
-        .singleOrNull()
-        ?.toUserDao()
+    override suspend fun findByUsername(username: String): UserDao? = suspendTransaction {
+        Users
+            .selectAll()
+            .andWhere { Users.username eq username }
+            .singleOrNull()
+            ?.toUserDao()
+    }
 
-    override fun findUsernames(userType: List<UserType>): List<String> = userType.map { it.name }.let { types ->
+    override suspend fun findUsernames(userType: List<UserType>): List<String> = suspendTransaction {
+        val types = userType.map { it.name }
         Users.select(column = Users.username)
             .andWhere { Users.userType inList types }
             .withDistinct()
+            .toList()
             .map { it[Users.username] }
     }
 
-    override fun save(userDao: UserDao): UserDao = when (userDao.isPersisted) {
-        true -> update(user = userDao)
-        false -> insert(user = userDao)
+    override suspend fun save(userDao: UserDao): UserDao = suspendTransaction {
+        when (userDao.isPersisted) {
+            true -> update(user = userDao)
+            false -> insert(user = userDao)
+        }
     }
 
-    private fun insert(user: UserDao): UserDao = Users.insertAndGetId { row ->
+    private suspend fun insert(user: UserDao): UserDao = Users.insertAndGetId { row ->
         row[createdBy] = user.createdBy
         row[modifiedBy] = user.modifiedBy
         row[timeOfCreation] = user.timeOfCreation
@@ -57,7 +73,7 @@ object UserRepositoryObject : UserRepository {
     }.value
         .let { newId -> user.also { it.id = newId } }
 
-    private fun update(user: UserDao): UserDao = Users.update(
+    private suspend fun update(user: UserDao): UserDao = Users.update(
         where = { Users.id eq user.id },
     ) {
         it[modifiedBy] = user.modifiedBy
