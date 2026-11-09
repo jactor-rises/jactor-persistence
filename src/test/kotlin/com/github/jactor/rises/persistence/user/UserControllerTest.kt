@@ -60,6 +60,25 @@ internal class UserControllerTest @Autowired constructor(
     }
 
     @Test
+    fun `should find a user with ADMIN userType by username`() {
+        coEvery { userServiceMockk.find(username = "boss") } returns initUser(userType = UserType.ADMIN)
+
+        val userDto = webTestClient
+            .get()
+            .uri("/user/name/boss")
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody<UserDto>()
+            .returnResult()
+            .responseBody as UserDto
+
+        val userTypeDto = UserTypeDto.valueOf(userDto.userType.name)
+
+        assertThat(userTypeDto).isEqualTo(userDto.userType)
+    }
+
+    @Test
     fun `should not get a user by id`() {
         val uuid = UUID.randomUUID()
         coEvery { userServiceMockk.find(id = any()) } returns null
