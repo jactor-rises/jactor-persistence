@@ -46,7 +46,6 @@ kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = 
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 r2dbc-postgresql = { module = "org.postgresql:r2dbc-postgresql" }
 springdoc-openapi-starter-webflux-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc-openapi" }
-
 uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.ref = "java-uuid-generator" }
 
 # test

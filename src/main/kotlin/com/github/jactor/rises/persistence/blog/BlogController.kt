@@ -144,6 +144,7 @@ class BlogController(
         @RequestBody blogDto: BlogDto,
     ): ResponseEntity<BlogDto> = when (blogDto.harIdentifikator()) {
         true -> ResponseEntity(HttpStatus.BAD_REQUEST)
+
         false -> ResponseEntity(
             blogService.saveOrUpdate(blog = blogDto.toBlog()).toBlogDto(),
             HttpStatus.CREATED,
@@ -166,6 +167,7 @@ class BlogController(
         @PathVariable blogEntryId: UUID,
     ): ResponseEntity<BlogEntryDto> = when (blogEntryDto.harIkkeIdentifikator()) {
         true -> ResponseEntity(HttpStatus.BAD_REQUEST)
+
         false -> ResponseEntity(
             blogService.saveOrUpdate(blogEntry = blogEntryDto.toBlogEntry()).toBlogEntryDto(),
             HttpStatus.ACCEPTED,

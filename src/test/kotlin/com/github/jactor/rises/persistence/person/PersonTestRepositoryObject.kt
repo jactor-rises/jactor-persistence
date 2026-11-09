@@ -14,14 +14,17 @@ object PersonTestRepositoryObject {
 
     suspend fun findBySurname(surname: String?): List<PersonDao> = suspendTransaction {
         when {
-            (surname?.isBlank() ?: true) -> emptyList()
+            (surname?.isBlank() ?: true) -> {
+                emptyList()
+            }
 
-            else ->
+            else -> {
                 People
                     .selectAll()
                     .andWhere { People.surname eq surname }
                     .toList()
                     .map { it.toPersonDao() }
+            }
         }
     }
 }

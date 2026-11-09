@@ -90,12 +90,16 @@ class GuestBookController(
     suspend fun put(
         @RequestBody guestBookDto: GuestBookDto,
     ): ResponseEntity<GuestBookDto> = when (guestBookDto.harIkkeIdentifikator()) {
-        true -> ResponseEntity(HttpStatus.BAD_REQUEST)
-        false ->
+        true -> {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+
+        false -> {
             ResponseEntity(
                 guestBookService.saveOrUpdate(GuestBook(guestBookDto = guestBookDto)).toDto(),
                 HttpStatus.ACCEPTED,
             )
+        }
     }
 
     @ApiResponses(
@@ -135,11 +139,15 @@ class GuestBookController(
     suspend fun putEntry(
         @RequestBody guestBookEntryDto: GuestBookEntryDto,
     ): ResponseEntity<GuestBookEntryDto> = when (guestBookEntryDto.harIkkeIdentifikator()) {
-        true -> ResponseEntity(HttpStatus.BAD_REQUEST)
-        false ->
+        true -> {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+
+        false -> {
             ResponseEntity(
                 guestBookService.saveOrUpdate(GuestBookEntry(guestBookEntryDto = guestBookEntryDto)).toGuestBookEntryDto(),
                 HttpStatus.ACCEPTED,
             )
+        }
     }
 }
