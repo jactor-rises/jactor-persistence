@@ -45,7 +45,6 @@ dependencies {
     implementation(files(jactorSharedDependency.jarFile))
 
     // runtime dependencies
-    runtimeOnly(libs.spring.boot.starter.jdbc)
     runtimeOnly(libs.flywayPostgres)
     runtimeOnly(libs.postgresql)
     runtimeOnly(libs.r2dbc.postgresql)
@@ -57,7 +56,6 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test.jvm)
     testImplementation(libs.springmockk)
     testImplementation(libs.spring.boot.starter.test)
-    testImplementation(libs.spring.boot.starter.jdbc)
     testImplementation(libs.spring.boot.starter.webflux.test)
     testImplementation(libs.zonky)
     testImplementation(libs.zonky.postgres)
