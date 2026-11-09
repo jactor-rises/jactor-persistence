@@ -65,6 +65,7 @@ class UserController(
         @RequestBody createUserCommand: CreateUserCommand,
     ): ResponseEntity<UserDto> = when (userService.isAlreadyPersisted(username = createUserCommand.username)) {
         true -> ResponseEntity(HttpStatus.BAD_REQUEST)
+
         false -> ResponseEntity(
             userService.create(createUserCommand.toCreateUser()).toUserDto(),
             HttpStatus.CREATED,
@@ -83,6 +84,7 @@ class UserController(
         @RequestBody userDto: UserDto,
     ): ResponseEntity<UserDto> = when (userDto.harIkkeIdentifikator()) {
         true -> ResponseEntity(HttpStatus.BAD_REQUEST)
+
         false -> ResponseEntity(
             userService.update(user = userDto.toUser()).toUserDto(),
             HttpStatus.ACCEPTED,

@@ -12,6 +12,19 @@ plugins {
     alias(libs.plugins.versions)
 }
 
+ktlint {
+    version.set("1.8.0")
+}
+
+// overriding compiling for ktlint. this will not affect other building tasks
+configurations.named("ktlint") {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin" && requested.name == "kotlin-compiler-embeddable") {
+            useVersion("2.3.21")
+        }
+    }
+}
+
 version = "0.0.0-SNAPSHOT"
 
 val jactorSharedDependency = GithubPackageDependency(
