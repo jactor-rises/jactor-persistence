@@ -1,8 +1,9 @@
 package com.github.jactor.rises.persistence.admin
 
 import com.github.jactor.rises.persistence.user.Users
+import kotlinx.coroutines.flow.singleOrNull
 import org.jetbrains.exposed.v1.core.statements.StatementType
-import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.springframework.stereotype.Repository
 
 interface AdminRepository {
@@ -40,10 +41,9 @@ class AdminRepositoryBean : AdminRepository {
                 """.trimIndent(),
                 args = listOf(Users.username.columnType to username),
                 explicitStatementType = StatementType.SELECT,
-            ) { resultSet ->
-                check(resultSet.next()) { "Expected to find user data " }
-                resultSet.getBoolean("moved")
-            } ?: error("The move query did not return a result")
+            ) { row ->
+                row.get("moved", Boolean::class.javaObjectType)
+            }?.singleOrNull() ?: error("The move query did not return a result")
         }
     }
 }

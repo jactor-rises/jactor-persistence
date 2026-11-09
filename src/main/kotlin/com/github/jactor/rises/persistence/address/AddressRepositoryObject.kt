@@ -1,31 +1,41 @@
 package com.github.jactor.rises.persistence.address
 
 import com.github.jactor.rises.persistence.util.toAddressDao
+import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.toList
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.andWhere
-import org.jetbrains.exposed.v1.jdbc.insertAndGetId
-import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.update
+import org.jetbrains.exposed.v1.r2dbc.andWhere
+import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
+import org.jetbrains.exposed.v1.r2dbc.selectAll
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object AddressRepositoryObject : AddressRepository {
-    override fun findById(id: UUID): AddressDao? = Addresses
-        .selectAll()
-        .andWhere { Addresses.id eq id }
-        .singleOrNull()
-        ?.toAddressDao()
-
-    override fun findByZipCode(zipCode: String): List<AddressDao> = Addresses
-        .selectAll()
-        .andWhere { Addresses.zipCode eq zipCode }
-        .map { it.toAddressDao() }
-
-    override fun save(addressDao: AddressDao): AddressDao = when (addressDao.isNotPersisted) {
-        true -> insert(addressDao)
-        false -> update(addressDao)
+    override suspend fun findById(id: UUID): AddressDao? = suspendTransaction {
+        Addresses
+            .selectAll()
+            .andWhere { Addresses.id eq id }
+            .singleOrNull()
+            ?.toAddressDao()
     }
 
-    private fun insert(addressDao: AddressDao): AddressDao = Addresses
+    override suspend fun findByZipCode(zipCode: String): List<AddressDao> = suspendTransaction {
+        Addresses
+            .selectAll()
+            .andWhere { Addresses.zipCode eq zipCode }
+            .toList()
+            .map { it.toAddressDao() }
+    }
+
+    override suspend fun save(addressDao: AddressDao): AddressDao = suspendTransaction {
+        when (addressDao.isNotPersisted) {
+            true -> insert(addressDao)
+            false -> update(addressDao)
+        }
+    }
+
+    private suspend fun insert(addressDao: AddressDao): AddressDao = Addresses
         .insertAndGetId { row ->
             row[createdBy] = addressDao.createdBy
             row[modifiedBy] = addressDao.modifiedBy
@@ -40,7 +50,7 @@ object AddressRepositoryObject : AddressRepository {
             row[zipCode] = addressDao.zipCode
         }.let { newId -> addressDao.also { it.id = newId.value } }
 
-    internal fun update(addressDao: AddressDao): AddressDao = Addresses
+    internal suspend fun update(addressDao: AddressDao): AddressDao = Addresses
         .update(
             { Addresses.id eq addressDao.id },
         ) { row ->

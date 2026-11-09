@@ -2,45 +2,61 @@ package com.github.jactor.rises.persistence.guestbook
 
 import com.github.jactor.rises.persistence.util.toGuestBookDao
 import com.github.jactor.rises.persistence.util.toGuestBookEntryDao
+import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.toList
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.andWhere
-import org.jetbrains.exposed.v1.jdbc.insertAndGetId
-import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.update
+import org.jetbrains.exposed.v1.r2dbc.andWhere
+import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
+import org.jetbrains.exposed.v1.r2dbc.selectAll
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object GuestBookRepositoryObject : GuestBookRepository {
-    override fun findAllGuestBooks(): List<GuestBookDao> = GuestBooks.selectAll().map { it.toGuestBookDao() }
-
-    override fun findByUserId(userId: UUID): GuestBookDao? = GuestBooks
-        .selectAll()
-        .andWhere { GuestBooks.userId eq userId }
-        .map { it.toGuestBookDao() }
-        .singleOrNull()
-
-    override fun findGuestBookById(id: UUID): GuestBookDao? = GuestBooks
-        .selectAll()
-        .andWhere { GuestBooks.id eq id }
-        .singleOrNull()
-        ?.toGuestBookDao()
-
-    override fun findGuestBookEntryById(id: UUID): GuestBookEntryDao? = GuestBookEntries
-        .selectAll()
-        .andWhere { GuestBookEntries.id eq id }
-        .singleOrNull()
-        ?.toGuestBookEntryDao()
-
-    override fun findGuestBookEtriesByGuestBookId(id: UUID): List<GuestBookEntryDao> = GuestBookEntries
-        .selectAll()
-        .andWhere { GuestBookEntries.guestBookId eq id }
-        .map { it.toGuestBookEntryDao() }
-
-    override fun save(guestBookDao: GuestBookDao): GuestBookDao = when (guestBookDao.isPersisted) {
-        true -> update(guestBookDao)
-        false -> insert(guestBookDao)
+    override suspend fun findAllGuestBooks(): List<GuestBookDao> = suspendTransaction {
+        GuestBooks.selectAll().toList().map { it.toGuestBookDao() }
     }
 
-    private fun update(guestBookDao: GuestBookDao): GuestBookDao = GuestBooks.update(
+    override suspend fun findByUserId(userId: UUID): GuestBookDao? = suspendTransaction {
+        GuestBooks
+            .selectAll()
+            .andWhere { GuestBooks.userId eq userId }
+            .singleOrNull()
+            ?.toGuestBookDao()
+    }
+
+    override suspend fun findGuestBookById(id: UUID): GuestBookDao? = suspendTransaction {
+        GuestBooks
+            .selectAll()
+            .andWhere { GuestBooks.id eq id }
+            .singleOrNull()
+            ?.toGuestBookDao()
+    }
+
+    override suspend fun findGuestBookEntryById(id: UUID): GuestBookEntryDao? = suspendTransaction {
+        GuestBookEntries
+            .selectAll()
+            .andWhere { GuestBookEntries.id eq id }
+            .singleOrNull()
+            ?.toGuestBookEntryDao()
+    }
+
+    override suspend fun findGuestBookEtriesByGuestBookId(id: UUID): List<GuestBookEntryDao> = suspendTransaction {
+        GuestBookEntries
+            .selectAll()
+            .andWhere { GuestBookEntries.guestBookId eq id }
+            .toList()
+            .map { it.toGuestBookEntryDao() }
+    }
+
+    override suspend fun save(guestBookDao: GuestBookDao): GuestBookDao = suspendTransaction {
+        when (guestBookDao.isPersisted) {
+            true -> update(guestBookDao)
+            false -> insert(guestBookDao)
+        }
+    }
+
+    private suspend fun update(guestBookDao: GuestBookDao): GuestBookDao = GuestBooks.update(
         where = { GuestBooks.id eq guestBookDao.id },
     ) {
         it[createdBy] = guestBookDao.createdBy
@@ -51,7 +67,7 @@ object GuestBookRepositoryObject : GuestBookRepository {
         it[userId] = requireNotNull(guestBookDao.userId) { "UserId cannot be null!" }
     }.let { guestBookDao }
 
-    private fun insert(guestBookDao: GuestBookDao): GuestBookDao = GuestBooks.insertAndGetId {
+    private suspend fun insert(guestBookDao: GuestBookDao): GuestBookDao = GuestBooks.insertAndGetId {
         it[createdBy] = guestBookDao.createdBy
         it[title] = guestBookDao.title
         it[modifiedBy] = guestBookDao.modifiedBy
@@ -60,12 +76,14 @@ object GuestBookRepositoryObject : GuestBookRepository {
         it[userId] = requireNotNull(guestBookDao.userId) { "UserId cannot be null!" }
     }.value.let { guestBookDao.copy(id = it) }
 
-    override fun save(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao = when (guestBookEntryDao.isPersisted) {
-        true -> update(guestBookEntryDao)
-        false -> insert(guestBookEntryDao)
+    override suspend fun save(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao = suspendTransaction {
+        when (guestBookEntryDao.isPersisted) {
+            true -> update(guestBookEntryDao)
+            false -> insert(guestBookEntryDao)
+        }
     }
 
-    private fun update(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao = GuestBookEntries.update(
+    private suspend fun update(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao = GuestBookEntries.update(
         where = { GuestBookEntries.id eq guestBookEntryDao.id },
     ) {
         it[createdBy] = guestBookEntryDao.createdBy
@@ -77,7 +95,7 @@ object GuestBookRepositoryObject : GuestBookRepository {
         it[timeOfModification] = guestBookEntryDao.timeOfModification
     }.let { guestBookEntryDao }
 
-    private fun insert(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao = GuestBookEntries.insertAndGetId {
+    private suspend fun insert(guestBookEntryDao: GuestBookEntryDao): GuestBookEntryDao = GuestBookEntries.insertAndGetId {
         it[createdBy] = guestBookEntryDao.createdBy
         it[guestBookId] = requireNotNull(guestBookEntryDao.guestBookId) { "GuestBookId cannot be null!" }
         it[guestName] = guestBookEntryDao.guestName

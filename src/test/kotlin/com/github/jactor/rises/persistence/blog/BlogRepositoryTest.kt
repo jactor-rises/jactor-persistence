@@ -22,7 +22,7 @@ internal class BlogRepositoryTest @Autowired constructor(
     private val blogRepository: BlogRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
-    fun `should save and then read blog dao`() {
+    suspend fun `should save and then read blog dao`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
         )
@@ -49,7 +49,7 @@ internal class BlogRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should save then update and read blog dao`() {
+    suspend fun `should save then update and read blog dao`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
         )
@@ -85,7 +85,7 @@ internal class BlogRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should find blog by title`() {
+    suspend fun `should find blog by title`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
         )
@@ -114,7 +114,7 @@ internal class BlogRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should save then read blog entry`() {
+    suspend fun `should save then read blog entry`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
         )
@@ -149,7 +149,7 @@ internal class BlogRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should save blog and blog entry, then update and read blog entry`() {
+    suspend fun `should save blog and blog entry, then update and read blog entry`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
         )

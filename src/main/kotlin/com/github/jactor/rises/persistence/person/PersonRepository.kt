@@ -4,9 +4,9 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 interface PersonRepository {
-    fun findById(id: UUID): PersonDao?
-    fun findBySurname(surname: String): List<PersonDao>
-    fun save(personDao: PersonDao): PersonDao
+    suspend fun findById(id: UUID): PersonDao?
+    suspend fun findBySurname(surname: String): List<PersonDao>
+    suspend fun save(personDao: PersonDao): PersonDao
 }
 
 @Repository

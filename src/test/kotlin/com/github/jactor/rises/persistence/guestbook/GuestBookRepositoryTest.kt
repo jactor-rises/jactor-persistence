@@ -19,7 +19,7 @@ internal class GuestBookRepositoryTest @Autowired constructor(
     private val guestBookRepository: GuestBookRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
-    fun `should write then read guest book`() {
+    suspend fun `should write then read guest book`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
         )
@@ -49,7 +49,7 @@ internal class GuestBookRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should write then update and read guest book`() {
+    suspend fun `should write then update and read guest book`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testing"),
         )
@@ -84,7 +84,7 @@ internal class GuestBookRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should save then read dao for guest book entry`() {
+    suspend fun `should save then read dao for guest book entry`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
         )
@@ -124,7 +124,7 @@ internal class GuestBookRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should write two entries to a guest book and then find one entry`() {
+    suspend fun `should write two entries to a guest book and then find one entry`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
         )

@@ -34,12 +34,11 @@ spring:
   config:
     activate:
       on-profile: "!test"
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/postgres
     username: postgres
     password: mysecretpassword
-  sql:
-    init:
-      username: postgres
-      password: mysecretpassword
+  flyway:
+    url: jdbc:postgresql://localhost:5432/postgres
+    user: postgres
+    password: mysecretpassword

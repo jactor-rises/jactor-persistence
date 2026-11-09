@@ -11,7 +11,7 @@ import com.github.jactor.rises.shared.api.BlogDto
 import com.github.jactor.rises.shared.api.BlogEntryDto
 import com.github.jactor.rises.shared.api.PersistentDto
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
+import io.mockk.coEvery
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import tools.jackson.databind.ObjectMapper
@@ -22,10 +22,10 @@ internal class JsonMappingTest @Autowired constructor(
     @MockkBean private val personRepositoryMockk: PersonRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
-    fun `skal mappe json fra UserDto fra User skapt av UserDao`() {
+    suspend fun `skal mappe json fra UserDto fra User skapt av UserDao`() {
         val personId = UUID.randomUUID()
 
-        every { personRepositoryMockk.findById(any()) } returns initPersonDao(id = personId)
+        coEvery { personRepositoryMockk.findById(any()) } returns initPersonDao(id = personId)
 
         val user = initUserDao(personId = personId).toUser()
         val json: String = objectMapper.writeValueAsString(user.toUserDto())

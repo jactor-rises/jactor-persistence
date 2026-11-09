@@ -16,7 +16,7 @@ import com.github.jactor.rises.persistence.user.UserRepositoryObject
 import com.github.jactor.rises.persistence.util.toCreateGuestBook
 import com.github.jactor.rises.shared.api.CreateGuestBookCommand
 import com.github.jactor.rises.shared.api.CreateGuestBookEntryCommand
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.test.runTest
@@ -41,8 +41,8 @@ internal class GuestBookServiceTest {
             userId = UUID.randomUUID()
         }
 
-        every { guestBookRepositoryMockk.findGuestBookById(id = uuid) } returns guestBookDao
-        every { userRepositoryMockk.findById(any()) } returns initUser().withId().toUserDao()
+        coEvery { guestBookRepositoryMockk.findGuestBookById(id = uuid) } returns guestBookDao
+        coEvery { userRepositoryMockk.findById(any()) } returns initUser().withId().toUserDao()
 
         val (_, title, _) = guestBookServiceToTest.findGuestBook(id = uuid) ?: fail { "missed mocking?" }
 
@@ -58,8 +58,8 @@ internal class GuestBookServiceTest {
             persistent = Persistent(id = uuid),
         ).toGuestBookEntryDao()
 
-        every { guestBookRepositoryMockk.findGuestBookById(id = any()) } returns mockk(relaxed = true)
-        every { guestBookRepositoryMockk.findGuestBookEntryById(id = uuid) } returns anEntry
+        coEvery { guestBookRepositoryMockk.findGuestBookById(id = any()) } returns mockk(relaxed = true)
+        coEvery { guestBookRepositoryMockk.findGuestBookEntryById(id = uuid) } returns anEntry
 
         val guestBookEntryModel = guestBookServiceToTest.findEntry(id = uuid) ?: fail { "missed mocking?" }
 
@@ -79,8 +79,8 @@ internal class GuestBookServiceTest {
             user = user,
         )
 
-        every { userRepositoryMockk.findById(id = guestBook.userId!!) } returns user.toUserDao()
-        every {
+        coEvery { userRepositoryMockk.findById(id = guestBook.userId!!) } returns user.toUserDao()
+        coEvery {
             guestBookRepositoryMockk.save(guestBookDao = capture(guestBookDaoSlot))
         } returns guestBook.toGuestBookDao()
 
@@ -101,12 +101,12 @@ internal class GuestBookServiceTest {
             entry = "if i where a rich man...",
         )
 
-        every { userRepositoryMockk.findById(id = guestBook.userId!!) } returns user.toUserDao()
-        every { guestBookRepositoryMockk.findGuestBookById(id = guestBookEntry.guestBookId!!) } returns
+        coEvery { userRepositoryMockk.findById(id = guestBook.userId!!) } returns user.toUserDao()
+        coEvery { guestBookRepositoryMockk.findGuestBookById(id = guestBookEntry.guestBookId!!) } returns
             guestBook
                 .toGuestBookDao()
 
-        every {
+        coEvery {
             guestBookRepositoryMockk.save(guestBookEntryDao = capture(guestBookEntryDaoSlot))
         } returns guestBookEntry.toGuestBookEntryDao()
 

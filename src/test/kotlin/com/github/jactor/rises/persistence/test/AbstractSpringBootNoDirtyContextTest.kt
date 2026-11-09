@@ -16,8 +16,8 @@ import com.github.jactor.rises.persistence.user.UserService
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.transaction.annotation.Transactional
 
 /**
  * To avoid starting a spring-boot application and potentially reloading the spring-context when changes are made
@@ -28,9 +28,10 @@ import org.springframework.transaction.annotation.Transactional
 @AutoConfigureEmbeddedDatabase(
     provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.EMBEDDED,
     type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES,
+    refresh = AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD,
 )
 @SpringBootTest
-@Transactional
+@Import(R2dbcEmbeddedDatabaseTestConfig::class)
 abstract class AbstractSpringBootNoDirtyContextTest {
     @Autowired
     private lateinit var addressRepository: AddressRepository
@@ -53,27 +54,27 @@ abstract class AbstractSpringBootNoDirtyContextTest {
     @Autowired
     private lateinit var userRepository: UserRepository
 
-    protected fun save(address: Address): Address = addressRepository
+    protected suspend fun save(address: Address): Address = addressRepository
         .save(addressDao = address.toAddressDao())
         .toAddress()
 
-    protected fun save(blog: Blog): Blog = blogRepository
+    protected suspend fun save(blog: Blog): Blog = blogRepository
         .save(blogDao = blog.toBlogDao())
         .toBlog()
 
-    protected fun save(blogEntry: BlogEntry): BlogEntry = blogRepository
+    protected suspend fun save(blogEntry: BlogEntry): BlogEntry = blogRepository
         .save(blogEntryDao = blogEntry.toBlogEntryDao())
         .toBlogEntry()
 
-    protected fun save(guestBook: GuestBook): GuestBook = guestBookRepository
+    protected suspend fun save(guestBook: GuestBook): GuestBook = guestBookRepository
         .save(guestBookDao = guestBook.toGuestBookDao())
         .toGuestBook()
 
-    protected fun save(person: Person): Person = personRepository
+    protected suspend fun save(person: Person): Person = personRepository
         .save(personDao = person.toPersonDao())
         .toPerson()
 
-    protected fun save(user: User): User = userRepository
+    protected suspend fun save(user: User): User = userRepository
         .save(userDao = user.toUserDao())
         .toUser()
 

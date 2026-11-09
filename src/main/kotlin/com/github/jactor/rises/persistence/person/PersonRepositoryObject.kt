@@ -1,31 +1,41 @@
 package com.github.jactor.rises.persistence.person
 
 import com.github.jactor.rises.persistence.util.toPersonDao
+import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.toList
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.andWhere
-import org.jetbrains.exposed.v1.jdbc.insertAndGetId
-import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.update
+import org.jetbrains.exposed.v1.r2dbc.andWhere
+import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
+import org.jetbrains.exposed.v1.r2dbc.selectAll
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object PersonRepositoryObject : PersonRepository {
-    override fun findById(id: UUID): PersonDao? = People
-        .selectAll()
-        .andWhere { People.id eq id }
-        .map { it.toPersonDao() }
-        .singleOrNull()
-
-    override fun findBySurname(surname: String): List<PersonDao> = People
-        .selectAll()
-        .andWhere { People.surname eq surname }
-        .map { it.toPersonDao() }
-
-    override fun save(personDao: PersonDao): PersonDao = when (personDao.isNotPersisted) {
-        true -> insert(personDao)
-        false -> update(personDao)
+    override suspend fun findById(id: UUID): PersonDao? = suspendTransaction {
+        People
+            .selectAll()
+            .andWhere { People.id eq id }
+            .singleOrNull()
+            ?.toPersonDao()
     }
 
-    private fun insert(personDao: PersonDao): PersonDao = People.insertAndGetId { row ->
+    override suspend fun findBySurname(surname: String): List<PersonDao> = suspendTransaction {
+        People
+            .selectAll()
+            .andWhere { People.surname eq surname }
+            .toList()
+            .map { it.toPersonDao() }
+    }
+
+    override suspend fun save(personDao: PersonDao): PersonDao = suspendTransaction {
+        when (personDao.isNotPersisted) {
+            true -> insert(personDao)
+            false -> update(personDao)
+        }
+    }
+
+    private suspend fun insert(personDao: PersonDao): PersonDao = People.insertAndGetId { row ->
         row[createdBy] = personDao.createdBy
         row[modifiedBy] = personDao.modifiedBy
         row[timeOfCreation] = personDao.timeOfCreation
@@ -39,7 +49,7 @@ object PersonRepositoryObject : PersonRepository {
         }
     }.let { newId -> personDao.also { it.id = newId.value } }
 
-    private fun update(personDao: PersonDao): PersonDao = People.update(
+    private suspend fun update(personDao: PersonDao): PersonDao = People.update(
         where = { People.id eq personDao.id },
     ) { row ->
         row[modifiedBy] = personDao.modifiedBy
