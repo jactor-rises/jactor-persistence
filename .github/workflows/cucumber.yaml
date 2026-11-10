@@ -30,52 +30,24 @@ jobs:
                     java-version: ${{ steps.java-version.outputs.version }}
 
             -   name: Start PostgreSQL
-                run: |
-                    sudo apt-get update
-                    sudo apt-get install -y podman podman-compose
-                    podman-compose up -d
+                run: .github/scripts/start_postgresql.sh
 
             -   name: Set up Gradle
                 uses: gradle/actions/setup-gradle@v6
-
-            -   name: Start spring-boot application in separate process
-                id: spring-boot
-                run: |
-                    ./gradlew bootRun > bootRun.log 2>&1 &
-                    PID=$!
-                    echo "pidSpringBoot=$PID" >> $GITHUB_OUTPUT
 
             -   name: Set up Maven
                 uses: stCarolas/setup-maven@v5
                 with:
                     maven-version: 3.10.0
 
-            -   name: Wait for Spring Boot
+            -   name: Start Spring Boot and run Cucumber tests
                 run: |
-                    deadline=$((SECONDS + 30))
-                    while (( SECONDS < deadline )); do
-                      if curl -fsS --max-time 5 http://localhost:1099/jactor-persistence/actuator/health \
-                        | grep -Eq '"status"[[:space:]]*:[[:space:]]*"UP"'; then
-                        exit 0
-                      fi
-                      sleep 1
-                    done
-                    echo "Spring Boot did not become healthy within 60 seconds."
-                    exit 1
+                    .github/scripts/start_spring_boot.sh
+                    .github/scripts/run_cucumber_tests.sh
 
-            -   name: Run cucumber tests
-                run: |
-                    cd cucumber-persistence
-                    mvn test
-
-            -   name: Stop running spring-boot
+            -   name: Stop Spring Boot
                 if: always()
-                env:
-                    PID: ${{ steps.spring-boot.outputs.pidSpringBoot }}
-                run: |
-                    if kill -0 "$PID" 2>/dev/null; then
-                      kill "$PID"
-                    fi
+                run: .github/scripts/stop_spring_boot.sh
 
             -   name: Stop PostgresSQL (podman)
                 if: always()
