@@ -4,7 +4,7 @@
         "config:recommended",
         ":semanticCommits"
     ],
-    "commitMessagePrefix": "#39: ",
+    "commitMessagePrefix": "#61: ",
     "platformAutomerge": true,
     "automergeType": "pr",
     "timezone": "Europe/Oslo",
