@@ -1,0 +1,63 @@
+name: cucumber
+
+on:
+    push:
+        branches:
+            - '**'
+    workflow_dispatch: { }
+
+jobs:
+    build-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v7
+                with:
+                    fetch-depth: 0
+
+            -   name: Set up JDK
+                uses: actions/setup-java@v6
+                with:
+                    cache: gradle
+                    distribution: temurin
+                    java-version: ${{ steps.java-version.outputs.version }}
+
+            -   name: Set up Gradle
+                uses: gradle/actions/setup-gradle@v6
+
+            -   name: Start spring-boot application in separate process
+                id: spring-boot
+                run: |
+                    ./gradlew bootRun > bootRun.log 2>&1 &
+                    PID=$!
+                    echo "pidSpringBoot=$PID" >> $GITHUB_OUTPUT
+
+            -   name: Set up Maven
+                uses: stCarolas/setup-maven@v5.1
+                with:
+                    maven-version: 3.10.0
+
+            -   name: ktlint check
+                run: ./gradlew ktlintCheck
+
+            -   name: Wait for Spring Boot
+                run: |
+                    until curl -fsS http://localhost:1099/jactor-persistence/actuator \
+                      | grep -Eq '"status"[[:space:]]*:[[:space:]]*"UP"'; do
+                      sleep 1
+                    done
+
+            -   name: Run cucumber tests
+                run: |
+                    cd cucumber-persistence
+                    mvn test
+
+            -   name: Stop running spring-boot
+                if: always()
+                env:
+                    PID: ${{ steps.spring-boot.outputs.pidSpringBoot }}
+                run: |
+                    if kill -0 "$PID" 2>/dev/null; then
+                      kill "$PID"
+                    fi
