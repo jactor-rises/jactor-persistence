@@ -112,7 +112,7 @@ class ResponseSpec(responseSpec: WebTestClient.ResponseSpec) {
         val bodyContentSpec = responseSpec.expectBody().returnResult().also {
             println("> status=${it.status}")
             println("> headers=${it.responseHeaders}")
-            println("> body=${it.responseBody?.decodeToString()}")
+            println("> body=${it.responseBody?.decodeToString()?.let { "length: ${it.count()} characters" }}")
         }
 
         bodyContentSpec.responseBody?.decodeToString()?.let { responseJson = it }
