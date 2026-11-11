@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -x
 
 if [[ "$(uname -s)" == "Linux" && -r /etc/os-release ]]; then
     sudo apt-get update
