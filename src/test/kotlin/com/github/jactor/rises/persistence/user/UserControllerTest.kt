@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.fail
 import com.github.jactor.rises.persistence.Persistent
+import com.github.jactor.rises.persistence.test.PermitAllTestSecurityConfig
 import com.github.jactor.rises.persistence.test.all
 import com.github.jactor.rises.persistence.test.contains
 import com.github.jactor.rises.persistence.test.equals
@@ -21,11 +22,13 @@ import io.mockk.coEvery
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest
+import org.springframework.context.annotation.Import
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import java.util.UUID
 
 @WebFluxTest(UserController::class)
+@Import(PermitAllTestSecurityConfig::class)
 internal class UserControllerTest @Autowired constructor(
     private val webTestClient: WebTestClient,
     @MockkBean private val userServiceMockk: UserService,

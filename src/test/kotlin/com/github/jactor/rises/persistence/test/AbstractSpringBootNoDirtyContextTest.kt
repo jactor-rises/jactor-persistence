@@ -17,7 +17,11 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
+import java.util.UUID
 
 /**
  * To avoid starting a spring-boot application and potentially reloading the spring-context when changes are made
@@ -33,6 +37,18 @@ import org.springframework.test.context.ActiveProfiles
 @SpringBootTest
 @Import(R2dbcEmbeddedDatabaseTestConfig::class)
 abstract class AbstractSpringBootNoDirtyContextTest {
+    companion object {
+        private val JACTOR_PASSWORD_HASH = requireNotNull(
+            BCryptPasswordEncoder().encode(UUID.randomUUID().toString()),
+        )
+
+        @JvmStatic
+        @DynamicPropertySource
+        fun registerJactorPasswordHash(registry: DynamicPropertyRegistry) {
+            registry.add("app.security.jactor-password-hash") { JACTOR_PASSWORD_HASH }
+        }
+    }
+
     @Autowired
     private lateinit var addressRepository: AddressRepository
 

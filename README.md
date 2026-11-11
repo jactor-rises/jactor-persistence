@@ -2,7 +2,8 @@
 
 [![build and test](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml)
 
-[![jactor-shared](https://img.shields.io/github/v/release/jactor-rises/jactor-shared)](https://github.com/jactor-rises/jactor-shared/releases) of jactor-shared
+[![jactor-shared](https://img.shields.io/github/v/release/jactor-rises/jactor-shared)](https://github.com/jactor-rises/jactor-shared/releases)
+of jactor-shared
 
 ### What is this repository for?
 
@@ -35,21 +36,41 @@ From the root of the source code:
 How to build and run this application. Gradle and podman commands are executed from the root of the source code.
 
 1. Set up and run the database with [podman](https://podman.io). If on mac, it can be found with
-[homebrew](https://brew.sh)
-   * ```brew install podman```
+   [homebrew](https://brew.sh)
+    * ```
+      brew install podman
+      ```
 2. Run the database with [podman-compose](https://docs.podman.io/en/latest/markdown/podman-compose.1.html)
-   * `podman-compose up -d` (-d option seperates the database in a separate process)
+    * ```
+      podman-compose up -d
+      ```
+      (-d option launces the database in a separate process)
 3. Start the applicaiton with [gradle](https://gradle.org)
-   * `./gradlew bootRun`
+    * ```
+      ./gradlew bootRun
+      ```
+
+### Authentication
+
+The service provides login at `POST /jactor-persistence/admin/login`.
+
+A successful login returns the signed JWT in the `Authorization: Bearer <token>` response header; the token expires
+after 15 minutes. Send that header with subsequent requests. All endpoints except login and the Swagger UI/OpenAPI docs
+require a valid token.
 
 ### Some technologies used
 
 #### Implementation
 
 * [spring-boot 4.x](https://spring.io/projects/spring-boot)
+    * including [spring security](https://spring.io/projects/spring-security)
 * [jetbrains-exposed](https://www.jetbrains.com/exposed/)
 * [kotlin 2.x](https://kotlinlang.org)
 * [PostgreSQL](https://www.postgresql.org)
+
+#### Integration testing
+
+* [cucumber](https://cucumber.io)
 
 #### Unit testing
 
@@ -64,5 +85,5 @@ How to build and run this application. Gradle and podman commands are executed f
 * [gradle 9.x](https://gradle.org)
 * [podman](https://podman.io)
 * [swagger-ui](https://swagger.io/tools/swagger-ui/)
-    * herunder [springdoc](https://springdoc.org)
+    * including [springdoc](https://springdoc.org)
 * [sdk man](https://sdkman.io)
