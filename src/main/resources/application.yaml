@@ -2,6 +2,11 @@ spring:
     webflux:
         base-path: /jactor-persistence
 
+app:
+    security:
+        jactor-password-hash: ${JACTOR_PASSWORD_HASH}
+        jwt-secret: ${JWT_SECRET}
+
 logging:
     level:
         com.githnub.jactor: debug

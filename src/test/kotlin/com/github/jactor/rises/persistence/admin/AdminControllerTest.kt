@@ -1,16 +1,20 @@
 package com.github.jactor.rises.persistence.admin
 
+import com.github.jactor.rises.persistence.test.PermitAllTestSecurityConfig
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest
+import org.springframework.context.annotation.Import
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @WebFluxTest(AdminController::class)
+@Import(PermitAllTestSecurityConfig::class)
 class AdminControllerTest @Autowired constructor(
     private val webTestClient: WebTestClient,
     @MockkBean private val adminServiceMockk: AdminService,
+    @MockkBean private val authenticationServiceMockk: AuthenticationService,
 ) {
     @Test
     fun `should move deadbeat user from user to inactive user table`() {

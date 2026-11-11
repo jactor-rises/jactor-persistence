@@ -36,7 +36,9 @@ dependencies {
     // spring-boot
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.r2dbc)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.webflux)
+    implementation(libs.spring.boot.starter.oauth2.resource.server)
 
     // jetbrains-exposed
     implementation(libs.exposed.core)
