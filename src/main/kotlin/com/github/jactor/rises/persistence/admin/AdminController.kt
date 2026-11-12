@@ -23,10 +23,10 @@ class AdminController(
     ): ResponseEntity<Void> = authenticationService.authenticate(
         username = loginRequest.username,
         password = loginRequest.password,
-    )?.let { token ->
+    )?.let { jwtToken ->
         ResponseEntity
             .ok()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
+            .header(HttpHeaders.AUTHORIZATION, jwtToken.createBearerToken())
             .build()
     } ?: ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
 
