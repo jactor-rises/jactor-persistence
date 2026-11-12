@@ -22,7 +22,7 @@ import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @WebFluxTest(controllers = [AdminController::class, UserController::class])
-@Import(SecurityConfig::class, AuthenticationService::class)
+@Import(SecurityConfig::class, AuthenticationServiceBean::class)
 @TestPropertySource(properties = ["app.security.jwt-secret=0123456789abcdef0123456789abcdef"])
 internal class SecurityConfigTest @Autowired constructor(
     private val webTestClient: WebTestClient,
