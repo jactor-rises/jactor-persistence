@@ -27,8 +27,8 @@ echo "> ---------------------------"
 
 deadline=$((SECONDS + 90))
 while (( SECONDS < deadline )); do
-  if curl -fsS --max-time 5 "$health_url" | jq -e 'any(.. | objects; .status? == "UP")' >/dev/null; then
-
+  if http_status=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "$health_url") &&
+    [[ "$http_status" == "401" ]]; then
     # If at least two users are present, the database migration is successful
     podman-compose exec -T database psql -U postgres -d postgres -c 'SELECT * FROM t_user;'
 

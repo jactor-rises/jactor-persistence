@@ -2,6 +2,8 @@
 
 [![build and test](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/build-test.yaml)
 
+[![cucumber](https://github.com/jactor-rises/jactor-persistence/actions/workflows/cucumber.yaml/badge.svg)](https://github.com/jactor-rises/jactor-persistence/actions/workflows/cucumber.yaml)
+
 [![jactor-shared](https://img.shields.io/github/v/release/jactor-rises/jactor-shared)](https://github.com/jactor-rises/jactor-shared/releases)
 of jactor-shared
 
