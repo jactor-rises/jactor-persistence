@@ -41,6 +41,10 @@ jobs:
                     maven-version: 3.10.0
 
             -   name: Start Spring Boot and run Cucumber tests
+                env:
+                    JACTOR_PASSWORD: ${{ secrets.JACTOR_PASSWORD }}
+                    JACTOR_PASSWORD_HASH: ${{ secrets.JACTOR_PASSWORD_HASH }}
+                    JWT_SECRET: ${{ secrets.JWT_SECRET }}
                 run: |
                     .github/scripts/start_spring_boot.sh
                     .github/scripts/run_cucumber_tests.sh

@@ -34,7 +34,7 @@ class AdminController(
     suspend fun moveInactiveUser(
         @PathVariable username: String,
     ): ResponseEntity<Void> = when (adminService.moveInactiveUser(username = username)) {
-        true -> ResponseEntity.ok().build()
+        true -> ResponseEntity.accepted().build()
         false -> ResponseEntity.noContent().build()
     }
 }

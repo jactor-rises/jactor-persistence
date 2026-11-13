@@ -25,7 +25,7 @@ class AdminControllerTest @Autowired constructor(
             .uri("/admin/move/deadbeat")
             .exchange()
             .expectStatus()
-            .isOk()
+            .isAccepted()
     }
 
     @Test
