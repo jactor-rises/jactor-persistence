@@ -22,7 +22,7 @@ interface AuthenticationService {
 }
 
 @Service
-open class AuthenticationServiceBean(
+class AuthenticationServiceBean(
     @Value($$"${app.security.jactor-password-hash}") private val jactorPasswordHash: String,
     private val passwordEncoder: PasswordEncoder,
     private val jwtEncoder: JwtEncoder,
