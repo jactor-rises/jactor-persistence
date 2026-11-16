@@ -5,7 +5,7 @@
         ":semanticCommits"
     ],
     "commitMessagePrefix": "#61: ",
-    "platformAutomerge": true,
+    "platformAutomerge": false,
     "automergeType": "pr",
     "timezone": "Europe/Oslo",
     "schedule": [ "before 11:00am" ],
@@ -19,7 +19,7 @@
         {
             "matchManagers": ["gradle"],
             "matchUpdateTypes": ["minor", "patch"],
-            "automerge": true,
+            "automerge": false,
             "groupName": "Gradle minor and patch updates"
         },
         {
