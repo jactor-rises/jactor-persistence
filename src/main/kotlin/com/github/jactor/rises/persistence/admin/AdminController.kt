@@ -15,21 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(path = ["/admin"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class AdminController(
     private val adminService: AdminService,
-    private val authenticationService: AuthenticationService,
 ) {
-    @PostMapping("/login", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    suspend fun login(
-        @RequestBody loginRequest: LoginRequest,
-    ): ResponseEntity<Void> = authenticationService.authenticate(
-        username = loginRequest.username,
-        password = loginRequest.password,
-    )?.let { jwtToken ->
-        ResponseEntity
-            .ok()
-            .header(HttpHeaders.AUTHORIZATION, jwtToken.createBearerToken())
-            .build()
-    } ?: ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-
     @PutMapping("/move/{username}")
     suspend fun moveInactiveUser(
         @PathVariable username: String,
@@ -38,9 +24,3 @@ class AdminController(
         false -> ResponseEntity.noContent().build()
     }
 }
-
-@JvmRecord
-data class LoginRequest(
-    val username: String,
-    val password: String,
-)

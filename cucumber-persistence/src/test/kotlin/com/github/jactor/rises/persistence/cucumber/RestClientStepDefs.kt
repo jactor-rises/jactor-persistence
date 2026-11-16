@@ -1,24 +1,27 @@
 package com.github.jactor.rises.persistence.cucumber
 
+import com.github.jactor.rises.persistence.cucumber.auth.AuthenticationService
+import com.github.jactor.rises.persistence.cucumber.auth.JwtToken
 import com.willowtreeapps.opentest4k.AssertionFailedError
 import io.cucumber.java.no.Gitt
 import io.cucumber.java.no.Når
 import io.cucumber.java.no.Så
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.fail
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.test.web.reactive.server.HeaderAssertions
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.util.UUID
 
-class RestClientStepDefs {
+class RestClientStepDefs @Autowired constructor(
+    private val authenticationService: AuthenticationService,
+) {
     private var baseUrl: String? = null
     private var endpoint: String? = null
     private var exchange: WebTestClient.ResponseSpec? = null
-    private var loginRequest: LoginRequest? = null
+    private var jwtToken: JwtToken? = null
     private var responseSpec: ResponseSpec? = null
-    private var authorizationToken: String? = null
 
     val responseJson: String? get() = responseSpec?.responseJson ?: exchange.initAndReturnResponseSpec().responseJson
     val statusCode: Int? get() = responseSpec?.statusCode ?: exchange.initAndReturnResponseSpec().statusCode
@@ -28,18 +31,15 @@ class RestClientStepDefs {
         this.baseUrl = baseUrl
     }
 
-    @Gitt("en body for innlogging som inneholder brukernavn {string} og passord hentet fra {string}")
-    fun `gitt en body for innlogging`(brukernavn: String, fraPassordLagring: String) {
-        loginRequest = LoginRequest(
-            username = brukernavn,
-            password = when (fraPassordLagring) {
-                "JACTOR_PASSWORD" -> System.getenv("JACTOR_PASSWORD") ?: randomUuidSomTekst()
-                else -> randomUuidSomTekst()
-            }
-        )
+    @Gitt("at autentiseringstoken genereres")
+    fun `gitt autentiseringstoken genereres`() {
+        val jactorPassword = requireNotNull(System.getenv("JACTOR_PASSWORD")) {
+            "JACTOR_PASSWORD must be set to create an authorization token for Cucumber tests"
+        }
+        jwtToken = runBlocking {
+            authenticationService.authenticate(username = "jactor", password = jactorPassword)
+        } ?: assertionError("Could not create an authorization token for Cucumber tests")
     }
-
-    private fun randomUuidSomTekst(): String = UUID.randomUUID().toString()
 
     @Gitt("endpoint {string}")
     fun endpoint(endpoint: String?) {
@@ -49,11 +49,6 @@ class RestClientStepDefs {
     @Når("man utfører en http get")
     fun `når man utfører en http get`() {
         performGet()
-    }
-
-    @Når("man utfører en http post")
-    fun `når man utfører en http post`() {
-        performPost(body = loginRequest?.somJson())
     }
 
     @Når("man utfører en http put")
@@ -81,24 +76,9 @@ class RestClientStepDefs {
         assertThat(statusCode).isIn(enKode, enAnnenKode)
     }
 
-    @Så("sendes denne body med en http post")
-    fun `så sendes denne body med en http post`() {
-        performPost(body = loginRequest?.somJson())
-    }
-
     @Så("responsen skal inneholde {string}")
     fun `skal responsen inneholde`(responseJson: String?) {
         assertThat(this.responseJson).isNotNull().contains(responseJson)
-    }
-
-    @Så("responsen skal inneholde en header {string} som starter med strengen {string}")
-    fun `skal responsen inneholde header som starter med strengen`(headerNavn: String, starterMed: String?) {
-        val expectHeader: HeaderAssertions = exchange?.expectHeader() ?: fail { "Expected headere fra response" }
-
-        expectHeader.exists(headerNavn)
-        expectHeader.value(headerNavn) { value ->
-            assertThat(value).isNotNull().startsWith(starterMed)
-        }
     }
 
     private fun bindWebTestClientToServer(requestBody: String? = null) = WebTestClient
@@ -124,7 +104,7 @@ class RestClientStepDefs {
         .build()
 
     private fun performGet(parameter: Pair<String, String>? = null) {
-        val bearerToken = bearerTokenForNextRequest()
+        val requestJwtToken = jwtTokenForNextRequest()
         responseSpec = null
 
         val uriSpec = bindWebTestClientToServer()
@@ -135,13 +115,15 @@ class RestClientStepDefs {
                 builder.build()
             }
 
-        bearerToken?.let { token -> uriSpec.headers { it.setBearerAuth(token) } }
+        requestJwtToken?.let { token ->
+            uriSpec.headers { it.set(HttpHeaders.AUTHORIZATION, token.createBearerToken()) }
+        }
 
         exchange = uriSpec.exchange()
     }
 
     private fun performPut() {
-        val bearerToken = bearerTokenForNextRequest()
+        val requestJwtToken = jwtTokenForNextRequest()
         responseSpec = null
 
         val uriSpec = bindWebTestClientToServer()
@@ -151,14 +133,16 @@ class RestClientStepDefs {
                 builder.build()
             }
 
-        bearerToken?.let { token -> uriSpec.headers { it.setBearerAuth(token) } }
+        requestJwtToken?.let { token ->
+            uriSpec.headers { it.set(HttpHeaders.AUTHORIZATION, token.createBearerToken()) }
+        }
 
         exchange = uriSpec.exchange()
     }
 
     private fun performPost(body: String?) {
         val requestBody = body ?: assertionError("ingen body request til post!")
-        val bearerToken = bearerTokenForNextRequest()
+        val requestJwtToken = jwtTokenForNextRequest()
         responseSpec = null
 
         val uriSpec = if (endpoint != null) {
@@ -167,7 +151,9 @@ class RestClientStepDefs {
             bindWebTestClientToServer(requestBody).post()
         }
 
-        bearerToken?.let { token -> uriSpec.headers { it.setBearerAuth(token) } }
+        requestJwtToken?.let { token ->
+            uriSpec.headers { it.set(HttpHeaders.AUTHORIZATION, token.createBearerToken()) }
+        }
 
         exchange = uriSpec
             .contentType(MediaType.APPLICATION_JSON)
@@ -175,10 +161,10 @@ class RestClientStepDefs {
             .exchange()
     }
 
-    private fun bearerTokenForNextRequest(): String? {
+    private fun jwtTokenForNextRequest(): JwtToken? {
         val latestResponse = responseSpec ?: exchange?.initAndReturnResponseSpec()
-        latestResponse?.bearerToken?.let { authorizationToken = it }
-        return authorizationToken
+        latestResponse?.jwtToken?.let { jwtToken = it }
+        return jwtToken
     }
 
     private fun WebTestClient.ResponseSpec?.initAndReturnResponseSpec() = ResponseSpec(
@@ -189,7 +175,7 @@ class RestClientStepDefs {
 private fun assertionError(message: String): Nothing = throw AssertionFailedError(message)
 
 class ResponseSpec(responseSpec: WebTestClient.ResponseSpec) {
-    var bearerToken: String? = null
+    var jwtToken: JwtToken? = null
     var responseJson: String? = null
     var statusCode: Int? = null
 
@@ -203,13 +189,10 @@ class ResponseSpec(responseSpec: WebTestClient.ResponseSpec) {
         bodyContentSpec.responseBody?.decodeToString()?.let { responseJson = it }
         statusCode = bodyContentSpec.status.value()
         bodyContentSpec.responseHeaders.containsHeader("Authorization").whenTrue {
-            bearerToken = bodyContentSpec.responseHeaders["Authorization"]?.firstOrNull()?.removePrefix("Bearer ")
+            bodyContentSpec.responseHeaders["Authorization"]
+                ?.firstOrNull()
+                ?.removePrefix("Bearer ")
+                ?.let { tokenValue -> jwtToken = JwtToken(id = UUID.randomUUID(), tokenValue = tokenValue) }
         }
     }
 }
-
-@JvmRecord
-data class LoginRequest(
-    val username: String,
-    val password: String,
-)
