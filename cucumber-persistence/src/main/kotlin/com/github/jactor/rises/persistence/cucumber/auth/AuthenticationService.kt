@@ -1,8 +1,6 @@
-package com.github.jactor.rises.persistence.admin
+package com.github.jactor.rises.persistence.cucumber.auth
 
-import com.github.jactor.rises.persistence.UUIDv7
-import com.github.jactor.rises.persistence.config.SecurityConfig
-import com.github.jactor.rises.shared.whenTrue
+import com.github.jactor.rises.persistence.cucumber.whenTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Value
@@ -43,7 +41,7 @@ class AuthenticationServiceBean(
                 val passwordMatches = passwordEncoder.matches(password, jactorPasswordHash)
 
                 passwordMatches.whenTrue {
-                    val tokenId = UUIDv7.generate()
+                    val tokenId = UUID.randomUUID()
                     JwtToken(
                         id = tokenId,
                         tokenValue = createToken(),

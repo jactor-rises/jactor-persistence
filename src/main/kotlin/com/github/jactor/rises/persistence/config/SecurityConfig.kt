@@ -62,6 +62,5 @@ class SecurityConfig {
 
     companion object {
         private const val MINIMUM_SECRET_BYTES = 32
-        val BCryptHash = """^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$""".toRegex()
     }
 }

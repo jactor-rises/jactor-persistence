@@ -1,0 +1,3 @@
+app:
+    security:
+        jwt-secret: cucumber-test-secret-that-is-long-enough-for-hs256

@@ -3,9 +3,7 @@ Egenskap: jactor-presistence behandler en bruker
 
     Bakgrunn: Logg inn til jactor-persistence
         Gitt base url 'http://localhost:1099/jactor-persistence'
-        Og endpoint '/admin/login'
-        Og en body for innlogging som inneholder brukernavn 'jactor' og passord hentet fra 'JACTOR_PASSWORD'
-        Så sendes denne body med en http post
+        Og at autentiseringstoken genereres
 
     Scenario: Hent aktive brukere fra jactor-persistence
         Gitt endpoint '/user/usernames'

@@ -14,7 +14,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 class AdminControllerTest @Autowired constructor(
     private val webTestClient: WebTestClient,
     @MockkBean private val adminServiceMockk: AdminService,
-    @MockkBean private val authenticationServiceMockk: AuthenticationService,
 ) {
     @Test
     fun `should move deadbeat user from user to inactive user table`() {

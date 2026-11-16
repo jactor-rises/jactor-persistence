@@ -1,14 +1,11 @@
-package com.github.jactor.rises.persistence.admin
+package com.github.jactor.rises.persistence.cucumber.auth
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import com.github.jactor.rises.persistence.config.SecurityConfig
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.reactor.awaitSingle
-import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assumptions.assumeThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -41,21 +38,21 @@ internal class AuthenticationServiceTest {
         )
 
         @Test
-        fun `should issue a token for jactor with the correct password`() = runTest {
+        suspend fun `should issue a token for jactor with the correct password`() {
             val token = authenticationService.authenticate(username = "jactor", password = "correct-password")
 
             assertThat(token?.tokenValue ?: "missing token").isEqualTo("signed-token")
         }
 
         @Test
-        fun `should reject a different username`() = runTest {
+        suspend fun `should reject a different username`() {
             val token = authenticationService.authenticate(username = "someone-else", password = "correct-password")
 
             assertThat(token).isNull()
         }
 
         @Test
-        fun `should reject an incorrect password`() = runTest {
+        suspend fun `should reject an incorrect password`() {
             val token = authenticationService.authenticate(username = "jactor", password = "incorrect-password")
 
             assertThat(token).isNull()
@@ -93,9 +90,9 @@ internal class AuthenticationServiceTest {
             ) ?: fail { "Authentication failed???" }
 
             val encodingResult = runCatching {
-                securityConfig.reactiveJwtDecoder(
+                securityConfig.jwtDecoder(
                     jwtSecret = fetchExistingVariable(label = jwtSecretLabel),
-                ).decode(jwtToken.tokenValue).awaitSingle()
+                ).decode(jwtToken.tokenValue).block()
             }
 
             assertThat(encodingResult.isSuccess).isTrue()
@@ -113,9 +110,9 @@ internal class AuthenticationServiceTest {
             ) ?: fail { "Authentication failed???" }
 
             val encodingResult = runCatching {
-                securityConfig.reactiveJwtDecoder(
+                securityConfig.jwtDecoder(
                     jwtSecret = fetchExistingVariable(label = jwtSecretLabel),
-                ).decode(jwtToken.tokenValue).awaitSingle()
+                ).decode(jwtToken.tokenValue).block()
             }
 
             assertThat(encodingResult.isFailure).isTrue()
@@ -127,10 +124,10 @@ internal class AuthenticationServiceTest {
         jwtEncoder: JwtEncoder,
         passwordEncoder: PasswordEncoder,
     ) : AuthenticationServiceBean(
-            jactorPasswordHash = jactorPasswordHash,
-            jwtEncoder = jwtEncoder,
-            passwordEncoder = passwordEncoder,
-        ) {
+        jactorPasswordHash = jactorPasswordHash,
+        jwtEncoder = jwtEncoder,
+        passwordEncoder = passwordEncoder,
+    ) {
         fun issuedAt(instant: Instant) {
             super.issuedTimestamp = { instant }
         }
