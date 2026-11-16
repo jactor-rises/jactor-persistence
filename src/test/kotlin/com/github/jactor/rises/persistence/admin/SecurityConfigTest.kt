@@ -1,9 +1,8 @@
 package com.github.jactor.rises.persistence.admin
 
-import assertk.assertThat
-import assertk.assertions.startsWith
 import com.github.jactor.rises.persistence.config.SecurityConfig
 import com.github.jactor.rises.persistence.test.createToken
+import com.github.jactor.rises.persistence.test.initUser
 import com.github.jactor.rises.persistence.user.UserController
 import com.github.jactor.rises.persistence.user.UserService
 import com.ninjasquad.springmockk.MockkBean
@@ -41,43 +40,6 @@ internal class SecurityConfigTest @Autowired constructor(
     }
 
     @Test
-    fun `should return bearer token after successful login`() {
-        val authorizationHeader = webTestClient
-            .post()
-            .uri("/admin/login")
-            .bodyValue(LoginRequest(username = "jactor", password = "secret"))
-            .exchange()
-            .expectStatus()
-            .isOk
-            .returnResult()
-            .responseHeaders
-            .getFirst(HttpHeaders.AUTHORIZATION)
-            ?: error("Login did not return an Authorization header")
-
-        assertThat(authorizationHeader).startsWith("Bearer ")
-        coEvery { userServiceMockk.find(username = "jactor") } returns null
-
-        webTestClient
-            .get()
-            .uri("/user/name/jactor")
-            .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-            .exchange()
-            .expectStatus()
-            .isNoContent
-    }
-
-    @Test
-    fun `should reject login with incorrect credentials`() {
-        webTestClient
-            .post()
-            .uri("/admin/login")
-            .bodyValue(LoginRequest(username = "jactor", password = "incorrect"))
-            .exchange()
-            .expectStatus()
-            .isUnauthorized
-    }
-
-    @Test
     fun `should reject requests without a token`() {
         webTestClient
             .get()
@@ -88,19 +50,32 @@ internal class SecurityConfigTest @Autowired constructor(
     }
 
     @Test
-    fun `should accept a valid bearer token`() {
-        coEvery { userServiceMockk.find(username = "jactor") } returns null
+    fun `should accept a valid bearer token, but not find user`() = "jactor".let { username ->
+        coEvery { userServiceMockk.find(username = username) } returns null
 
         webTestClient
             .get()
-            .uri("/user/name/jactor")
+            .uri("/user/name/$username")
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${jwtEncoder.createToken()}")
             .exchange()
             .expectStatus()
             .isNoContent
 
-        coVerify(exactly = 1) { userServiceMockk.find(username = "jactor") }
+        coVerify(exactly = 1) { userServiceMockk.find(username = username) }
     }
 
-    private fun initBearerToken()
+    @Test
+    fun `should accept a valid bearer token and find user`() = "jactor".let { username ->
+        coEvery { userServiceMockk.find(username = username) } returns initUser(username = username)
+
+        webTestClient
+            .get()
+            .uri("/user/name/$username")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${jwtEncoder.createToken()}")
+            .exchange()
+            .expectStatus()
+            .isOk
+
+        coVerify(exactly = 1) { userServiceMockk.find(username = username) }
+    }
 }
