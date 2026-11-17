@@ -94,11 +94,14 @@ class RestClientStepDefs @Autowired constructor(
                 } else {
                     header.value
                 }
+
                 header.key to headerValues
             }
+
             println("> request uri=${request.url()}")
             println("> request headers=$requestHeaders")
             println("> request body=${requestBody ?: "<none>"}")
+
             next.exchange(request)
         }
         .build()
