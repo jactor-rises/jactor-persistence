@@ -6,8 +6,8 @@ import java.util.UUID
 
 data class AddressDao(
     override var id: UUID?,
-    override val createdBy: String,
-    override val timeOfCreation: LocalDateTime,
+    override var createdBy: String,
+    override var timeOfCreation: LocalDateTime,
     override var modifiedBy: String,
     override var timeOfModification: LocalDateTime,
     var addressLine1: String,
@@ -18,6 +18,12 @@ data class AddressDao(
     var zipCode: String,
 ) : PersistentDao<AddressDao> {
     override fun copyWithoutId(): AddressDao = copy(id = null)
+    override fun createdBy(creator: String): AddressDao {
+        createdBy = creator
+        timeOfCreation = LocalDateTime.now()
+
+        return modifiedBy(modifier = creator)
+    }
 
     override fun modifiedBy(modifier: String): AddressDao {
         modifiedBy = modifier

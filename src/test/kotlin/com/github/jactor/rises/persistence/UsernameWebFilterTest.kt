@@ -2,8 +2,9 @@ package com.github.jactor.rises.persistence
 
 import assertk.assertAll
 import assertk.assertThat
+import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNull
+import assertk.assertions.isFailure
 import org.junit.jupiter.api.Test
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest
 import org.springframework.mock.web.server.MockServerWebExchange
@@ -18,13 +19,33 @@ class UsernameWebFilterTest {
     fun `should propagate authenticated username and isolates it between requests`() {
         val firstUsername = filterWebExchange(webExchange = initWebExchange(username = "first-user"))
         val secondUsername = filterWebExchange(webExchange = initWebExchange(username = "second-user"))
-        val usernameWithoutPrincipal = filterWebExchange(webExchange = initWebExchageWithoutToken())
 
         assertAll {
             assertThat(actual = firstUsername, name = "first").isEqualTo("first-user")
             assertThat(actual = secondUsername, name = "second").isEqualTo("second-user")
-            assertThat(actual = usernameWithoutPrincipal, name = "without").isNull()
         }
+    }
+
+    @Test
+    fun `should fail when authentication principal is missing`() {
+        val result = runCatching {
+            filterWebExchange(webExchange = initWebExchangeWithoutToken())
+        }
+
+        assertThat(result)
+            .isFailure()
+            .hasMessage("No authentication name could be gathered")
+    }
+
+    @Test
+    fun `should fail when authentication name is blank`() {
+        val result = runCatching {
+            filterWebExchange(webExchange = initWebExchange(username = " "))
+        }
+
+        assertThat(result)
+            .isFailure()
+            .hasMessage("The username is blank, no authentication name could be gathered")
     }
 
     private fun filterWebExchange(webExchange: ServerWebExchange): String? {
@@ -54,6 +75,6 @@ class UsernameWebFilterTest {
             .build()
     }
 
-    private fun initWebExchageWithoutToken(): ServerWebExchange =
+    private fun initWebExchangeWithoutToken(): ServerWebExchange =
         MockServerWebExchange.from(MockServerHttpRequest.get("/").build())
 }

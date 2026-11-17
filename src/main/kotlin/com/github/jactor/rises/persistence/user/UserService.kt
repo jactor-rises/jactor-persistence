@@ -29,14 +29,14 @@ class UserServiceBean(
     }
 
     override suspend fun update(user: User): User = user.toUserDao().let { userDao ->
-        persistenceHandler.modifyAndSave(dao = userDao) { userRepository.save(userDao = it) }
+        persistenceHandler.save(dao = userDao) { userRepository.save(userDao = it) }
     }.toUser()
 
-    override suspend fun create(createUser: CreateUser): User = persistenceHandler.save {
+    override suspend fun create(createUser: CreateUser): User = run {
         val personId = createUser.personId ?: personService.create(person = createUser.toPerson()).id
 
         createUser.toUserDao(personId = personId).let { userDao ->
-            persistenceHandler.modifyAndSave(dao = userDao) { userRepository.save(userDao = it) }
+            persistenceHandler.save(dao = userDao) { userRepository.save(userDao = it) }
         }.toUser()
     }
 

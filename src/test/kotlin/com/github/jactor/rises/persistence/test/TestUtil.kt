@@ -81,12 +81,13 @@ fun initBlog(
 
 fun initBlogDao(
     id: UUID? = null,
+    timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
 ) = BlogDao(
     id = id,
     createdBy = "unit test",
     modifiedBy = "unit test",
-    timeOfCreation = LocalDateTime.now(),
+    timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
 )
 
@@ -104,6 +105,7 @@ fun initBlogEntry(
 
 fun initBlogEntryDao(
     id: UUID? = null,
+    timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
     blogId: UUID = UUID.randomUUID(),
 ) = BlogEntryDao(
@@ -112,7 +114,7 @@ fun initBlogEntryDao(
     creatorName = "unit test",
     entry = "unit test",
     modifiedBy = "unit test",
-    timeOfCreation = LocalDateTime.now(),
+    timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
     blogId = blogId,
 )
@@ -171,9 +173,11 @@ fun initGuestBook(
 
 fun initGuestBookDao(
     id: UUID? = null,
+    timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
 ) = GuestBookDao(
     id = id,
+    timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
 )
 
@@ -191,6 +195,7 @@ fun initGuestBookEntry(
 
 fun initGuestBookEntryDao(
     id: UUID? = null,
+    timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
 ) = GuestBookEntryDao(
     id = id,
@@ -199,25 +204,26 @@ fun initGuestBookEntryDao(
     entry = "unit test",
     guestBookId = null,
     modifiedBy = "unit test",
-    timeOfCreation = LocalDateTime.now(),
+    timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
 )
 
 fun initUserDao(
     id: UUID? = UUID.randomUUID(),
     personId: UUID? = null,
-    username: String = "whoami",
+    timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
+    username: String = "whoami",
 ): UserDao = UserDao(
     id = id,
     createdBy = "unit test",
     emailAddress = null,
     modifiedBy = "unit test",
     personId = personId,
+    timeOfCreation = timeOfCreation,
+    timeOfModification = timeOfModification,
     username = username,
     userType = UserType.ACTIVE,
-    timeOfCreation = LocalDateTime.now(),
-    timeOfModification = timeOfModification,
 )
 
 fun initUserDao(createUserCommand: CreateUserCommand) = UserDao(
@@ -256,6 +262,7 @@ fun initPersonDao(
     firstName: String? = null,
     locale: String? = null,
     surname: String = "",
+    timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
 ) = PersonDao(
     id = id,
@@ -264,6 +271,7 @@ fun initPersonDao(
     firstName = firstName,
     locale = locale,
     surname = surname,
+    timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
 )
 

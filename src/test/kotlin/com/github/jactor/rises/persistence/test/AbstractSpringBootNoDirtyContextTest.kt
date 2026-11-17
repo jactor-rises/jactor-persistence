@@ -14,8 +14,12 @@ import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.user.UserService
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.parallel.Isolated
+import org.junit.jupiter.api.parallel.ResourceLock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.context.annotation.Import
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.test.context.ActiveProfiles
@@ -34,8 +38,12 @@ import java.util.UUID
     type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES,
     refresh = AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD,
 )
-@SpringBootTest
-@Import(R2dbcEmbeddedDatabaseTestConfig::class)
+@AutoConfigureWebTestClient
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith(RandomUsernameExtension::class)
+@Import(R2dbcEmbeddedDatabaseTestConfig::class, RandomUsernameTestConfig::class)
+@Isolated
+@ResourceLock(RandomUsernameExtension.RESOURCE_LOCK)
 abstract class AbstractSpringBootNoDirtyContextTest {
     companion object {
         private val JACTOR_PASSWORD_HASH = requireNotNull(
@@ -94,7 +102,7 @@ abstract class AbstractSpringBootNoDirtyContextTest {
         .save(userDao = user.toUserDao())
         .toUser()
 
-    protected suspend fun createUser(username: String) = persistenceHandler.save {
+    protected suspend fun createUser(username: String) = run {
         val surname = "Surefire"
         val personId = save(person = initPerson(surname = surname)).id
 

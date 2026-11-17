@@ -13,13 +13,13 @@ data class GuestBookDao(
     var title: String = "no-name",
     internal var userId: UUID? = null,
 ) : PersistentDao<GuestBookDao?> {
-    fun toGuestBook(): GuestBook = GuestBook(
-        persistent = toPersistent(),
-        title = title,
-        userId = userId,
-    )
-
     override fun copyWithoutId(): GuestBookDao = copy(id = null)
+    override fun createdBy(creator: String): GuestBookDao {
+        createdBy = creator
+        timeOfCreation = LocalDateTime.now()
+
+        return modifiedBy(modifier = creator)
+    }
 
     override fun modifiedBy(modifier: String): GuestBookDao {
         modifiedBy = modifier
@@ -27,4 +27,10 @@ data class GuestBookDao(
 
         return this
     }
+
+    fun toGuestBook(): GuestBook = GuestBook(
+        persistent = toPersistent(),
+        title = title,
+        userId = userId,
+    )
 }

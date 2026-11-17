@@ -31,7 +31,7 @@ class BlogServiceBean(
         timeOfCreation = LocalDateTime.now(),
         timeOfModification = LocalDateTime.now(),
     ).let { blogEntryDao ->
-        persistenceHandler.modifyAndSave(dao = blogEntryDao) {
+        persistenceHandler.save(dao = blogEntryDao) {
             blogRepository.save(blogEntryDao = it)
         }.toBlogEntry()
     }
@@ -50,16 +50,16 @@ class BlogServiceBean(
         blogRepository.findBlogEntriesByBlogId(blogId).map { it.toBlogEntry() }
     }
 
-    override suspend fun saveOrUpdate(blog: Blog): Blog = persistenceHandler.modifyAndSave(dao = blog.toBlogDao()) {
+    override suspend fun saveOrUpdate(blog: Blog): Blog = persistenceHandler.save(dao = blog.toBlogDao()) {
         blogRepository.save(blogDao = it)
     }.toBlog()
 
-    override suspend fun saveOrUpdate(blogEntry: BlogEntry): BlogEntry = persistenceHandler.modifyAndSave(
+    override suspend fun saveOrUpdate(blogEntry: BlogEntry): BlogEntry = persistenceHandler.save(
         dao = blogEntry.toBlogEntryDao(),
     ) { blogRepository.save(blogEntryDao = it) }.toBlogEntry()
 
     override suspend fun update(updateBlogTitle: UpdateBlogTitle): Blog = requireNotNull(
         blogRepository.findBlogById(updateBlogTitle.blogId),
     ) { "Cannot find blog to update" }.apply { this.title = updateBlogTitle.title }
-        .let { blog -> persistenceHandler.modifyAndSave(dao = blog) { blogRepository.save(blogDao = it) } }.toBlog()
+        .let { blog -> persistenceHandler.save(dao = blog) { blogRepository.save(blogDao = it) } }.toBlog()
 }

@@ -13,10 +13,10 @@ import java.time.LocalDateTime
 
 fun LocalDateTime.countSecondsUntilNow(): Long = Duration.between(this, LocalDateTime.now()).seconds
 
-fun JwtEncoder.createToken(): String {
+fun JwtEncoder.createToken(username: String = "jactor"): String {
     val issuedAt = Instant.now()
     val claims = JwtClaimsSet.builder()
-        .subject("jactor")
+        .subject(username)
         .issuedAt(issuedAt)
         .expiresAt(issuedAt.plusSeconds(900))
         .build()
