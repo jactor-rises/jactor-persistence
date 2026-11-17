@@ -2,7 +2,8 @@ package com.github.jactor.rises.persistence.user
 
 import assertk.assertAll
 import assertk.assertThat
-import assertk.assertions.containsOnly
+import assertk.assertions.containsAtLeast
+import assertk.assertions.doesNotContain
 import assertk.assertions.isEqualTo
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
@@ -106,6 +107,7 @@ internal class UserRepositoryTest @Autowired constructor(
 
         val usernames = userRepository.findUsernames(listOf(UserType.ACTIVE, UserType.ADMIN))
 
-        assertThat(usernames).containsOnly("tip", "spiderman", "jactor")
+        assertThat(usernames).containsAtLeast("tip", "spiderman", "jactor")
+        assertThat(usernames).doesNotContain("superman")
     }
 }

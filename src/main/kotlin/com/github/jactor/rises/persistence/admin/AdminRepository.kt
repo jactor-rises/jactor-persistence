@@ -1,5 +1,7 @@
 package com.github.jactor.rises.persistence.admin
 
+import com.github.jactor.rises.persistence.ContextUsernameProvider
+import com.github.jactor.rises.persistence.UsernameProvider
 import com.github.jactor.rises.persistence.user.Users
 import kotlinx.coroutines.flow.singleOrNull
 import org.jetbrains.exposed.v1.core.statements.StatementType
@@ -7,18 +9,21 @@ import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.springframework.stereotype.Repository
 
 interface AdminRepository {
-    suspend fun moveInactiveUser(username: String): Boolean
+    suspend fun setUserInactive(username: String): Boolean
 }
 
 @Repository
-class AdminRepositoryBean : AdminRepository {
-    override suspend fun moveInactiveUser(username: String): Boolean {
+class AdminRepositoryBean(
+    private val usernameProvider: UsernameProvider = ContextUsernameProvider(),
+) : AdminRepository {
+    override suspend fun setUserInactive(username: String): Boolean {
+        val modifiedBy = usernameProvider.fetchUsername()
+
         return suspendTransaction {
             exec(
                 """
                 WITH source_user AS MATERIALIZED (
-                    SELECT ID, CREATED_BY, CREATION_TIME, UPDATED_BY, UPDATED_TIME,
-                           EMAIL, USER_NAME, PERSON_ID, USER_TYPE
+                    SELECT ID, CREATED_BY, CREATION_TIME, EMAIL, USER_NAME, PERSON_ID
                     FROM T_USER
                     WHERE USER_NAME = ?
                     FOR UPDATE
@@ -28,8 +33,8 @@ class AdminRepositoryBean : AdminRepository {
                         ID, CREATED_BY, CREATION_TIME, UPDATED_BY, UPDATED_TIME,
                         EMAIL, USER_NAME, PERSON_ID, USER_TYPE, INACTIVE_SINCE
                     )
-                    SELECT ID, CREATED_BY, CREATION_TIME, UPDATED_BY, UPDATED_TIME,
-                           EMAIL, USER_NAME, PERSON_ID, USER_TYPE, now()
+                    SELECT ID, CREATED_BY, CREATION_TIME, ?, now(),
+                           EMAIL, USER_NAME, PERSON_ID, 'INACTIVE', now()
                     FROM source_user
                     RETURNING ID
                 ),
@@ -39,7 +44,10 @@ class AdminRepositoryBean : AdminRepository {
                 )
                 SELECT EXISTS (SELECT 1 FROM inserted_user) AS moved;
                 """.trimIndent(),
-                args = listOf(Users.username.columnType to username),
+                args = listOf(
+                    Users.username.columnType to username,
+                    Users.modifiedBy.columnType to modifiedBy,
+                ),
                 explicitStatementType = StatementType.SELECT,
             ) { row ->
                 row.get("moved", Boolean::class.javaObjectType)

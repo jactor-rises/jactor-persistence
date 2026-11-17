@@ -17,7 +17,7 @@ class AdminControllerTest @Autowired constructor(
 ) {
     @Test
     fun `should move deadbeat user from user to inactive user table`() {
-        coEvery { adminServiceMockk.moveInactiveUser(username = "deadbeat") } returns true
+        coEvery { adminServiceMockk.setUserInactive(username = "deadbeat") } returns true
 
         webTestClient
             .put()
@@ -29,7 +29,7 @@ class AdminControllerTest @Autowired constructor(
 
     @Test
     fun `should not move deadbeat user from user to inactive user table when deadbeat is not a active user`() {
-        coEvery { adminServiceMockk.moveInactiveUser(username = "deadbeat") } returns false
+        coEvery { adminServiceMockk.setUserInactive(username = "deadbeat") } returns false
 
         webTestClient
             .put()

@@ -1,25 +1,26 @@
 package com.github.jactor.rises.persistence
 
-import com.github.jactor.rises.shared.whenTrue
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
+import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
-import java.util.Optional
 
+@Component
 class UsernameWebFilter : WebFilter {
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> = exchange
         .getPrincipal<JwtAuthenticationToken>()
-        .map { authentication -> Optional.of(authentication.name) }
-        .defaultIfEmpty(Optional.empty())
-        .flatMap { username ->
-            val downstream = chain.filter(exchange)
+        .switchIfEmpty(Mono.error(IllegalStateException("No authentication name could be gathered")))
+        .flatMap { authentication ->
+            val username = authentication.name
 
-            username.isPresent.whenTrue {
-                downstream.contextWrite { context ->
-                    UsernameContext.withUsername(context, username.get())
+            if (username.isBlank()) {
+                Mono.error(IllegalStateException("The username is blank, no authentication name could be gathered"))
+            } else {
+                chain.filter(exchange).contextWrite { context ->
+                    UsernameContext.withUsername(context, username)
                 }
-            } ?: downstream
+            }
         }
 }

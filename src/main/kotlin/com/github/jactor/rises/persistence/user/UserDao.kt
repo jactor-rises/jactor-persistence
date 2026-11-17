@@ -6,8 +6,8 @@ import java.util.UUID
 
 data class UserDao(
     override var id: UUID? = null,
-    override val createdBy: String,
-    override val timeOfCreation: LocalDateTime,
+    override var createdBy: String,
+    override var timeOfCreation: LocalDateTime,
     override var modifiedBy: String,
     override var timeOfModification: LocalDateTime,
     internal var userType: UserType = UserType.ACTIVE,
@@ -15,10 +15,13 @@ data class UserDao(
     internal var personId: UUID? = null,
     internal var username: String = "na",
 ) : PersistentDao<UserDao> {
-    override fun copyWithoutId(): UserDao = copy(
-        id = null,
-        personId = null,
-    )
+    override fun copyWithoutId(): UserDao = copy(id = null, personId = null)
+    override fun createdBy(creator: String): UserDao {
+        createdBy = creator
+        timeOfCreation = LocalDateTime.now()
+
+        return modifiedBy(modifier = creator)
+    }
 
     override fun modifiedBy(modifier: String): UserDao {
         modifiedBy = modifier

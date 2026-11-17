@@ -7,9 +7,9 @@ import java.util.UUID
 
 data class GuestBookEntryDao(
     override var id: UUID? = null,
-    override val createdBy: String = "todo",
+    override var createdBy: String = "todo",
     override var modifiedBy: String = "todo",
-    override val timeOfCreation: LocalDateTime = LocalDateTime.now(),
+    override var timeOfCreation: LocalDateTime = LocalDateTime.now(),
     override var timeOfModification: LocalDateTime = LocalDateTime.now(),
     var guestName: String,
     override var entry: String,
@@ -22,17 +22,14 @@ data class GuestBookEntryDao(
             guestName = value
         }
 
-    fun toGuestBookEntry() = GuestBookEntry(
-        persistent = toPersistent(),
-        guestName = guestName,
-        entry = entry,
-        guestBookId = guestBookId,
-    )
+    override fun copyWithoutId() = copy(id = null, guestBookId = null)
+    override fun createdBy(creator: String): GuestBookEntryDao {
+        createdBy = creator
+        timeOfCreation = LocalDateTime.now()
+        timeOfModification = LocalDateTime.now()
 
-    override fun copyWithoutId() = copy(
-        id = null,
-        guestBookId = null,
-    )
+        return this
+    }
 
     override fun modifiedBy(modifier: String): GuestBookEntryDao {
         modifiedBy = modifier
@@ -40,4 +37,11 @@ data class GuestBookEntryDao(
 
         return this
     }
+
+    fun toGuestBookEntry() = GuestBookEntry(
+        persistent = toPersistent(),
+        guestName = guestName,
+        entry = entry,
+        guestBookId = guestBookId,
+    )
 }

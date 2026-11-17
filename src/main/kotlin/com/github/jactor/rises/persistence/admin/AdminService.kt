@@ -1,18 +1,17 @@
 package com.github.jactor.rises.persistence.admin
 
-import com.github.jactor.rises.persistence.PersistenceHandler
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.springframework.stereotype.Service
 
 interface AdminService {
-    suspend fun moveInactiveUser(username: String): Boolean
+    suspend fun setUserInactive(username: String): Boolean
 }
 
 @Service
 class AdminServiceBean(
     private val adminRepository: AdminRepository,
-    private val persistenceHandler: PersistenceHandler,
 ) : AdminService {
-    override suspend fun moveInactiveUser(username: String): Boolean = persistenceHandler.save {
-        adminRepository.moveInactiveUser(username = username)
+    override suspend fun setUserInactive(username: String): Boolean = suspendTransaction {
+        adminRepository.setUserInactive(username = username)
     }
 }

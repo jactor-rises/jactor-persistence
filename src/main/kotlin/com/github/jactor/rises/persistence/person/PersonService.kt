@@ -20,6 +20,6 @@ class PersonServiceBean(
     }?.toPerson()
 
     override suspend fun create(person: Person): Person = person.toPersonDao().let { dao ->
-        persistenceHandler.modifyAndSave(dao = dao) { personRepository.save(personDao = it) }
+        persistenceHandler.save(dao = dao) { personRepository.save(personDao = it) }
     }.toPerson()
 }
