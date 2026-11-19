@@ -5,6 +5,7 @@ import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
+import assertk.fail
 import com.github.jactor.rises.persistence.test.countSecondsUntilNow
 import com.github.jactor.rises.persistence.test.initAddressDao
 import com.github.jactor.rises.persistence.test.initBlogDao
@@ -13,9 +14,6 @@ import com.github.jactor.rises.persistence.test.initGuestBookDao
 import com.github.jactor.rises.persistence.test.initGuestBookEntryDao
 import com.github.jactor.rises.persistence.test.initPersonDao
 import com.github.jactor.rises.persistence.test.initUserDao
-import kotlinx.coroutines.reactor.awaitSingle
-import kotlinx.coroutines.reactor.mono
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -218,26 +216,23 @@ internal class PersistenceHandlerTest {
     }
 
     @Test
-    fun `should require username when saving without username context`() = runTest {
+    suspend fun `should require username when saving without username context`() {
+        NotAuthenticatedUser.usernameProvider = { UsernameContext.fetchUsernameOrFail() }
+
         val result = runCatching {
             persistenceHandler.save(
                 dao = initAddressDao(id = null, createdBy = "original creator", modifiedBy = "original modifier"),
-            ) { it }
+            ) { fail("No username should exist in UsernameContext!") }
         }
 
         assertThat(actual = result).isFailure().hasMessage("No username in current reactor context!")
     }
 
     private fun runTestWithUsername(
-        username: String = "unit-test-user",
-        testBody: suspend TestScope.() -> Unit,
+        username: String = "na",
+        testBody: suspend () -> Unit,
     ) = runTest {
-        withUsernameContext(username) { testBody() }
+        NotAuthenticatedUser.usernameProvider = { username }
+        testBody.invoke()
     }
-
-    private suspend fun <T> withUsernameContext(username: String, action: suspend () -> T): T = mono {
-        action()
-    }.contextWrite { context ->
-        UsernameContext.withUsername(context, username)
-    }.awaitSingle()
 }

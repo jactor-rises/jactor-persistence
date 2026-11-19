@@ -7,10 +7,18 @@ typealias Modifier<T> = suspend (T) -> T
 
 interface PersistenceHandler {
     suspend fun <T> read(fetch: suspend () -> T): T = fetch.invoke()
-    suspend fun <T : PersistentDao<*>> save(dao: T, modifier: Modifier<T>): T = saveOrUpdate(dao, modifier)
+    suspend fun <T : PersistentDao<*>> save(dao: T, modifier: Modifier<T>): T = saveOrUpdate(
+        dao,
+        modifier,
+        usernameProvider = NotAuthenticatedUser.usernameProvider,
+    )
 }
 
-private suspend fun <T : PersistentDao<*>> saveOrUpdate(
+object NotAuthenticatedUser {
+    var usernameProvider: UsernameProvider = { "anonymous" }
+}
+
+suspend fun <T : PersistentDao<*>> saveOrUpdate(
     dao: T,
     modifier: Modifier<T>,
     usernameProvider: UsernameProvider = ContextUsernameProvider(),
