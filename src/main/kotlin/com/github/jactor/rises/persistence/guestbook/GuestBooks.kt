@@ -16,9 +16,9 @@ object GuestBooks : IdTable<UUID>(name = "T_GUEST_BOOK") {
         .entityId()
 
     val createdBy = text("CREATED_BY")
-    val modifiedBy = text("UPDATED_BY")
+    val modifiedBy = text("MODIFIED_BY")
     val timeOfCreation = datetime("CREATION_TIME")
-    val timeOfModification = datetime("UPDATED_TIME")
+    val timeOfModification = datetime("MODIFICATION_TIME")
     val title = text("TITLE")
     val userId = javaUUID("USER_ID").references(Users.id)
 }

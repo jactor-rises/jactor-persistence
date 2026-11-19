@@ -23,18 +23,18 @@ class AdminRepositoryBean(
             exec(
                 """
                 WITH source_user AS MATERIALIZED (
-                    SELECT ID, CREATED_BY, CREATION_TIME, EMAIL, USER_NAME, PERSON_ID
+                    SELECT ID, CREATED_BY, CREATION_TIME, EMAIL, USERNAME, PERSON_ID
                     FROM T_USER
-                    WHERE USER_NAME = ?
+                    WHERE USERNAME = ?
                     FOR UPDATE
                 ),
                 inserted_user AS (
                     INSERT INTO T_USER_INACTIVE (
-                        ID, CREATED_BY, CREATION_TIME, UPDATED_BY, UPDATED_TIME,
-                        EMAIL, USER_NAME, PERSON_ID, USER_TYPE, INACTIVE_SINCE
+                        ID, CREATED_BY, CREATION_TIME, MODIFIED_BY, MODIFICATION_TIME,
+                        EMAIL, USERNAME, PERSON_ID, USER_TYPE, INACTIVE_SINCE
                     )
                     SELECT ID, CREATED_BY, CREATION_TIME, ?, now(),
-                           EMAIL, USER_NAME, PERSON_ID, 'INACTIVE', now()
+                           EMAIL, USERNAME, PERSON_ID, 'INACTIVE', now()
                     FROM source_user
                     RETURNING ID
                 ),

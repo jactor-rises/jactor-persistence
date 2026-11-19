@@ -17,9 +17,9 @@ object Blogs : IdTable<UUID>(name = "T_BLOG") {
         .entityId()
 
     val createdBy = text("CREATED_BY")
-    val modifiedBy = text("UPDATED_BY")
+    val modifiedBy = text("MODIFIED_BY")
     val timeOfCreation = datetime("CREATION_TIME")
-    val timeOfModification = datetime("UPDATED_TIME")
+    val timeOfModification = datetime("MODIFICATION_TIME")
 
     val created = date("CREATED")
     val title = text("TITLE")

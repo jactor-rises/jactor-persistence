@@ -12,7 +12,6 @@ import java.time.Instant
 import java.time.LocalDateTime
 
 fun LocalDateTime.countSecondsUntilNow(): Long = Duration.between(this, LocalDateTime.now()).seconds
-
 fun JwtEncoder.createToken(username: String = "jactor"): String {
     val issuedAt = Instant.now()
     val claims = JwtClaimsSet.builder()

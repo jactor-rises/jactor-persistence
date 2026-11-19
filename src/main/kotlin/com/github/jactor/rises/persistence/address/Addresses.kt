@@ -15,9 +15,9 @@ object Addresses : IdTable<UUID>(name = "T_ADDRESS") {
         .entityId()
 
     val createdBy = text("CREATED_BY")
-    val modifiedBy = text("UPDATED_BY")
+    val modifiedBy = text("MODIFIED_BY")
     val timeOfCreation = datetime("CREATION_TIME")
-    val timeOfModification = datetime("UPDATED_TIME")
+    val timeOfModification = datetime("MODIFICATION_TIME")
 
     val addressLine1 = text("ADDRESS_LINE_1")
     val addressLine2 = text("ADDRESS_LINE_2").nullable()

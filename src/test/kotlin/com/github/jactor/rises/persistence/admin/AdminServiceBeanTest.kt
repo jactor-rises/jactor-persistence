@@ -40,9 +40,9 @@ class AdminServiceBeanTest @Autowired constructor(
                 SELECT EXISTS (
                     SELECT 1
                     FROM T_USER_INACTIVE
-                    WHERE USER_NAME = ?
-                      AND UPDATED_BY = ?
-                      AND UPDATED_TIME IS NOT NULL
+                    WHERE USERNAME = ?
+                      AND MODIFIED_BY = ?
+                      AND MODIFICATION_TIME IS NOT NULL
                       AND INACTIVE_SINCE IS NOT NULL
                       AND USER_TYPE = 'INACTIVE'
                 ) AS complete;

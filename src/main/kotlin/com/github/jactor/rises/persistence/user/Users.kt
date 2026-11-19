@@ -16,12 +16,12 @@ object Users : IdTable<UUID>(name = "T_USER") {
         .entityId()
 
     val createdBy = text("CREATED_BY")
-    val modifiedBy = text("UPDATED_BY")
+    val modifiedBy = text("MODIFIED_BY")
     val timeOfCreation = datetime("CREATION_TIME")
-    val timeOfModification = datetime("UPDATED_TIME")
+    val timeOfModification = datetime("MODIFICATION_TIME")
 
     val emailAddress = text("EMAIL").nullable()
-    val username = text("USER_NAME")
+    val username = text("USERNAME")
     val personId = javaUUID("PERSON_ID").references(People.id)
     val userType = text("USER_TYPE")
 }
