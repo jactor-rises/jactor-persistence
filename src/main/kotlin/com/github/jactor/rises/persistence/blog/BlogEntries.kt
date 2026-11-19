@@ -16,9 +16,9 @@ object BlogEntries : IdTable<UUID>(name = "T_BLOG_ENTRY") {
 
     val blogId = javaUUID("BLOG_ID").references(Blogs.id)
     val createdBy = text("CREATED_BY")
-    val modifiedBy = text("UPDATED_BY")
+    val modifiedBy = text("MODIFIED_BY")
     val timeOfCreation = datetime("CREATION_TIME")
-    val timeOfModification = datetime("UPDATED_TIME")
+    val timeOfModification = datetime("MODIFICATION_TIME")
 
     val creatorName = text("CREATOR_NAME")
     val entry = text("ENTRY")

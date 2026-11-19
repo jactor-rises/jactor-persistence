@@ -16,9 +16,9 @@ object People : IdTable<UUID>(name = "T_PERSON") {
         .entityId()
 
     val createdBy = text("CREATED_BY")
-    val modifiedBy = text("UPDATED_BY")
+    val modifiedBy = text("MODIFIED_BY")
     val timeOfCreation = datetime("CREATION_TIME")
-    val timeOfModification = datetime("UPDATED_TIME")
+    val timeOfModification = datetime("MODIFICATION_TIME")
 
     val description = text("DESCRIPTION").nullable()
     val firstName = text("FIRST_NAME").nullable()

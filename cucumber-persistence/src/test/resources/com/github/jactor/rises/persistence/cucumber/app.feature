@@ -6,9 +6,9 @@ Egenskap: back-end, jactor-persistence
         Og endpoint '/actuator/mappings'
         Og at autentiseringstoken genereres
         Når man utfører en http get
+        Så skal statuskode være 200
 
     Scenario: BlogController skal være mappet
-        Så skal statuskode være 200
         Og responsen skal inneholde 'com.github.jactor.rises.persistence.blog.BlogController'
         Og responsen skal inneholde '/blog/{blogId}'
         Og responsen skal inneholde '/blog/{id}/entries'
@@ -17,7 +17,6 @@ Egenskap: back-end, jactor-persistence
         Og responsen skal inneholde '/blog/entry/{blogEntryId}'
 
     Scenario: GuestBook skal være mappet
-        Så skal statuskode være 200
         Og responsen skal inneholde 'com.github.jactor.rises.persistence.guestbook.GuestBookController'
         Og responsen skal inneholde '/guestBook'
         Og responsen skal inneholde '/guestBook/{id}'
@@ -25,7 +24,6 @@ Egenskap: back-end, jactor-persistence
         Og responsen skal inneholde '/guestBook/entry/{id}'
 
     Scenario: UserController skal være mappet
-        Så skal statuskode være 200
         Og responsen skal inneholde 'com.github.jactor.rises.persistence.user.UserController'
         Og responsen skal inneholde '/user/{id}'
         Og responsen skal inneholde '/user/name/{username}'
