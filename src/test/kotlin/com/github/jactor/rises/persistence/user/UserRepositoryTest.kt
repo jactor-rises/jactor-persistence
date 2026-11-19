@@ -10,12 +10,18 @@ import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContext
 import com.github.jactor.rises.persistence.test.initAddress
 import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 internal class UserRepositoryTest @Autowired constructor(
     private val userRepository: UserRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
+    @BeforeEach
+    suspend fun `should delete all non standard users`() {
+        super.deleteAllBlogsGuestBooksAndNonStandardUsers()
+    }
+
     @Test
     suspend fun `should find user with username jactor`() {
         val userDao = userRepository.findByUsername("jactor")

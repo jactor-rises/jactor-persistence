@@ -11,6 +11,7 @@ import com.github.jactor.rises.persistence.test.initGuestBook
 import com.github.jactor.rises.persistence.test.initGuestBookEntry
 import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired
 internal class GuestBookRepositoryTest @Autowired constructor(
     private val guestBookRepository: GuestBookRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
+    @BeforeEach
+    suspend fun `should delete all non standard users`() {
+        super.deleteAllBlogsGuestBooksAndNonStandardUsers()
+    }
+
     @Test
     suspend fun `should write then read guest book`() {
         val address = save(
