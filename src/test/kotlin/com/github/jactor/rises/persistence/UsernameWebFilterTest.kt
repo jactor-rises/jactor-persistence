@@ -5,6 +5,7 @@ import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
+import assertk.assertions.isSuccess
 import org.junit.jupiter.api.Test
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest
 import org.springframework.mock.web.server.MockServerWebExchange
@@ -17,8 +18,8 @@ import java.time.Instant
 class UsernameWebFilterTest {
     @Test
     fun `should propagate authenticated username and isolates it between requests`() {
-        val firstUsername = filterWebExchange(webExchange = initWebExchange(username = "first-user"))
-        val secondUsername = filterWebExchange(webExchange = initWebExchange(username = "second-user"))
+        val firstUsername = fetchUsernameFromReactorContext(webExchange = initWebExchange(username = "first-user"))
+        val secondUsername = fetchUsernameFromReactorContext(webExchange = initWebExchange(username = "second-user"))
 
         assertAll {
             assertThat(actual = firstUsername, name = "first").isEqualTo("first-user")
@@ -27,20 +28,18 @@ class UsernameWebFilterTest {
     }
 
     @Test
-    fun `should fail when authentication principal is missing`() {
+    fun `should not fail when authentication principal is missing`() {
         val result = runCatching {
-            filterWebExchange(webExchange = initWebExchangeWithoutToken())
+            fetchUsernameFromReactorContext(webExchange = initWebExchangeWithoutToken())
         }
 
-        assertThat(result)
-            .isFailure()
-            .hasMessage("No authentication name could be gathered")
+        assertThat(result).isSuccess()
     }
 
     @Test
     fun `should fail when authentication name is blank`() {
         val result = runCatching {
-            filterWebExchange(webExchange = initWebExchange(username = " "))
+            fetchUsernameFromReactorContext(webExchange = initWebExchange(username = " "))
         }
 
         assertThat(result)
@@ -48,8 +47,11 @@ class UsernameWebFilterTest {
             .hasMessage("The username is blank, no authentication name could be gathered")
     }
 
-    private fun filterWebExchange(webExchange: ServerWebExchange): String? {
+    private fun fetchUsernameFromReactorContext(webExchange: ServerWebExchange): String? {
         var downstreamUsername: String? = null
+
+        // UsernameContext returns Mono from which Username is gathered, but this is not executed before the Mono is
+        // blocked when the UsernameWebFilter is returned...
         val chain = WebFilterChain {
             UsernameContext.currentUsername()
                 .doOnNext { username -> downstreamUsername = username }
