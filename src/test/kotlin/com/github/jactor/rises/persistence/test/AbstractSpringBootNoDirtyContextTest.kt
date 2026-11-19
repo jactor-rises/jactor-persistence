@@ -4,16 +4,25 @@ import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.address.Address
 import com.github.jactor.rises.persistence.address.AddressRepository
 import com.github.jactor.rises.persistence.blog.Blog
+import com.github.jactor.rises.persistence.blog.BlogEntries
 import com.github.jactor.rises.persistence.blog.BlogEntry
 import com.github.jactor.rises.persistence.blog.BlogRepository
+import com.github.jactor.rises.persistence.blog.Blogs
 import com.github.jactor.rises.persistence.guestbook.GuestBook
+import com.github.jactor.rises.persistence.guestbook.GuestBookEntries
 import com.github.jactor.rises.persistence.guestbook.GuestBookRepository
+import com.github.jactor.rises.persistence.guestbook.GuestBooks
 import com.github.jactor.rises.persistence.person.Person
 import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.user.UserService
+import com.github.jactor.rises.persistence.user.Users
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase
+import org.jetbrains.exposed.v1.core.notInList
+import org.jetbrains.exposed.v1.r2dbc.deleteAll
+import org.jetbrains.exposed.v1.r2dbc.deleteWhere
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.parallel.Isolated
 import org.junit.jupiter.api.parallel.ResourceLock
@@ -113,5 +122,15 @@ abstract class AbstractSpringBootNoDirtyContextTest {
                 username = username,
             ),
         )
+    }
+
+    protected suspend fun deleteAllBlogsGuestBooksAndNonStandardUsers() = suspendTransaction {
+        BlogEntries.deleteAll()
+        Blogs.deleteAll()
+        GuestBookEntries.deleteAll()
+        GuestBooks.deleteAll()
+        Users.deleteWhere {
+            Users.username notInList listOf("jactor", "tip")
+        }
     }
 }
