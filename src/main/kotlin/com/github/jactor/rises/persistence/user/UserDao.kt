@@ -10,7 +10,7 @@ data class UserDao(
     override var timeOfCreation: LocalDateTime,
     override var modifiedBy: String,
     override var timeOfModification: LocalDateTime,
-    internal var userType: UserType = UserType.ACTIVE,
+    internal var userRole: UserRole = UserRole.MEMBER,
     internal var emailAddress: String? = null,
     internal var personId: UUID? = null,
     internal var username: String = "na",
@@ -35,7 +35,7 @@ data class UserDao(
         username = username,
         emailAddress = emailAddress,
         personId = personId,
-        userType = UserType.entries.firstOrNull { it.name == userType.name }
-            ?: error("Unknown UserType: $userType"),
+        userRole = UserRole.entries.firstOrNull { it.name == userRole.name }
+            ?: error("Unknown UserType: $userRole"),
     )
 }

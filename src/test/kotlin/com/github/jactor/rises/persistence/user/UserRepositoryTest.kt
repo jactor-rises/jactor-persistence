@@ -3,7 +3,6 @@ package com.github.jactor.rises.persistence.user
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.containsAtLeast
-import assertk.assertions.doesNotContain
 import assertk.assertions.isEqualTo
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
@@ -41,7 +40,7 @@ internal class UserRepositoryTest @Autowired constructor(
             personId = person.id,
             emailAddress = "smuggle.fast@tantooine.com",
             username = "smuggler",
-            userType = UserType.ACTIVE,
+            userRole = UserRole.MEMBER,
         ).toUserDao()
 
         userRepository.save(userToPersist)
@@ -52,7 +51,7 @@ internal class UserRepositoryTest @Autowired constructor(
             assertThat(userDao?.personId).isEqualTo(userToPersist.personId)
             assertThat(userDao?.username).isEqualTo("smuggler")
             assertThat(userDao?.emailAddress).isEqualTo("smuggle.fast@tantooine.com")
-            assertThat(userDao?.userType).isEqualTo(UserType.ACTIVE)
+            assertThat(userDao?.userRole).isEqualTo(UserRole.MEMBER)
         }
     }
 
@@ -87,13 +86,12 @@ internal class UserRepositoryTest @Autowired constructor(
     }
 
     @Test
-    suspend fun `should find active users and admins`() {
+    suspend fun `should find members and admins`() {
         val address = save(
             address = initAddress(zipCode = "1001", addressLine1 = "Test Boulevard 1", city = "Testington"),
         )
 
         val spidyPerson = save(person = initPerson(address = address, surname = "Parker"))
-        val superPerson = save(person = initPerson(address = address, surname = "Kent"))
         val userDao = initUser(
             persistent = Persistent(),
             person = spidyPerson,
@@ -102,18 +100,9 @@ internal class UserRepositoryTest @Autowired constructor(
         ).toUserDao()
 
         userRepository.save(userDao)
-        userRepository.save(
-            initUser(
-                person = superPerson,
-                emailAddress = null,
-                username = "superman",
-                userType = UserType.INACTIVE, // should not be found
-            ).toUserDao(),
-        )
 
-        val usernames = userRepository.findUsernames(listOf(UserType.ACTIVE, UserType.ADMIN))
+        val usernames = userRepository.findUsernames(listOf(UserRole.MEMBER, UserRole.ADMIN))
 
-        assertThat(usernames).containsAtLeast("tip", "spiderman", "jactor")
-        assertThat(usernames).doesNotContain("superman")
+        assertThat(usernames).containsAtLeast("spiderman", "jactor")
     }
 }

@@ -13,7 +13,7 @@ import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
 import com.github.jactor.rises.persistence.test.isNotOlderThan
 import com.github.jactor.rises.persistence.user.User
-import com.github.jactor.rises.persistence.user.UserType
+import com.github.jactor.rises.persistence.user.UserRole
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -99,7 +99,7 @@ internal class BlogRepositoryTest @Autowired constructor(
                 personId = person.id,
                 emailAddress = "public@services.com",
                 username = "black",
-                userType = UserType.ACTIVE,
+                userRole = UserRole.MEMBER,
             ),
         )
 

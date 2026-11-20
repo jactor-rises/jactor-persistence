@@ -23,7 +23,7 @@ class AdminRepositoryBean(
             exec(
                 """
                 WITH source_user AS MATERIALIZED (
-                    SELECT ID, CREATED_BY, CREATION_TIME, EMAIL, USERNAME, PERSON_ID
+                    SELECT ID, CREATED_BY, CREATION_TIME, EMAIL, USERNAME, PERSON_ID, USER_ROLE
                     FROM T_USER
                     WHERE USERNAME = ?
                     FOR UPDATE
@@ -31,10 +31,10 @@ class AdminRepositoryBean(
                 inserted_user AS (
                     INSERT INTO T_USER_INACTIVE (
                         ID, CREATED_BY, CREATION_TIME, MODIFIED_BY, MODIFICATION_TIME,
-                        EMAIL, USERNAME, PERSON_ID, USER_TYPE, INACTIVE_SINCE
+                        EMAIL, USERNAME, PERSON_ID, USER_ROLE, INACTIVE_SINCE
                     )
                     SELECT ID, CREATED_BY, CREATION_TIME, ?, now(),
-                           EMAIL, USERNAME, PERSON_ID, 'INACTIVE', now()
+                           EMAIL, USERNAME, PERSON_ID, USER_ROLE, now()
                     FROM source_user
                     RETURNING ID
                 ),
