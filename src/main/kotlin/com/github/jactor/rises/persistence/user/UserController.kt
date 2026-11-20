@@ -4,6 +4,7 @@ import com.github.jactor.rises.persistence.util.toCreateUser
 import com.github.jactor.rises.persistence.util.toUser
 import com.github.jactor.rises.shared.api.CreateUserCommand
 import com.github.jactor.rises.shared.api.UserDto
+import com.github.jactor.rises.shared.whenTrue
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -63,14 +64,12 @@ class UserController(
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     suspend fun post(
         @RequestBody createUserCommand: CreateUserCommand,
-    ): ResponseEntity<UserDto> = when (userService.isAlreadyPersisted(username = createUserCommand.username)) {
-        true -> ResponseEntity(HttpStatus.BAD_REQUEST)
-
-        false -> ResponseEntity(
-            userService.create(createUserCommand.toCreateUser()).toUserDto(),
-            HttpStatus.CREATED,
-        )
-    }
+    ): ResponseEntity<UserDto> = userService.isAlreadyPersisted(username = createUserCommand.username).whenTrue {
+        ResponseEntity(HttpStatus.BAD_REQUEST)
+    } ?: ResponseEntity(
+        userService.create(createUserCommand.toCreateUser()).toUserDto(),
+        HttpStatus.CREATED,
+    )
 
     @ApiResponses(
         value = [
