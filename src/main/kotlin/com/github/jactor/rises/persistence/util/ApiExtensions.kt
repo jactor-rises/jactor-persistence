@@ -28,7 +28,6 @@ import com.github.jactor.rises.shared.api.PersonDto
 import com.github.jactor.rises.shared.api.UpdateBlogTitleCommand
 import com.github.jactor.rises.shared.api.UserDto
 import com.github.jactor.rises.shared.whenTrue
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 private object Constants {
@@ -49,7 +48,7 @@ fun AddressDto.toAddress() = Address(
 
 fun BlogDto.toBlog() = Blog(
     persistent = persistentDto.toPersistent(),
-    created = persistentDto.isWithId.whenTrue { LocalDate.now() },
+    created = persistentDto.isWithId.whenTrue { persistentDto.timeOfCreation?.toLocalDate() },
     title = requireNotNull(title) { Constants.TITLE_CANNOT_BE_NULL },
     userId = userId,
 )
