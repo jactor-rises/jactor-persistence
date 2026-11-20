@@ -45,8 +45,8 @@ object UserRepositoryObject : UserRepository {
             ?.toUserDao()
     }
 
-    override suspend fun findUsernames(userType: List<UserType>): List<String> = suspendTransaction {
-        val types = userType.map { it.name }
+    override suspend fun findUsernames(userRole: List<UserRole>): List<String> = suspendTransaction {
+        val types = userRole.map { it.name }
         Users.select(column = Users.username)
             .andWhere { Users.userType inList types }
             .withDistinct()
@@ -69,7 +69,7 @@ object UserRepositoryObject : UserRepository {
         row[emailAddress] = user.emailAddress
         row[username] = user.username
         row[personId] = requireNotNull(user.personId) { "Person id cannot be null when inserting a user." }
-        row[userType] = user.userType.name
+        row[userType] = user.userRole.name
     }.value
         .let { newId -> user.also { it.id = newId } }
 
@@ -80,7 +80,7 @@ object UserRepositoryObject : UserRepository {
         it[timeOfModification] = user.timeOfModification
         it[emailAddress] = user.emailAddress
         it[username] = user.username
-        it[userType] = user.userType.name
+        it[userType] = user.userRole.name
         it[personId] = requireNotNull(user.personId) { "Person id cannot be null when updating a user." }
         // createdBy & timeOfCreation are intentionally not updated
     }.let { user }

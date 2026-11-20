@@ -13,7 +13,7 @@ import com.github.jactor.rises.persistence.guestbook.GuestBookEntry
 import com.github.jactor.rises.persistence.person.Person
 import com.github.jactor.rises.persistence.user.CreateUser
 import com.github.jactor.rises.persistence.user.User
-import com.github.jactor.rises.persistence.user.UserType
+import com.github.jactor.rises.persistence.user.UserRole
 import com.github.jactor.rises.shared.api.AddressDto
 import com.github.jactor.rises.shared.api.BlogDto
 import com.github.jactor.rises.shared.api.BlogEntryDto
@@ -110,7 +110,7 @@ fun GuestBookEntryDto.toGuestBookEntry(parent: GuestBook?) = GuestBookEntry(
     guestBookId = parent?.persistent?.id,
 )
 
-fun com.github.jactor.rises.shared.api.UserType.toModel(): UserType = UserType.entries
+fun com.github.jactor.rises.shared.api.UserRole.toModel(): UserRole = UserRole.entries
     .firstOrNull { it.name == this.name } ?: error("User type ${this.name} not found!")
 
 fun PersistentDto.toPersistent() = Persistent(
@@ -140,5 +140,5 @@ fun UserDto.toUser() = User(
     personId = personId,
     emailAddress = emailAddress,
     username = username,
-    userType = UserType.valueOf(userType.name),
+    userRole = UserRole.valueOf(userRole.name),
 )

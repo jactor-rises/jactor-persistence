@@ -16,7 +16,7 @@ import com.github.jactor.rises.persistence.person.PersonDao
 import com.github.jactor.rises.persistence.user.CreateUser
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserDao
-import com.github.jactor.rises.persistence.user.UserType
+import com.github.jactor.rises.persistence.user.UserRole
 import com.github.jactor.rises.shared.api.CreateUserCommand
 import org.junit.jupiter.api.fail
 import java.time.LocalDate
@@ -223,7 +223,7 @@ fun initUserDao(
     timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
     username = username,
-    userType = UserType.ACTIVE,
+    userRole = UserRole.MEMBER,
 )
 
 fun initUserDao(createUserCommand: CreateUserCommand) = UserDao(
@@ -233,7 +233,7 @@ fun initUserDao(createUserCommand: CreateUserCommand) = UserDao(
     modifiedBy = createUserCommand.username,
     personId = createUserCommand.personId,
     username = createUserCommand.username,
-    userType = UserType.ACTIVE,
+    userRole = UserRole.MEMBER,
     timeOfCreation = LocalDateTime.now(),
     timeOfModification = LocalDateTime.now(),
 )
@@ -280,13 +280,13 @@ fun initUser(
     emailAddress: String? = null,
     person: Person? = null,
     username: String? = null,
-    userType: UserType = UserType.ACTIVE,
+    userRole: UserRole = UserRole.MEMBER,
 ) = User(
     persistent = persistent,
     personId = person?.id,
     emailAddress = emailAddress,
     username = username,
-    userType = userType,
+    userRole = userRole,
 )
 
 fun timestamped(username: String): String = "$username@${java.lang.Long.toHexString(System.currentTimeMillis())}"

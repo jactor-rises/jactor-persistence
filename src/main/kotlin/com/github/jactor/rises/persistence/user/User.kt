@@ -10,7 +10,7 @@ data class User(
     val emailAddress: String?,
     val personId: UUID?,
     val username: String?,
-    val userType: UserType,
+    val userRole: UserRole,
 ) {
     val id: UUID
         get() = persistent.id ?: error("User is not persisted!")
@@ -24,8 +24,8 @@ data class User(
         emailAddress = emailAddress,
         personId = personId,
         username = username ?: "na",
-        userType = UserType.entries.firstOrNull { it.name == userType.name }
-            ?: error(message = "Unknown UserType: $userType"),
+        userRole = UserRole.entries.firstOrNull { it.name == userRole.name }
+            ?: error(message = "Unknown UserType: $userRole"),
     )
 
     fun toUserDto() = UserDto(
@@ -33,6 +33,6 @@ data class User(
         emailAddress = emailAddress,
         personId = personId,
         username = username,
-        userType = UserTypeDto.valueOf(userType.name),
+        userRole = UserRoleDto.valueOf(userRole.name),
     )
 }

@@ -93,10 +93,10 @@ class UserController(
 
     @ApiResponses(ApiResponse(responseCode = "200", description = "List of usernames found"))
     @GetMapping("/usernames")
-    @Operation(description = "Find all usernames for a user type")
+    @Operation(description = "Find all usernames for a role")
     suspend fun findAllUsernames(
-        @RequestParam(required = false, defaultValue = "ACTIVE") userType: String,
-    ): ResponseEntity<List<String>> = userService.findUsernames(userType = UserType.valueOf(userType)).let {
+        @RequestParam(required = false, defaultValue = "MEMBER") userType: String,
+    ): ResponseEntity<List<String>> = userService.findUsernames(userRole = UserRole.valueOf(userType)).let {
         when (it.isEmpty()) {
             true -> ResponseEntity(HttpStatus.NO_CONTENT)
             false -> ResponseEntity(it, HttpStatus.OK)

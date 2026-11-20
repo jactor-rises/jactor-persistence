@@ -8,7 +8,7 @@ interface UserRepository {
     suspend fun findById(id: UUID): UserDao?
     suspend fun findByPersonId(id: UUID): List<UserDao>
     suspend fun findByUsername(username: String): UserDao?
-    suspend fun findUsernames(userType: List<UserType>): List<String>
+    suspend fun findUsernames(userRole: List<UserRole>): List<String>
     suspend fun save(userDao: UserDao): UserDao
 }
 

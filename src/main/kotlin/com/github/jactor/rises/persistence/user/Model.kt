@@ -5,7 +5,7 @@ import com.github.jactor.rises.persistence.person.Person
 import java.time.LocalDateTime
 import java.util.UUID
 
-typealias UserTypeDto = com.github.jactor.rises.shared.api.UserType
+typealias UserRoleDto = com.github.jactor.rises.shared.api.UserRole
 
 @JvmRecord
 data class CreateUser(
@@ -32,7 +32,7 @@ data class CreateUser(
         emailAddress = emailAddress,
         personId = this.personId ?: personId,
         username = username,
-        userType = UserType.ACTIVE,
+        userRole = UserRole.MEMBER,
     )
 
     fun toPerson() = Person(
@@ -45,8 +45,7 @@ data class CreateUser(
     )
 }
 
-enum class UserType {
+enum class UserRole {
     ADMIN,
-    ACTIVE,
-    INACTIVE,
+    MEMBER,
 }

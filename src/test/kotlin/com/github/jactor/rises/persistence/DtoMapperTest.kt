@@ -6,7 +6,7 @@ import assertk.assertions.contains
 import com.github.jactor.rises.persistence.config.JactorPersistenceConfig
 import com.github.jactor.rises.shared.api.PersistentDto
 import com.github.jactor.rises.shared.api.UserDto
-import com.github.jactor.rises.shared.api.UserType
+import com.github.jactor.rises.shared.api.UserRole
 import org.junit.jupiter.api.Test
 import tools.jackson.databind.ObjectMapper
 import java.util.UUID
@@ -21,7 +21,7 @@ internal class DtoMapperTest {
             persistentDto = PersistentDto(id = uuid),
             emailAddress = "some@where",
             username = "mine",
-            userType = UserType.ACTIVE,
+            userRole = UserRole.MEMBER,
         )
 
         val json = objectMapper.writeValueAsString(userDto)
@@ -30,7 +30,7 @@ internal class DtoMapperTest {
             assertThat(actual = json, name = "id").contains(""""id":"$uuid"""")
             assertThat(actual = json, name = "emailAddress").contains(""""emailAddress":"some@where"""")
             assertThat(actual = json, name = "username").contains(""""username":"mine"""")
-            assertThat(actual = json, name = "userType").contains(""""userType":"ACTIVE"""")
+            assertThat(actual = json, name = "userType").contains(""""userRole":"MEMBER"""")
         }
     }
 }

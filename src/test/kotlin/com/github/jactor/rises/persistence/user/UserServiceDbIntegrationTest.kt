@@ -36,20 +36,20 @@ class UserServiceDbIntegrationTest @Autowired constructor(
     @Test
     suspend fun `should modify an existing user`() {
         val tip = UserRepositoryObject.findByUsername(username = "tip") ?: fail { "User was not found" }
-        assertThat(tip.userType).isEqualTo(UserType.ACTIVE)
+        assertThat(tip.userRole).isEqualTo(UserRole.MEMBER)
 
-        val updated = userService.update(user = tip.copy(userType = UserType.INACTIVE).toUser())
-        assertThat(updated.userType).isEqualTo(UserType.INACTIVE)
+        val updated = userService.update(user = tip.copy(userRole = UserRole.ADMIN).toUser())
+        assertThat(updated.userRole).isEqualTo(UserRole.ADMIN)
     }
 
     @Test
     suspend fun `should find all usernames of active users`() {
         val jactor = UserRepositoryObject.findByUsername(username = "jactor") ?: fail { "User was not found" }
-        userService.update(user = jactor.copy(userType = UserType.ACTIVE).toUser())
+        userService.update(user = jactor.copy(userRole = UserRole.MEMBER).toUser())
         val tip = UserRepositoryObject.findByUsername(username = "tip") ?: fail { "User was not found" }
-        userService.update(user = tip.copy(userType = UserType.ACTIVE).toUser())
+        userService.update(user = tip.copy(userRole = UserRole.MEMBER).toUser())
 
-        val activeUsers = userService.findUsernames(userType = UserType.ACTIVE)
+        val activeUsers = userService.findUsernames(userRole = UserRole.MEMBER)
 
         assertThat(activeUsers, "active users").containsAtLeast("jactor", "tip")
     }

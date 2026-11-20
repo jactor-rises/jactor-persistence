@@ -10,7 +10,7 @@ interface UserService {
     suspend fun find(id: UUID): User?
     suspend fun update(user: User): User
     suspend fun create(createUser: CreateUser): User
-    suspend fun findUsernames(userType: UserType): List<String>
+    suspend fun findUsernames(userRole: UserRole): List<String>
     suspend fun isAlreadyPersisted(username: String): Boolean
 }
 
@@ -40,8 +40,8 @@ class UserServiceBean(
         }.toUser()
     }
 
-    override suspend fun findUsernames(userType: UserType): List<String> = persistenceHandler.read {
-        userRepository.findUsernames(userType = listOf(userType))
+    override suspend fun findUsernames(userRole: UserRole): List<String> = persistenceHandler.read {
+        userRepository.findUsernames(userRole = listOf(userRole))
     }
 
     override suspend fun isAlreadyPersisted(username: String): Boolean = persistenceHandler.read {

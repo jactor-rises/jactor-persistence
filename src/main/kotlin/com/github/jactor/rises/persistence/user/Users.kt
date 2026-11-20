@@ -23,5 +23,5 @@ object Users : IdTable<UUID>(name = "T_USER") {
     val emailAddress = text("EMAIL").nullable()
     val username = text("USERNAME")
     val personId = javaUUID("PERSON_ID").references(People.id)
-    val userType = text("USER_TYPE")
+    val userType = text("USER_ROLE")
 }

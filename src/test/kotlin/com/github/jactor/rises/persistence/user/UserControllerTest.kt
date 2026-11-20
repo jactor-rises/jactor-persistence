@@ -64,7 +64,7 @@ internal class UserControllerTest @Autowired constructor(
 
     @Test
     fun `should find a user with ADMIN userType by username`() {
-        coEvery { userServiceMockk.find(username = "boss") } returns initUser(userType = UserType.ADMIN)
+        coEvery { userServiceMockk.find(username = "boss") } returns initUser(userRole = UserRole.ADMIN)
 
         val userDto = webTestClient
             .get()
@@ -76,9 +76,9 @@ internal class UserControllerTest @Autowired constructor(
             .returnResult()
             .responseBody as UserDto
 
-        val userTypeDto = UserTypeDto.valueOf(userDto.userType.name)
+        val userRoleDto = UserRoleDto.valueOf(userDto.userRole.name)
 
-        assertThat(userTypeDto).isEqualTo(userDto.userType)
+        assertThat(userRoleDto).isEqualTo(userDto.userRole)
     }
 
     @Test
@@ -135,7 +135,7 @@ internal class UserControllerTest @Autowired constructor(
 
     @Test
     fun `should find all usernames of active users`() {
-        coEvery { userServiceMockk.findUsernames(userType = UserType.ACTIVE) } returns listOf("bart", "lisa")
+        coEvery { userServiceMockk.findUsernames(userRole = UserRole.MEMBER) } returns listOf("bart", "lisa")
 
         val usernames = webTestClient
             .get()
