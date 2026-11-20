@@ -54,11 +54,12 @@ How to build and run this application. Gradle and podman commands are executed f
 
 ### Authentication
 
-The service provides login at `POST /jactor-persistence/admin/login`.
+Usage demands a bearer token (JwtToken) which of writing is only granted by `AuthenticationService` in
+`/jactor-persistence/cucumber-persistence` (standalone cucumber-project for integration tests).
 
-A successful login returns the signed JWT in the `Authorization: Bearer <token>` response header; the token expires
-after 15 minutes. Send that header with subsequent requests. All endpoints except login and the Swagger UI/OpenAPI docs
-require a valid token.
+A successful login creates the signed JWT used as `Authorization: Bearer <token>` and must be used for requests towards
+the application; the token expires after 15 minutes. All endpoints except the Swagger UI/OpenAPI docs require a valid
+token.
 
 ### Some technologies used
 
