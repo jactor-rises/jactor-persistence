@@ -20,7 +20,7 @@
             "matchManagers": ["gradle"],
             "matchUpdateTypes": ["minor", "patch"],
             "automerge": false,
-            "groupName": "Gradle minor and patch updates"
+            "groupName": "Minor and patch updates"
         },
         {
             "matchManagers": ["gradle"],
@@ -30,10 +30,7 @@
             "labels": ["major-update", "dependencies"]
         },
         {
-            "matchPackageNames": [
-                "com.github.jactor-rises:jactor-shared",
-                "org.flywaydb:flyway-database-postgresql"
-            ],
+            "matchPackageNames": [ "com.github.jactor-rises:jactor-shared" ],
             "enabled": false
         }
     ]
