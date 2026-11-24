@@ -37,5 +37,5 @@ while (( SECONDS < deadline )); do
   sleep 2
 done
 
-echo "Spring Boot did not become healthy within 30 seconds."
+echo "Spring Boot is still unreachable after 90 seconds."
 exit 1
