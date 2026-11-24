@@ -11,7 +11,7 @@ of jactor-shared
 
 The main purpose is to learn about programming microservices using spring-boot and Kotlin, (with REST and jetbrains
 exposed). I also use GitHub to get a deeper understanding of continuous integration/DevOps using GitHub workflow/actions
-and gradle. Integration testing is done with cucumber.
+and gradle. Integration testing is done with [cucumber](https://cucumber.io/docs).
 
 This project is a microservice dealing with persistence to a database using jetbrains exposed (formerly as part of the
 archived project [jactor-rises](https://github.com/jactor-rises/jactor-rises))
@@ -73,7 +73,7 @@ token.
 
 #### Integration testing
 
-* [cucumber](https://cucumber.io)
+* [cucumber](https://cucumber.io/docs)
 
 #### Unit testing
 
