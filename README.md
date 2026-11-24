@@ -11,7 +11,7 @@ of jactor-shared
 
 The main purpose is to learn about programming microservices using spring-boot and Kotlin, (with REST and jetbrains
 exposed). I also use GitHub to get a deeper understanding of continuous integration/DevOps using GitHub workflow/actions
-and gradle. Integration testing to be done with cucumber.
+and gradle. Integration testing is done with cucumber.
 
 This project is a microservice dealing with persistence to a database using jetbrains exposed (formerly as part of the
 archived project [jactor-rises](https://github.com/jactor-rises/jactor-rises))
@@ -19,7 +19,7 @@ archived project [jactor-rises](https://github.com/jactor-rises/jactor-rises))
 ### Set up
 
 * a spring-boot 4 application
-    * run it with spring-boot or gradle `.gradlew bootRun`
+    * run it with spring-boot or gradle `.gradlew bootRun` (remember to start database before run - see below)
 * this application is documented with swagger. After startup, use link
   [swagger ui](http://localhost:1099/jactor-persistence/swagger-ui.html)
 
