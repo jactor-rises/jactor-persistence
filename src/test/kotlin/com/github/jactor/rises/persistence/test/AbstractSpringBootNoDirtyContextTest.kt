@@ -23,9 +23,7 @@ import org.jetbrains.exposed.v1.core.notInList
 import org.jetbrains.exposed.v1.r2dbc.deleteAll
 import org.jetbrains.exposed.v1.r2dbc.deleteWhere
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.parallel.Isolated
-import org.junit.jupiter.api.parallel.ResourceLock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
@@ -48,11 +46,9 @@ import java.util.UUID
     refresh = AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD,
 )
 @AutoConfigureWebTestClient
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ExtendWith(RandomUsernameExtension::class)
 @Import(R2dbcEmbeddedDatabaseTestConfig::class, RandomUsernameTestConfig::class)
 @Isolated
-@ResourceLock(RandomUsernameExtension.RESOURCE_LOCK)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class AbstractSpringBootNoDirtyContextTest {
     companion object {
         private val JACTOR_PASSWORD_HASH = requireNotNull(

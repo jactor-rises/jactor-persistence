@@ -1,14 +1,18 @@
 package com.github.jactor.rises.persistence.admin
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
-import com.github.jactor.rises.persistence.test.RandomUsernameProvider
+import com.github.jactor.rises.persistence.user.InactiveUsers
 import com.github.jactor.rises.persistence.user.UserRepository
-import com.github.jactor.rises.persistence.user.Users
 import kotlinx.coroutines.flow.singleOrNull
-import org.jetbrains.exposed.v1.core.statements.StatementType
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.r2dbc.andWhere
+import org.jetbrains.exposed.v1.r2dbc.select
+import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,28 +36,20 @@ class AdminServiceBeanTest @Autowired constructor(
             assertThat(userRepository.contains(username = username), "after").isFalse()
             assertThat(movedToInactive, "moved").isTrue()
 
-            val tracingUsername = requireNotNull(RandomUsernameProvider.usernameHolder.get())
-            val inactiveUserIsComplete = suspendTransaction {
-                exec(
-                    """
-                    SELECT EXISTS (
-                        SELECT 1
-                        FROM T_USER_INACTIVE
-                        WHERE USERNAME = ?
-                          AND MODIFIED_BY = ?
-                    ) AS complete;
-                    """.trimIndent(),
-                    args = listOf(
-                        Users.username.columnType to username,
-                        Users.modifiedBy.columnType to tracingUsername,
-                    ),
-                    explicitStatementType = StatementType.SELECT,
-                ) { row ->
-                    row.get("complete", Boolean::class.javaObjectType)
-                }?.singleOrNull() ?: false
+            val inactiveUser = suspendTransaction {
+                InactiveUsers
+                    .selectAll()
+                    .where { InactiveUsers.username eq username }
+                    .orderBy(
+                        InactiveUsers.timeOfModification to SortOrder.DESC,
+                        InactiveUsers.id to SortOrder.DESC,
+                    )
+                    .limit(1)
+                    .singleOrNull()
+                    ?.get(InactiveUsers.username)
             }
 
-            assertThat(inactiveUserIsComplete, "inactive user").isTrue()
+            assertThat(inactiveUser, "inactive user").isEqualTo(username)
         }
     }
 }

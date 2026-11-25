@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.os.detector)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.versions)
@@ -64,6 +65,10 @@ dependencies {
     runtimeOnly(libs.postgresql)
     runtimeOnly(libs.r2dbc.postgresql)
     runtimeOnly(libs.spring.boot.flyway)
+
+    if (osdetector.os == "osx") {
+        runtimeOnly("io.netty:netty-resolver-dns-native-macos::${osdetector.classifier}")
+    }
 
     // test implementations
     testImplementation(libs.assertk)
