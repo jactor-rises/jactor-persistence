@@ -7,8 +7,8 @@ import java.util.UUID
 @JvmRecord
 data class Persistent(
     val id: UUID? = null,
-    val createdBy: String = "todo: #3",
-    val modifiedBy: String = "todo: #3",
+    val createdBy: String = "not applicable",
+    val modifiedBy: String = "not applicable",
     val timeOfCreation: LocalDateTime = LocalDateTime.now(),
     val timeOfModification: LocalDateTime = LocalDateTime.now(),
 ) {

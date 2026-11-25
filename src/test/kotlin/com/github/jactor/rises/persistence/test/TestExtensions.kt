@@ -2,6 +2,7 @@ package com.github.jactor.rises.persistence.test
 
 import assertk.Assert
 import assertk.assertThat
+import com.github.jactor.rises.shared.whenFalse
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm
 import org.springframework.security.oauth2.jwt.JwsHeader
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
@@ -26,3 +27,6 @@ fun JwtEncoder.createToken(username: String = "jactor"): String {
 }
 
 infix fun <T> T?.named(name: String): Assert<T?> = assertThat(actual = this, name = name)
+fun <T : CharSequence> T?.whenNotNullOrBlank(func: (T) -> Unit) {
+    this.isNullOrBlank().whenFalse { func.invoke(this!!) }
+}

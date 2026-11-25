@@ -10,6 +10,7 @@ jvm = "25"
 kotlin = "2.4.21"
 kotlin-logging = "8.0.7"
 ktlint = "14.2.0"
+osdetector = "1.7.3"
 postgresql = "42.7.14"
 spring-boot = "4.2.0"
 springdoc-openapi = "3.2.1"
@@ -53,7 +54,6 @@ uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.re
 assertk = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-coroutines-test-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm", version.ref = "coroutines" }
-
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-starter-webflux-test = { module = "org.springframework.boot:spring-boot-starter-webflux-test" }
@@ -61,9 +61,11 @@ zonky = { module = "io.zonky.test:embedded-database-spring-test", version.ref = 
 zonky-postgres = { module = "io.zonky.test:embedded-postgres", version.ref = "zonky-postgres-db" }
 
 [plugins]
+
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+os-detector = { id = "com.google.osdetector", version.ref = "osdetector"}
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
 versions = { id = "io.github.ben-manes.versions", version.ref = "versions-plugin" }
