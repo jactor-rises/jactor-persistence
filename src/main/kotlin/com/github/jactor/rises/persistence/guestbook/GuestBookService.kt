@@ -1,6 +1,5 @@
 package com.github.jactor.rises.persistence.guestbook
 
-import com.github.jactor.rises.persistence.PersistenceHandler
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -14,35 +13,30 @@ interface GuestBookService {
 }
 
 @Service
-class GuestBookServiceBean(
-    private val guestBookRepository: GuestBookRepository,
-    private val persistenceHandler: PersistenceHandler,
-) : GuestBookService {
-    override suspend fun create(createGuestBook: CreateGuestBook): GuestBook = persistenceHandler.save(
-        dao = GuestBookDao(title = createGuestBook.title, userId = createGuestBook.userId),
-    ) { guestBookRepository.save(guestBookDao = it) }.toGuestBook()
+class GuestBookServiceBean(private val guestBookRepository: GuestBookRepository) : GuestBookService {
+    override suspend fun create(createGuestBook: CreateGuestBook): GuestBook = GuestBookDao(
+        title = createGuestBook.title,
+        userId = createGuestBook.userId,
+    ).let { guestBookRepository.save(guestBookDao = it) }.toGuestBook()
 
     override suspend fun create(
         createGuestBookEntry: CreateGuestBookEntry,
-    ): GuestBookEntry = persistenceHandler.save(
-        dao = GuestBookEntryDao(
-            guestName = createGuestBookEntry.creatorName,
-            entry = createGuestBookEntry.entry,
-            guestBookId = createGuestBookEntry.guestBookId,
-        ),
-    ) { guestBookRepository.save(guestBookEntryDao = it) }.toGuestBookEntry()
+    ): GuestBookEntry = GuestBookEntryDao(
+        guestName = createGuestBookEntry.creatorName,
+        entry = createGuestBookEntry.entry,
+        guestBookId = createGuestBookEntry.guestBookId,
+    ).let { guestBookRepository.save(guestBookEntryDao = it) }.toGuestBookEntry()
 
     override suspend fun findGuestBook(id: UUID): GuestBook? = guestBookRepository.findGuestBookById(id)?.toGuestBook()
     override suspend fun findEntry(id: UUID): GuestBookEntry? = guestBookRepository.findGuestBookEntryById(id)
         ?.toGuestBookEntry()
 
-    override suspend fun saveOrUpdate(guestBook: GuestBook): GuestBook = persistenceHandler.save(
-        dao = guestBook.toGuestBookDao(),
-    ) { guestBookRepository.save(guestBookDao = it) }.toGuestBook()
+    override suspend fun saveOrUpdate(guestBook: GuestBook): GuestBook = guestBook.toGuestBookDao().let {
+        guestBookRepository.save(guestBookDao = it)
+    }.toGuestBook()
 
     override suspend fun saveOrUpdate(
         guestBookEntry: GuestBookEntry,
-    ): GuestBookEntry = persistenceHandler.save(dao = guestBookEntry.toGuestBookEntryDao()) {
-        guestBookRepository.save(guestBookEntryDao = it)
-    }.toGuestBookEntry()
+    ): GuestBookEntry = guestBookEntry.toGuestBookEntryDao().let { guestBookRepository.save(guestBookEntryDao = it) }
+        .toGuestBookEntry()
 }

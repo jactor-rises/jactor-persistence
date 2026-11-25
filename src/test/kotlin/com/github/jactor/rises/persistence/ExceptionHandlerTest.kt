@@ -34,7 +34,6 @@ internal class ExceptionHandlerTest {
             userService = UserServiceBean(
                 personService = mockk(relaxed = true),
                 userRepository = userRepositoryMockk,
-                persistenceHandler = object : PersistenceHandler {},
             ),
         )
 
@@ -59,7 +58,6 @@ internal class ExceptionHandlerTest {
             userService = UserServiceBean(
                 personService = mockk(relaxed = true),
                 userRepository = userRepositoryMockk,
-                persistenceHandler = object : PersistenceHandler {},
             ),
         )
 

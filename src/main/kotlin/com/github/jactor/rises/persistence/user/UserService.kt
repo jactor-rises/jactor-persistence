@@ -1,6 +1,5 @@
 package com.github.jactor.rises.persistence.user
 
-import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.person.PersonService
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -18,33 +17,22 @@ interface UserService {
 class UserServiceBean(
     private val personService: PersonService,
     private val userRepository: UserRepository,
-    private val persistenceHandler: PersistenceHandler,
 ) : UserService {
-    override suspend fun find(username: String): User? = persistenceHandler.read {
-        userRepository.findByUsername(username)?.toUser()
-    }
-
-    override suspend fun find(id: UUID): User? = persistenceHandler.read {
-        userRepository.findById(id = id)?.toUser()
-    }
-
+    override suspend fun find(username: String): User? = userRepository.findByUsername(username)?.toUser()
+    override suspend fun find(id: UUID): User? = userRepository.findById(id = id)?.toUser()
     override suspend fun update(user: User): User = user.toUserDao().let { userDao ->
-        persistenceHandler.save(dao = userDao) { userRepository.save(userDao = it) }
+        userRepository.save(userDao = userDao)
     }.toUser()
 
     override suspend fun create(createUser: CreateUser): User = run {
         val personId = createUser.personId ?: personService.create(person = createUser.toPerson()).id
 
-        createUser.toUserDao(personId = personId).let { userDao ->
-            persistenceHandler.save(dao = userDao) { userRepository.save(userDao = it) }
-        }.toUser()
+        createUser.toUserDao(personId = personId).let { userDao -> userRepository.save(userDao = userDao) }.toUser()
     }
 
-    override suspend fun findUsernames(userRole: UserRole): List<String> = persistenceHandler.read {
-        userRepository.findUsernames(userRole = listOf(userRole))
-    }
+    override suspend fun findUsernames(userRole: UserRole): List<String> = userRepository.findUsernames(
+        userRole = listOf(userRole),
+    )
 
-    override suspend fun isAlreadyPersisted(username: String): Boolean = persistenceHandler.read {
-        userRepository.contains(username)
-    }
+    override suspend fun isAlreadyPersisted(username: String): Boolean = userRepository.contains(username)
 }

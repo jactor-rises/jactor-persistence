@@ -4,7 +4,6 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import com.github.jactor.rises.persistence.PersistenceHandler
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.UUIDv7
 import com.github.jactor.rises.persistence.person.PersonService
@@ -33,7 +32,6 @@ internal class UserServiceTest {
     private val userServiceToTest = UserServiceBean(
         personService = personServiceMockk,
         userRepository = userRepositoryMockk,
-        persistenceHandler = object : PersistenceHandler {},
     )
 
     @Test

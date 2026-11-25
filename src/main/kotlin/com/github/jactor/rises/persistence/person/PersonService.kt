@@ -1,6 +1,5 @@
 package com.github.jactor.rises.persistence.person
 
-import com.github.jactor.rises.persistence.PersistenceHandler
 import org.springframework.stereotype.Service
 
 interface PersonService {
@@ -9,17 +8,14 @@ interface PersonService {
 }
 
 @Service
-class PersonServiceBean(
-    private val personRepository: PersonRepository,
-    private val persistenceHandler: PersistenceHandler,
-) : PersonService {
+class PersonServiceBean(private val personRepository: PersonRepository) : PersonService {
     override suspend fun createWhenNotExists(person: Person): Person? = findExisting(person) ?: create(person)
 
     private suspend fun findExisting(person: Person): Person? = person.id?.let { personId ->
-        persistenceHandler.read { personRepository.findById(personId) }
+        personRepository.findById(personId)
     }?.toPerson()
 
     override suspend fun create(person: Person): Person = person.toPersonDao().let { dao ->
-        persistenceHandler.save(dao = dao) { personRepository.save(personDao = it) }
+        personRepository.save(personDao = dao)
     }.toPerson()
 }
