@@ -12,10 +12,11 @@ import java.util.Locale
 
 class PersonServiceDbIntegrationTest @Autowired constructor(
     private val personService: PersonService,
+    private val personRepository: PersonRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
     suspend fun `should create a Person`() {
-        val adresseId = PersonRepositoryObject.findBySurname(surname = "Jacobsen").firstOrNull()?.addressId
+        val adresseId = personRepository.findBySurname(surname = "Jacobsen").firstOrNull()?.addressId
 
         personService.create(
             person = Person(
@@ -28,7 +29,7 @@ class PersonServiceDbIntegrationTest @Autowired constructor(
             ),
         )
 
-        val created = PersonRepositoryObject.findBySurname("tape")
+        val created = personRepository.findBySurname("tape")
 
         assertAll {
             assertThat(created, "liste").hasSize(1)

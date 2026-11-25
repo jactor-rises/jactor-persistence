@@ -11,7 +11,6 @@ import com.github.jactor.rises.persistence.test.initGuestBookEntry
 import com.github.jactor.rises.persistence.test.initUser
 import com.github.jactor.rises.persistence.test.withId
 import com.github.jactor.rises.persistence.user.UserRepository
-import com.github.jactor.rises.persistence.user.UserRepositoryObject
 import com.github.jactor.rises.persistence.util.toCreateGuestBook
 import com.github.jactor.rises.shared.api.CreateGuestBookCommand
 import com.github.jactor.rises.shared.api.CreateGuestBookEntryCommand
@@ -121,10 +120,11 @@ internal class GuestBookServiceTest {
 
 class GuestBookServiceDbIntegrationTest @Autowired constructor(
     private val guestBookService: GuestBookService,
+    private val userRepository: UserRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
     suspend fun `should create a GuestBook`() {
-        val jactorId = UserRepositoryObject.findByUsername(username = "jactor")?.id ?: fail { "Could not find user!" }
+        val jactorId = userRepository.findByUsername(username = "jactor")?.id ?: fail { "Could not find user!" }
 
         val guestBookId = guestBookService.create(
             createGuestBook = CreateGuestBookCommand(title = "home sweet home", userId = jactorId).toCreateGuestBook(),
@@ -160,7 +160,7 @@ class GuestBookServiceDbIntegrationTest @Autowired constructor(
     }
 
     private suspend fun createGuestBook(): UUID {
-        val jactorId = UserRepositoryObject.findByUsername(username = "jactor")?.id
+        val jactorId = userRepository.findByUsername(username = "jactor")?.id
 
         return guestBookService.create(
             createGuestBook = CreateGuestBookCommand(title = "home sweet home", userId = jactorId).toCreateGuestBook(),

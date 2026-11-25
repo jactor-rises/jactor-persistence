@@ -7,32 +7,25 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.r2dbc.andWhere
 import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
 import org.jetbrains.exposed.v1.r2dbc.selectAll
-import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object AddressRepositoryObject : AddressRepository {
-    override suspend fun findById(id: UUID): AddressDao? = suspendTransaction {
-        Addresses
-            .selectAll()
-            .andWhere { Addresses.id eq id }
-            .singleOrNull()
-            ?.toAddressDao()
-    }
+    override suspend fun findById(id: UUID): AddressDao? = Addresses
+        .selectAll()
+        .andWhere { Addresses.id eq id }
+        .singleOrNull()
+        ?.toAddressDao()
 
-    override suspend fun findByZipCode(zipCode: String): List<AddressDao> = suspendTransaction {
-        Addresses
-            .selectAll()
-            .andWhere { Addresses.zipCode eq zipCode }
-            .toList()
-            .map { it.toAddressDao() }
-    }
+    override suspend fun findByZipCode(zipCode: String): List<AddressDao> = Addresses
+        .selectAll()
+        .andWhere { Addresses.zipCode eq zipCode }
+        .toList()
+        .map { it.toAddressDao() }
 
-    override suspend fun save(addressDao: AddressDao): AddressDao = suspendTransaction {
-        when (addressDao.isNotPersisted) {
-            true -> insert(addressDao)
-            false -> update(addressDao)
-        }
+    override suspend fun save(addressDao: AddressDao): AddressDao = when (addressDao.isNotPersisted) {
+        true -> insert(addressDao)
+        false -> update(addressDao)
     }
 
     private suspend fun insert(addressDao: AddressDao): AddressDao = Addresses

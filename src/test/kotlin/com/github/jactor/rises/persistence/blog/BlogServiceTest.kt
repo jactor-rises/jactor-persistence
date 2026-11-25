@@ -7,7 +7,7 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
-import com.github.jactor.rises.persistence.user.UserRepositoryObject
+import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.util.toBlog
 import com.github.jactor.rises.shared.api.BlogDto
 import com.github.jactor.rises.shared.api.PersistentDto
@@ -19,13 +19,14 @@ import java.util.UUID
 
 internal class BlogServiceTest @Autowired constructor(
     private val blogService: BlogService,
+    private val userRepository: UserRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
     suspend fun `should save and read BlogDto`() {
         val blogDtoNotPersisted = BlogDto(
             persistentDto = PersistentDto(createdBy = "test", modifiedBy = "test"),
             title = "full speed ahead",
-            userId = UserRepositoryObject.findByUsername(username = "jactor")?.id,
+            userId = userRepository.findByUsername(username = "jactor")?.id,
         )
 
         val blogId = blogService.saveOrUpdate(blog = blogDtoNotPersisted.toBlog()).id
@@ -92,7 +93,7 @@ internal class BlogServiceTest @Autowired constructor(
         val blogDtoNotPersisted = BlogDto(
             persistentDto = PersistentDto(createdBy = "test", modifiedBy = "test"),
             title = "by JUnit test",
-            userId = UserRepositoryObject.findByUsername(username = "jactor")?.id,
+            userId = userRepository.findByUsername(username = "jactor")?.id,
         )
 
         return blogService.saveOrUpdate(blog = blogDtoNotPersisted.toBlog()).id
@@ -105,7 +106,7 @@ internal class BlogServiceTest @Autowired constructor(
             created = LocalDate.now(),
             persistent = Persistent(createdBy = "test", modifiedBy = "test"),
             title = "full speed ahead",
-            userId = UserRepositoryObject.findByUsername(username = "jactor")?.id,
+            userId = userRepository.findByUsername(username = "jactor")?.id,
         )
 
         val blogId = blogService.saveOrUpdate(blog = createBlog).id ?: fail { "BlogId was not returned!" }
