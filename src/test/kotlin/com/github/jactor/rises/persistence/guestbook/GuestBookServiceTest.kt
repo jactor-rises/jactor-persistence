@@ -4,8 +4,6 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import com.github.jactor.rises.persistence.PersistenceHandler
-import com.github.jactor.rises.persistence.PersistenceHandlerBean
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.test.initGuestBook
@@ -31,7 +29,6 @@ internal class GuestBookServiceTest {
     private val userRepositoryMockk: UserRepository = mockk {}
     private val guestBookServiceToTest: GuestBookService = GuestBookServiceBean(
         guestBookRepository = guestBookRepositoryMockk,
-        persistenceHandler = object : PersistenceHandler {},
     )
 
     private val uuid = UUID.randomUUID()

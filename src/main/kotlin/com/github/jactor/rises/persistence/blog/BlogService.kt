@@ -1,6 +1,5 @@
 package com.github.jactor.rises.persistence.blog
 
-import com.github.jactor.rises.persistence.PersistenceHandler
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.UUID
@@ -19,7 +18,6 @@ interface BlogService {
 @Service
 class BlogServiceBean(
     private val blogRepository: BlogRepository,
-    private val persistenceHandler: PersistenceHandler,
 ) : BlogService {
     override suspend fun create(createBlogEntry: CreateBlogEntry): BlogEntry = BlogEntryDao(
         id = null,
@@ -30,36 +28,26 @@ class BlogServiceBean(
         modifiedBy = createBlogEntry.creatorName,
         timeOfCreation = LocalDateTime.now(),
         timeOfModification = LocalDateTime.now(),
-    ).let { blogEntryDao ->
-        persistenceHandler.save(dao = blogEntryDao) {
-            blogRepository.save(blogEntryDao = it)
-        }.toBlogEntry()
-    }
+    ).let { blogEntryDao -> blogRepository.save(blogEntryDao = blogEntryDao).toBlogEntry() }
 
-    override suspend fun find(id: UUID): Blog? = persistenceHandler.read { blogRepository.findBlogById(id)?.toBlog() }
+    override suspend fun find(id: UUID): Blog? = blogRepository.findBlogById(id)?.toBlog()
+    override suspend fun findEntryBy(blogEntryId: UUID): BlogEntry? = blogRepository.findBlogEntryById(blogEntryId)
+        ?.toBlogEntry()
 
-    override suspend fun findEntryBy(blogEntryId: UUID): BlogEntry? = persistenceHandler.read {
-        blogRepository.findBlogEntryById(blogEntryId)?.toBlogEntry()
-    }
+    override suspend fun findBlogsBy(title: String): List<Blog> = blogRepository.findBlogsByTitle(title)
+        .map { it.toBlog() }
 
-    override suspend fun findBlogsBy(title: String): List<Blog> = persistenceHandler.read {
-        blogRepository.findBlogsByTitle(title).map { it.toBlog() }
-    }
+    override suspend fun findEntriesForBlog(blogId: UUID): List<BlogEntry> = blogRepository.findBlogEntriesByBlogId(
+        blogId,
+    ).map { it.toBlogEntry() }
 
-    override suspend fun findEntriesForBlog(blogId: UUID): List<BlogEntry> = persistenceHandler.read {
-        blogRepository.findBlogEntriesByBlogId(blogId).map { it.toBlogEntry() }
-    }
-
-    override suspend fun saveOrUpdate(blog: Blog): Blog = persistenceHandler.save(dao = blog.toBlogDao()) {
-        blogRepository.save(blogDao = it)
-    }.toBlog()
-
-    override suspend fun saveOrUpdate(blogEntry: BlogEntry): BlogEntry = persistenceHandler.save(
-        dao = blogEntry.toBlogEntryDao(),
-    ) { blogRepository.save(blogEntryDao = it) }.toBlogEntry()
+    override suspend fun saveOrUpdate(blog: Blog): Blog = blogRepository.save(blogDao = blog.toBlogDao()).toBlog()
+    override suspend fun saveOrUpdate(blogEntry: BlogEntry): BlogEntry = blogRepository.save(
+        blogEntryDao = blogEntry.toBlogEntryDao(),
+    ).toBlogEntry()
 
     override suspend fun update(updateBlogTitle: UpdateBlogTitle): Blog = requireNotNull(
         blogRepository.findBlogById(updateBlogTitle.blogId),
     ) { "Cannot find blog to update" }.apply { this.title = updateBlogTitle.title }
-        .let { blog -> persistenceHandler.save(dao = blog) { blogRepository.save(blogDao = it) } }.toBlog()
+        .let { blog -> blogRepository.save(blogDao = blog) }.toBlog()
 }
