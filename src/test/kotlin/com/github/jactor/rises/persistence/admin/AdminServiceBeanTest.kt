@@ -5,7 +5,7 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.test.RandomUsernameProvider
-import com.github.jactor.rises.persistence.user.UserRepositoryObject
+import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.user.Users
 import kotlinx.coroutines.flow.singleOrNull
 import org.jetbrains.exposed.v1.core.statements.StatementType
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 class AdminServiceBeanTest @Autowired constructor(
     private val adminService: AdminService,
+    private val userRepository: UserRepository,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
     suspend fun `should move user from users to inactive users`() {
@@ -22,13 +23,13 @@ class AdminServiceBeanTest @Autowired constructor(
             createUser(username = username)
 
             assertThat(
-                UserRepositoryObject.findByUsername(username = username)?.let { true } ?: false,
+                userRepository.findByUsername(username = username)?.let { true } ?: false,
                 "before",
             ).isTrue()
 
             val movedToInactive = adminService.setUserInactive(username = username)
 
-            assertThat(UserRepositoryObject.contains(username = username), "after").isFalse()
+            assertThat(userRepository.contains(username = username), "after").isFalse()
             assertThat(movedToInactive, "moved").isTrue()
 
             val tracingUsername = requireNotNull(RandomUsernameProvider.usernameHolder.get())

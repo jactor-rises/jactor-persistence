@@ -8,56 +8,43 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.r2dbc.andWhere
 import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
 import org.jetbrains.exposed.v1.r2dbc.selectAll
-import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object BlogRepositoryObject : BlogRepository {
-    override suspend fun findBlogById(id: UUID): BlogDao? = suspendTransaction {
-        Blogs
-            .selectAll()
-            .andWhere { Blogs.id eq id }
-            .singleOrNull()
-            ?.toBlogDao()
-    }
+    override suspend fun findBlogById(id: UUID): BlogDao? = Blogs
+        .selectAll()
+        .andWhere { Blogs.id eq id }
+        .singleOrNull()
+        ?.toBlogDao()
 
-    override suspend fun findBlogsByUserId(id: UUID): List<BlogDao> = suspendTransaction {
-        Blogs
-            .selectAll()
-            .andWhere { Blogs.userId eq id }
-            .toList()
-            .map { it.toBlogDao() }
-    }
+    override suspend fun findBlogsByUserId(id: UUID): List<BlogDao> = Blogs
+        .selectAll()
+        .andWhere { Blogs.userId eq id }
+        .toList()
+        .map { it.toBlogDao() }
 
-    override suspend fun findBlogEntryById(id: UUID): BlogEntryDao? = suspendTransaction {
-        BlogEntries
-            .selectAll()
-            .andWhere { BlogEntries.id eq id }
-            .singleOrNull()
-            ?.toBlogEntryDao()
-    }
+    override suspend fun findBlogEntryById(id: UUID): BlogEntryDao? = BlogEntries
+        .selectAll()
+        .andWhere { BlogEntries.id eq id }
+        .singleOrNull()
+        ?.toBlogEntryDao()
 
-    override suspend fun findBlogsByTitle(title: String): List<BlogDao> = suspendTransaction {
-        Blogs
-            .selectAll()
-            .andWhere { Blogs.title eq title }
-            .toList()
-            .map { it.toBlogDao() }
-    }
+    override suspend fun findBlogsByTitle(title: String): List<BlogDao> = Blogs
+        .selectAll()
+        .andWhere { Blogs.title eq title }
+        .toList()
+        .map { it.toBlogDao() }
 
-    override suspend fun findBlogEntriesByBlogId(id: UUID): List<BlogEntryDao> = suspendTransaction {
-        BlogEntries
-            .selectAll()
-            .andWhere { BlogEntries.blogId eq id }
-            .toList()
-            .map { it.toBlogEntryDao() }
-    }
+    override suspend fun findBlogEntriesByBlogId(id: UUID): List<BlogEntryDao> = BlogEntries
+        .selectAll()
+        .andWhere { BlogEntries.blogId eq id }
+        .toList()
+        .map { it.toBlogEntryDao() }
 
-    override suspend fun save(blogDao: BlogDao): BlogDao = suspendTransaction {
-        when (blogDao.isNotPersisted) {
-            true -> insert(blogDao)
-            false -> update(blogDao)
-        }
+    override suspend fun save(blogDao: BlogDao): BlogDao = when (blogDao.isNotPersisted) {
+        true -> insert(blogDao)
+        false -> update(blogDao)
     }
 
     private suspend fun insert(blogDao: BlogDao): BlogDao = Blogs.insertAndGetId {
@@ -81,11 +68,9 @@ object BlogRepositoryObject : BlogRepository {
         update[Blogs.userId] = requireNotNull(blogDao.userId) { "A blog must belong to a user" }
     }.let { blogDao }
 
-    override suspend fun save(blogEntryDao: BlogEntryDao): BlogEntryDao = suspendTransaction {
-        when (blogEntryDao.isNotPersisted) {
-            true -> insert(blogEntryDao)
-            false -> update(blogEntryDao)
-        }
+    override suspend fun save(blogEntryDao: BlogEntryDao): BlogEntryDao = when (blogEntryDao.isNotPersisted) {
+        true -> insert(blogEntryDao)
+        false -> update(blogEntryDao)
     }
 
     private suspend fun insert(blogEntryDao: BlogEntryDao): BlogEntryDao = BlogEntries.insertAndGetId { insert ->

@@ -7,32 +7,25 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.r2dbc.andWhere
 import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
 import org.jetbrains.exposed.v1.r2dbc.selectAll
-import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object PersonRepositoryObject : PersonRepository {
-    override suspend fun findById(id: UUID): PersonDao? = suspendTransaction {
-        People
-            .selectAll()
-            .andWhere { People.id eq id }
-            .singleOrNull()
-            ?.toPersonDao()
-    }
+    override suspend fun findById(id: UUID): PersonDao? = People
+        .selectAll()
+        .andWhere { People.id eq id }
+        .singleOrNull()
+        ?.toPersonDao()
 
-    override suspend fun findBySurname(surname: String): List<PersonDao> = suspendTransaction {
-        People
-            .selectAll()
-            .andWhere { People.surname eq surname }
-            .toList()
-            .map { it.toPersonDao() }
-    }
+    override suspend fun findBySurname(surname: String): List<PersonDao> = People
+        .selectAll()
+        .andWhere { People.surname eq surname }
+        .toList()
+        .map { it.toPersonDao() }
 
-    override suspend fun save(personDao: PersonDao): PersonDao = suspendTransaction {
-        when (personDao.isNotPersisted) {
-            true -> insert(personDao)
-            false -> update(personDao)
-        }
+    override suspend fun save(personDao: PersonDao): PersonDao = when (personDao.isNotPersisted) {
+        true -> insert(personDao)
+        false -> update(personDao)
     }
 
     private suspend fun insert(personDao: PersonDao): PersonDao = People.insertAndGetId { row ->

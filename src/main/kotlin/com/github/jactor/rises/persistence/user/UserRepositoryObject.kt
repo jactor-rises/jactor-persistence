@@ -9,44 +9,34 @@ import org.jetbrains.exposed.v1.r2dbc.andWhere
 import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
 import org.jetbrains.exposed.v1.r2dbc.select
 import org.jetbrains.exposed.v1.r2dbc.selectAll
-import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 import java.util.UUID
 
 object UserRepositoryObject : UserRepository {
-    override suspend fun contains(username: String): Boolean = suspendTransaction {
-        Users
-            .select(column = Users.username)
-            .andWhere { Users.username eq username }
-            .count() > 0
-    }
+    override suspend fun contains(username: String): Boolean = Users
+        .select(column = Users.username)
+        .andWhere { Users.username eq username }
+        .count() > 0
 
-    override suspend fun findById(id: UUID): UserDao? = suspendTransaction {
-        Users
-            .selectAll()
-            .andWhere { Users.id eq id }
-            .singleOrNull()
-            ?.toUserDao()
-    }
+    override suspend fun findById(id: UUID): UserDao? = Users
+        .selectAll()
+        .andWhere { Users.id eq id }
+        .singleOrNull()
+        ?.toUserDao()
 
-    override suspend fun findByPersonId(id: UUID): List<UserDao> = suspendTransaction {
-        Users
-            .selectAll()
-            .andWhere { Users.personId eq id }
-            .toList()
-            .map { it.toUserDao() }
-    }
+    override suspend fun findByPersonId(id: UUID): List<UserDao> = Users
+        .selectAll()
+        .andWhere { Users.personId eq id }
+        .toList()
+        .map { it.toUserDao() }
 
-    override suspend fun findByUsername(username: String): UserDao? = suspendTransaction {
-        Users
-            .selectAll()
-            .andWhere { Users.username eq username }
-            .singleOrNull()
-            ?.toUserDao()
-    }
+    override suspend fun findByUsername(username: String): UserDao? = Users
+        .selectAll()
+        .andWhere { Users.username eq username }
+        .singleOrNull()
+        ?.toUserDao()
 
-    override suspend fun findUsernames(userRole: List<UserRole>): List<String> = suspendTransaction {
-        val types = userRole.map { it.name }
+    override suspend fun findUsernames(userRole: List<UserRole>): List<String> = userRole.map { it.name }.let { types ->
         Users.select(column = Users.username)
             .andWhere { Users.userType inList types }
             .withDistinct()
@@ -54,11 +44,9 @@ object UserRepositoryObject : UserRepository {
             .map { it[Users.username] }
     }
 
-    override suspend fun save(userDao: UserDao): UserDao = suspendTransaction {
-        when (userDao.isPersisted) {
-            true -> update(user = userDao)
-            false -> insert(user = userDao)
-        }
+    override suspend fun save(userDao: UserDao): UserDao = when (userDao.isPersisted) {
+        true -> update(user = userDao)
+        false -> insert(user = userDao)
     }
 
     private suspend fun insert(user: UserDao): UserDao = Users.insertAndGetId { row ->

@@ -6,7 +6,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import com.github.jactor.rises.persistence.UUIDv7
-import com.github.jactor.rises.persistence.person.PersonRepositoryObject
+import com.github.jactor.rises.persistence.person.PersonRepository
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.util.toCreateUser
 import com.github.jactor.rises.shared.api.CreateUserCommand
@@ -15,6 +15,8 @@ import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 
 class UserServiceDbIntegrationTest @Autowired constructor(
+    private val personRepository: PersonRepository,
+    private val userRepository: UserRepository,
     private val userService: UserService,
 ) : AbstractSpringBootNoDirtyContextTest() {
     @Test
@@ -29,13 +31,13 @@ class UserServiceDbIntegrationTest @Autowired constructor(
 
     @Test
     suspend fun `should find a user by id`() {
-        val id = UserRepositoryObject.findByUsername(username = "jactor")?.id ?: fail { "UserId was not found" }
+        val id = userRepository.findByUsername(username = "jactor")?.id ?: fail { "UserId was not found" }
         assertThat(userService.find(id = id)).isNotNull()
     }
 
     @Test
     suspend fun `should modify an existing user`() {
-        val tip = UserRepositoryObject.findByUsername(username = "tip") ?: fail { "User was not found" }
+        val tip = userRepository.findByUsername(username = "tip") ?: fail { "User was not found" }
         assertThat(tip.userRole).isEqualTo(UserRole.MEMBER)
 
         val updated = userService.update(user = tip.copy(userRole = UserRole.ADMIN).toUser())
@@ -44,9 +46,9 @@ class UserServiceDbIntegrationTest @Autowired constructor(
 
     @Test
     suspend fun `should find all usernames of active users`() {
-        val jactor = UserRepositoryObject.findByUsername(username = "jactor") ?: fail { "User was not found" }
+        val jactor = userRepository.findByUsername(username = "jactor") ?: fail { "User was not found" }
         userService.update(user = jactor.copy(userRole = UserRole.MEMBER).toUser())
-        val tip = UserRepositoryObject.findByUsername(username = "tip") ?: fail { "User was not found" }
+        val tip = userRepository.findByUsername(username = "tip") ?: fail { "User was not found" }
         userService.update(user = tip.copy(userRole = UserRole.MEMBER).toUser())
 
         val activeUsers = userService.findUsernames(userRole = UserRole.MEMBER)
@@ -56,7 +58,7 @@ class UserServiceDbIntegrationTest @Autowired constructor(
 
     @Test
     suspend fun `should create a new user`() {
-        val personId = PersonRepositoryObject.findBySurname(surname = "Jacobsen").firstOrNull()?.id
+        val personId = personRepository.findBySurname(surname = "Jacobsen").firstOrNull()?.id
             ?: fail { "PersonId was not found" }
 
         val createUserCommand = CreateUserCommand(username = "turbo", surname = "Jacobsen", personId = personId)
@@ -67,7 +69,7 @@ class UserServiceDbIntegrationTest @Autowired constructor(
 
     @Test
     suspend fun `should create a new user with an email address`() {
-        val personId = PersonRepositoryObject.findBySurname(surname = "Jacobsen").firstOrNull()?.id
+        val personId = personRepository.findBySurname(surname = "Jacobsen").firstOrNull()?.id
             ?: fail { "PersonId was not found" }
 
         val createUserCommand = CreateUserCommand(
