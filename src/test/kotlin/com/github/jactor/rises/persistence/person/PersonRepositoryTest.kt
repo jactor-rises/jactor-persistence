@@ -8,6 +8,7 @@ import assertk.assertions.isEqualTo
 import com.github.jactor.rises.persistence.address.AddressRepository
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.test.initAddress
+import com.github.jactor.rises.persistence.test.initPersonDao
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +37,7 @@ internal class PersonRepositoryTest @Autowired constructor(
 
         val addressDao = addressRepository.findById(id = addressId) ?: fail { "Address (id=$addressId) not found???" }
         val allreadyPresentPeople = PersonTestRepositoryObject.findAll().count()
-        val personToPersist = PersonDao(
+        val personToPersist = initPersonDao(
             addressId = addressDao.id,
             description = "Me, myself, and I",
             firstName = "Born",
@@ -71,7 +72,7 @@ internal class PersonRepositoryTest @Autowired constructor(
         val addressDao = addressRepository.findById(id = addressId) ?: fail { "Address (id=$addressId) not found???" }
 
         personRepository.save(
-            personDao = PersonDao(
+            personDao = initPersonDao(
                 addressId = addressDao.id,
                 firstName = "B",
                 description = "Just me...",

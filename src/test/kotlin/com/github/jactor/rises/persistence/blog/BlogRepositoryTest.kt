@@ -10,6 +10,8 @@ import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContext
 import com.github.jactor.rises.persistence.test.extensions.isNotOlderThan
 import com.github.jactor.rises.persistence.test.initAddress
 import com.github.jactor.rises.persistence.test.initBlog
+import com.github.jactor.rises.persistence.test.initBlogDao
+import com.github.jactor.rises.persistence.test.initBlogEntryDao
 import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
 import com.github.jactor.rises.persistence.user.User
@@ -44,7 +46,7 @@ internal class BlogRepositoryTest @Autowired constructor(
         )
 
         blogRepository.save(
-            blogDao = BlogDao(created = LocalDate.now(), title = "Blah", userId = user.persistent.id),
+            blogDao = initBlogDao(created = LocalDate.now(), title = "Blah", userId = user.persistent.id),
         )
 
         val blogDao = BlogTestRepositoryObject.findBlogs()
@@ -69,7 +71,7 @@ internal class BlogRepositoryTest @Autowired constructor(
             ),
         )
 
-        val blogToSave = BlogDao(created = LocalDate.now(), title = "Blah", userId = user.persistent.id)
+        val blogToSave = initBlogDao(created = LocalDate.now(), title = "Blah", userId = user.persistent.id)
         blogRepository.save(blogDao = blogToSave)
 
         val blogDaoSaved = blogRepository.findBlogsByTitle(title = blogToSave.title).firstOrNull() ?: fail {
@@ -132,7 +134,7 @@ internal class BlogRepositoryTest @Autowired constructor(
         )
 
         val blog = save(blog = initBlog(created = LocalDate.now(), title = "and then some...", userId = user.id))
-        val blogEntryDao = BlogEntryDao(
+        val blogEntryDao = initBlogEntryDao(
             blogId = blog.persistent.id ?: error("Blog is not persisted!"),
             creatorName = "smith",
             entry = "once upon a time",
@@ -167,7 +169,7 @@ internal class BlogRepositoryTest @Autowired constructor(
         )
 
         val blog = save(blog = initBlog(created = LocalDate.now(), title = "and then some...", userId = user.id))
-        val blogEntryDao = BlogEntryDao(
+        val blogEntryDao = initBlogEntryDao(
             blogId = blog.persistent.id ?: error("Blog is not persisted!"),
             creatorName = "smith",
             entry = "once upon a time",

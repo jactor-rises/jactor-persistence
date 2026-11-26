@@ -84,12 +84,18 @@ fun initBlogDao(
     id: UUID? = null,
     timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
+    created: LocalDate = LocalDate.now(),
+    title: String = "title",
+    userId: UUID? = null,
 ) = BlogDao(
     id = id,
+    created = created,
     createdBy = "unit test",
     modifiedBy = "unit test",
     timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
+    title = title,
+    userId = userId,
 )
 
 fun initBlogEntry(
@@ -106,14 +112,16 @@ fun initBlogEntry(
 
 fun initBlogEntryDao(
     id: UUID? = null,
+    blogId: UUID = UUID.randomUUID(),
+    creatorName: String = "unit test",
+    entry: String = "unit test",
     timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
-    blogId: UUID = UUID.randomUUID(),
 ) = BlogEntryDao(
     id = id,
     createdBy = "unit test",
-    creatorName = "unit test",
-    entry = "unit test",
+    creatorName = creatorName,
+    entry = entry,
     modifiedBy = "unit test",
     timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
@@ -174,12 +182,20 @@ fun initGuestBook(
 
 fun initGuestBookDao(
     id: UUID? = null,
+    createdBy: String = "todo",
+    modifiedBy: String = "todo",
     timeOfCreation: LocalDateTime = LocalDateTime.now(),
     timeOfModification: LocalDateTime = LocalDateTime.now(),
+    title: String = "no-name",
+    userId: UUID? = null,
 ) = GuestBookDao(
     id = id,
+    createdBy = createdBy,
+    modifiedBy = modifiedBy,
     timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,
+    title = title,
+    userId = userId,
 )
 
 fun initGuestBookEntry(
@@ -259,6 +275,8 @@ fun initPerson(
 fun initPersonDao(
     id: UUID? = null,
     addressId: UUID? = null,
+    createdBy: String = "todo",
+    modifiedBy: String = "todo",
     description: String? = null,
     firstName: String? = null,
     locale: String? = null,
@@ -268,9 +286,11 @@ fun initPersonDao(
 ) = PersonDao(
     id = id,
     addressId = addressId,
+    createdBy = createdBy,
     description = description,
     firstName = firstName,
     locale = locale,
+    modifiedBy = modifiedBy,
     surname = surname,
     timeOfCreation = timeOfCreation,
     timeOfModification = timeOfModification,

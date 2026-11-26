@@ -5,13 +5,13 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class GuestBookDao(
-    override var id: UUID? = null,
-    override var createdBy: String = "todo",
-    override var timeOfCreation: LocalDateTime = LocalDateTime.now(),
-    override var modifiedBy: String = "todo",
-    override var timeOfModification: LocalDateTime = LocalDateTime.now(),
-    var title: String = "no-name",
-    internal var userId: UUID? = null,
+    override var id: UUID?,
+    override var createdBy: String,
+    override var timeOfCreation: LocalDateTime,
+    override var modifiedBy: String,
+    override var timeOfModification: LocalDateTime,
+    var title: String,
+    internal var userId: UUID?,
 ) : PersistentDao<GuestBookDao?> {
     override fun copyWithoutId(): GuestBookDao = copy(id = null)
     fun toGuestBook(): GuestBook = GuestBook(
