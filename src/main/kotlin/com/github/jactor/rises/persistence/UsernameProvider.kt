@@ -2,7 +2,7 @@ package com.github.jactor.rises.persistence
 
 import org.springframework.stereotype.Component
 
-fun interface UsernameProvider {
+interface UsernameProvider {
     suspend fun fetchUsername(): String
 }
 

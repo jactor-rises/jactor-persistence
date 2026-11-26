@@ -7,6 +7,7 @@ flyway = "12.4.0" # version is syncronized with spring-boot, see renovate.json f
 jactor-shared-lib = "v4.1.3" # version number is being read in build.gradle.kts
 java-uuid-generator = "5.2.0"
 jvm = "25"
+junit-jupiter = "6.1.3"
 kotlin = "2.4.21"
 kotlin-logging = "8.0.7"
 ktlint = "14.2.0"
@@ -52,6 +53,7 @@ uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.re
 
 # test
 assertk = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-jupiter"}
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-coroutines-test-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm", version.ref = "coroutines" }
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }

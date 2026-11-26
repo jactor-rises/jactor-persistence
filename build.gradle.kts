@@ -72,6 +72,7 @@ dependencies {
 
     // test implementations
     testImplementation(libs.assertk)
+    testImplementation(libs.junit.platform.launcher)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlinx.coroutines.test.jvm)
     testImplementation(libs.springmockk)
@@ -89,12 +90,12 @@ java {
     withSourcesJar()
 }
 
-tasks.register("printVersion") {
-    description = "Prints the version of jactor-persistence"
-    doLast { println(project.version) }
-}
-
 tasks {
+    register("printVersion") {
+        description = "Prints the version of jactor-persistence"
+        doLast { println(project.version) }
+    }
+
     val ktlintFormatAndCheck = register("ktlintFormatAndCheck") {
         description = "Run ktlintFormat and ktlintCheck before testing (and commit)"
         dependsOn("ktlintFormat")
@@ -134,6 +135,7 @@ tasks {
     test {
         useJUnitPlatform()
 
+        systemProperty("junit.platform.launcher.interceptors.enabled", "true")
         jvmArgs("--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED")
         exclude("**/RunCucumberTest*")
         dependsOn(ktlintFormatAndCheck)
