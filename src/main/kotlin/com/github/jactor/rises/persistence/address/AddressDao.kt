@@ -18,19 +18,6 @@ data class AddressDao(
     var zipCode: String,
 ) : PersistentDao<AddressDao> {
     override fun copyWithoutId(): AddressDao = copy(id = null)
-    override fun createdBy(creator: String): AddressDao {
-        createdBy = creator
-        timeOfCreation = LocalDateTime.now()
-
-        return modifiedBy(modifier = creator)
-    }
-
-    override fun modifiedBy(modifier: String): AddressDao {
-        modifiedBy = modifier
-        timeOfModification = LocalDateTime.now()
-
-        return this
-    }
 
     fun toAddress() = Address(
         persistent = toPersistent(),

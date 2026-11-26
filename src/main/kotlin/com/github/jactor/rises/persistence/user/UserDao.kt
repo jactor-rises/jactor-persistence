@@ -16,20 +16,6 @@ data class UserDao(
     internal var username: String = "na",
 ) : PersistentDao<UserDao> {
     override fun copyWithoutId(): UserDao = copy(id = null, personId = null)
-    override fun createdBy(creator: String): UserDao {
-        createdBy = creator
-        timeOfCreation = LocalDateTime.now()
-
-        return modifiedBy(modifier = creator)
-    }
-
-    override fun modifiedBy(modifier: String): UserDao {
-        modifiedBy = modifier
-        timeOfModification = LocalDateTime.now()
-
-        return this
-    }
-
     fun toUser() = User(
         persistent = toPersistent(),
         username = username,
