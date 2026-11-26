@@ -15,7 +15,6 @@ class UsernameContextTestLauncherInterceptor : LauncherInterceptor {
             synchronized(this) {
                 initialized.whenFalse {
                     useRandomUsernameProviderClient()
-                    initialized = true
                 }
             }
         }

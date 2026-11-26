@@ -8,6 +8,8 @@ import com.github.jactor.rises.persistence.blog.BlogEntries
 import com.github.jactor.rises.persistence.blog.BlogEntry
 import com.github.jactor.rises.persistence.blog.BlogRepository
 import com.github.jactor.rises.persistence.blog.Blogs
+import com.github.jactor.rises.persistence.config.R2dbcEmbeddedDatabaseTestConfig
+import com.github.jactor.rises.persistence.config.RandomUsernameTestConfig
 import com.github.jactor.rises.persistence.guestbook.GuestBook
 import com.github.jactor.rises.persistence.guestbook.GuestBookEntries
 import com.github.jactor.rises.persistence.guestbook.GuestBookRepository
