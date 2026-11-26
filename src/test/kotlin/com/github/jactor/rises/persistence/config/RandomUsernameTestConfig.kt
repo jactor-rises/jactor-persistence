@@ -1,6 +1,7 @@
-package com.github.jactor.rises.persistence.test
+package com.github.jactor.rises.persistence.config
 
 import com.github.jactor.rises.persistence.UsernameProvider
+import com.github.jactor.rises.persistence.test.RandomUsernameClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -10,9 +11,13 @@ import org.springframework.context.annotation.Primary
 class RandomUsernameTestConfig @Autowired constructor(
     private val randomUsernameClient: RandomUsernameClient,
 ) {
+    companion object {
+        val usernames: List<String> field: MutableList<String> = mutableListOf()
+    }
+
     @Bean
     @Primary
     fun randomUsernameProvider(): UsernameProvider = randomUsernameClient.also {
-        it.fetchUsernames(total = 100)
+        usernames.addAll(it.fetchUsernames(total = 100))
     }
 }
