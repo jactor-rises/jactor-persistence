@@ -1,6 +1,7 @@
 package com.github.jactor.rises.persistence.guestbook
 
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.UUID
 
 interface GuestBookService {
@@ -15,6 +16,11 @@ interface GuestBookService {
 @Service
 class GuestBookServiceBean(private val guestBookRepository: GuestBookRepository) : GuestBookService {
     override suspend fun create(createGuestBook: CreateGuestBook): GuestBook = GuestBookDao(
+        id = null,
+        createdBy = "anonymous",
+        modifiedBy = "anonymous",
+        timeOfCreation = LocalDateTime.now(),
+        timeOfModification = LocalDateTime.now(),
         title = createGuestBook.title,
         userId = createGuestBook.userId,
     ).let { guestBookRepository.save(guestBookDao = it) }.toGuestBook()
@@ -22,6 +28,11 @@ class GuestBookServiceBean(private val guestBookRepository: GuestBookRepository)
     override suspend fun create(
         createGuestBookEntry: CreateGuestBookEntry,
     ): GuestBookEntry = GuestBookEntryDao(
+        id = null,
+        createdBy = "anonymous",
+        modifiedBy = "anonymous",
+        timeOfCreation = LocalDateTime.now(),
+        timeOfModification = LocalDateTime.now(),
         guestName = createGuestBookEntry.creatorName,
         entry = createGuestBookEntry.entry,
         guestBookId = createGuestBookEntry.guestBookId,

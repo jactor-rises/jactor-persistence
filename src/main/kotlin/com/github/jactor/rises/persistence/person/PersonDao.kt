@@ -5,16 +5,16 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class PersonDao(
-    override var id: UUID? = null,
-    override var createdBy: String = "todo",
-    override var timeOfCreation: LocalDateTime = LocalDateTime.now(),
-    override var modifiedBy: String = "todo",
-    override var timeOfModification: LocalDateTime = LocalDateTime.now(),
-    var description: String? = null,
-    var firstName: String? = null,
-    var locale: String? = null,
+    override var id: UUID?,
+    override var createdBy: String,
+    override var timeOfCreation: LocalDateTime,
+    override var modifiedBy: String,
+    override var timeOfModification: LocalDateTime,
+    var description: String?,
+    var firstName: String?,
+    var locale: String?,
     var surname: String,
-    var addressId: UUID? = null,
+    var addressId: UUID?,
 ) : PersistentDao<PersonDao> {
     override fun copyWithoutId(): PersonDao = copy(id = null, addressId = null)
     fun toPerson() = Person(

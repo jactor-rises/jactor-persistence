@@ -5,15 +5,15 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class UserDao(
-    override var id: UUID? = null,
+    override var id: UUID?,
     override var createdBy: String,
-    override var timeOfCreation: LocalDateTime,
+    internal var emailAddress: String?,
     override var modifiedBy: String,
+    internal var personId: UUID?,
+    override var timeOfCreation: LocalDateTime,
     override var timeOfModification: LocalDateTime,
     internal var userRole: UserRole = UserRole.MEMBER,
-    internal var emailAddress: String? = null,
-    internal var personId: UUID? = null,
-    internal var username: String = "na",
+    internal var username: String,
 ) : PersistentDao<UserDao> {
     override fun copyWithoutId(): UserDao = copy(id = null, personId = null)
     fun toUser() = User(

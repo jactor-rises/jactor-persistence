@@ -25,6 +25,7 @@ data class CreateUser(
     val country: String?,
 ) {
     fun toUserDao(personId: UUID? = null) = UserDao(
+        id = null,
         createdBy = username,
         modifiedBy = username,
         timeOfCreation = LocalDateTime.now(),

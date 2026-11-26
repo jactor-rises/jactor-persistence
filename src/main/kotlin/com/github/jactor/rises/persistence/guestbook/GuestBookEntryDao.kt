@@ -6,16 +6,15 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class GuestBookEntryDao(
-    override var id: UUID? = null,
-    override var createdBy: String = "todo",
-    override var modifiedBy: String = "todo",
-    override var timeOfCreation: LocalDateTime = LocalDateTime.now(),
-    override var timeOfModification: LocalDateTime = LocalDateTime.now(),
+    override var id: UUID?,
+    override var createdBy: String,
+    override var modifiedBy: String,
+    override var timeOfCreation: LocalDateTime,
+    override var timeOfModification: LocalDateTime,
     var guestName: String,
     override var entry: String,
-    var guestBookId: UUID? = null,
-) : PersistentDao<GuestBookEntryDao>,
-    EntryDao {
+    var guestBookId: UUID?,
+) : PersistentDao<GuestBookEntryDao>, EntryDao {
     override var creatorName: String
         get() = guestName
         set(value) {

@@ -8,6 +8,7 @@ import assertk.assertions.isNotNull
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
 import com.github.jactor.rises.persistence.test.initAddress
 import com.github.jactor.rises.persistence.test.initGuestBook
+import com.github.jactor.rises.persistence.test.initGuestBookDao
 import com.github.jactor.rises.persistence.test.initGuestBookEntry
 import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
@@ -40,7 +41,7 @@ internal class GuestBookRepositoryTest @Autowired constructor(
         )
 
         guestBookRepository.save(
-            guestBookDao = GuestBookDao(
+            guestBookDao = initGuestBookDao(
                 title = "home sweet home",
                 userId = user.id,
             ),
