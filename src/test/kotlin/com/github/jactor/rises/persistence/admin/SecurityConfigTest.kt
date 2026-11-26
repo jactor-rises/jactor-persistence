@@ -1,7 +1,7 @@
 package com.github.jactor.rises.persistence.admin
 
 import com.github.jactor.rises.persistence.config.SecurityConfig
-import com.github.jactor.rises.persistence.test.createToken
+import com.github.jactor.rises.persistence.test.extensions.createToken
 import com.github.jactor.rises.persistence.test.initUser
 import com.github.jactor.rises.persistence.user.UserController
 import com.github.jactor.rises.persistence.user.UserService

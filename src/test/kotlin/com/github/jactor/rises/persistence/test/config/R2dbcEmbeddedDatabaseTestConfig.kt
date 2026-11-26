@@ -1,4 +1,4 @@
-package com.github.jactor.rises.persistence.config
+package com.github.jactor.rises.persistence.test.config
 
 import io.r2dbc.spi.Connection
 import io.r2dbc.spi.ConnectionFactories

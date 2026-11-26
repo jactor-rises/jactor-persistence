@@ -1,4 +1,4 @@
-package com.github.jactor.rises.persistence.test
+package com.github.jactor.rises.persistence.test.config
 
 import assertk.assertAll
 import assertk.assertThat

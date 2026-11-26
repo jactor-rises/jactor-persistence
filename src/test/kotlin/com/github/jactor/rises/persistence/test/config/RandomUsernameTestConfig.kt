@@ -1,7 +1,6 @@
-package com.github.jactor.rises.persistence.config
+package com.github.jactor.rises.persistence.test.config
 
 import com.github.jactor.rises.persistence.UsernameProvider
-import com.github.jactor.rises.persistence.test.RandomUsernameClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean

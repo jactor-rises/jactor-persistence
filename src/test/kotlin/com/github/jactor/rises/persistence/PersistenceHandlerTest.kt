@@ -6,7 +6,7 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.fail
-import com.github.jactor.rises.persistence.test.countSecondsUntilNow
+import com.github.jactor.rises.persistence.test.extensions.countSecondsUntilNow
 import com.github.jactor.rises.persistence.test.initAddressDao
 import com.github.jactor.rises.persistence.test.initBlogDao
 import com.github.jactor.rises.persistence.test.initBlogEntryDao

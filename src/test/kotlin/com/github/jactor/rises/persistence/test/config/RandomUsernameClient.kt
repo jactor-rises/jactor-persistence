@@ -1,8 +1,9 @@
-package com.github.jactor.rises.persistence.test
+package com.github.jactor.rises.persistence.test.config
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.jactor.rises.persistence.UsernameProvider
+import com.github.jactor.rises.persistence.test.extensions.whenNotNullOrBlank
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body

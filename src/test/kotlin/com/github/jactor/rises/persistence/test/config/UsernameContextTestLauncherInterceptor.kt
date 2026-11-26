@@ -1,4 +1,4 @@
-package com.github.jactor.rises.persistence.test
+package com.github.jactor.rises.persistence.test.config
 
 import com.github.jactor.rises.persistence.UsernameForPersistence
 import com.github.jactor.rises.shared.whenFalse

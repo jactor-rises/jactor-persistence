@@ -8,14 +8,14 @@ import com.github.jactor.rises.persistence.blog.BlogEntries
 import com.github.jactor.rises.persistence.blog.BlogEntry
 import com.github.jactor.rises.persistence.blog.BlogRepository
 import com.github.jactor.rises.persistence.blog.Blogs
-import com.github.jactor.rises.persistence.config.R2dbcEmbeddedDatabaseTestConfig
-import com.github.jactor.rises.persistence.config.RandomUsernameTestConfig
 import com.github.jactor.rises.persistence.guestbook.GuestBook
 import com.github.jactor.rises.persistence.guestbook.GuestBookEntries
 import com.github.jactor.rises.persistence.guestbook.GuestBookRepository
 import com.github.jactor.rises.persistence.guestbook.GuestBooks
 import com.github.jactor.rises.persistence.person.Person
 import com.github.jactor.rises.persistence.person.PersonRepository
+import com.github.jactor.rises.persistence.test.config.R2dbcEmbeddedDatabaseTestConfig
+import com.github.jactor.rises.persistence.test.config.RandomUsernameTestConfig
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.user.UserService

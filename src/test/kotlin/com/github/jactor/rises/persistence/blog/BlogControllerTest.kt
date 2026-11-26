@@ -6,9 +6,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import com.github.jactor.rises.persistence.test.extensions.withId
 import com.github.jactor.rises.persistence.test.initBlog
 import com.github.jactor.rises.persistence.test.initBlogEntry
-import com.github.jactor.rises.persistence.test.withId
 import com.github.jactor.rises.shared.api.BlogDto
 import com.github.jactor.rises.shared.api.BlogEntryDto
 import com.github.jactor.rises.shared.api.CreateBlogEntryCommand

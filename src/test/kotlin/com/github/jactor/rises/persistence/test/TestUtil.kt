@@ -13,6 +13,7 @@ import com.github.jactor.rises.persistence.guestbook.GuestBookEntry
 import com.github.jactor.rises.persistence.guestbook.GuestBookEntryDao
 import com.github.jactor.rises.persistence.person.Person
 import com.github.jactor.rises.persistence.person.PersonDao
+import com.github.jactor.rises.persistence.test.extensions.withId
 import com.github.jactor.rises.persistence.user.CreateUser
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserDao

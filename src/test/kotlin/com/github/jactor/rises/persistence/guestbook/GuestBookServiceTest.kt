@@ -6,10 +6,10 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.github.jactor.rises.persistence.Persistent
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
+import com.github.jactor.rises.persistence.test.extensions.withId
 import com.github.jactor.rises.persistence.test.initGuestBook
 import com.github.jactor.rises.persistence.test.initGuestBookEntry
 import com.github.jactor.rises.persistence.test.initUser
-import com.github.jactor.rises.persistence.test.withId
 import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.util.toCreateGuestBook
 import com.github.jactor.rises.shared.api.CreateGuestBookCommand
