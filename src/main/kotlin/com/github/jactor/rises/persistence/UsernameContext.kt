@@ -4,7 +4,7 @@ import kotlinx.coroutines.reactor.awaitSingleOrNull
 import reactor.core.publisher.Mono
 import reactor.util.context.Context
 
-object UsernameContext {
+object UsernameContext : UsernameProvider {
     private const val USERNAME_CONTEXT_KEY = "com.github.jactor.rises.persistence.username"
 
     fun currentUsername(): Mono<String> = Mono.deferContextual { contextView ->
@@ -15,5 +15,6 @@ object UsernameContext {
         message = "No username in current reactor context!",
     )
 
+    override suspend fun fetchUsername(): String = fetchUsernameOrFail()
     internal fun withUsername(context: Context, username: String): Context = context.put(USERNAME_CONTEXT_KEY, username)
 }

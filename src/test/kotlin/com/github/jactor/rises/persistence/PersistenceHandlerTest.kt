@@ -216,8 +216,8 @@ internal class PersistenceHandlerTest {
     }
 
     @Test
-    suspend fun `should require username when saving without username context`() {
-        NotAuthenticatedUser.usernameProvider = { UsernameContext.fetchUsernameOrFail() }
+    suspend fun `should fail when require username without username context`() {
+        UsernameForPersistence.usernameProvider = UsernameContext
 
         val result = runCatching {
             persistenceHandler.save(
@@ -232,7 +232,10 @@ internal class PersistenceHandlerTest {
         username: String = "na",
         testBody: suspend () -> Unit,
     ) = runTest {
-        NotAuthenticatedUser.usernameProvider = { username }
+        UsernameForPersistence.usernameProvider = object : UsernameProvider {
+            override suspend fun fetchUsername(): String = username
+        }
+
         testBody.invoke()
     }
 }

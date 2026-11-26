@@ -12,7 +12,7 @@ class RandomUsernameTestConfig @Autowired constructor(
 ) {
     @Bean
     @Primary
-    fun randomUsernameProvider(): UsernameProvider = {
-        randomUsernameClient.fetchUsernames().firstOrNull() ?: "not appliccable"
+    fun randomUsernameProvider(): UsernameProvider = randomUsernameClient.also {
+        it.fetchUsernames(total = 100)
     }
 }

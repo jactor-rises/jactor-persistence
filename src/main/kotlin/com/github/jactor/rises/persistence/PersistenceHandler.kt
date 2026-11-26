@@ -10,12 +10,14 @@ interface PersistenceHandler {
     suspend fun <T> read(fetch: suspend () -> T): T = fetch.invoke()
     suspend fun <T : PersistentDao<*>> save(dao: T, persist: Persist<T>): T = persist.saveOrUpdate(
         dao,
-        usernameProvider = NotAuthenticatedUser.usernameProvider,
+        usernameProvider = UsernameForPersistence.usernameProvider,
     )
 }
 
-object NotAuthenticatedUser {
-    var usernameProvider: UsernameProvider = { "anonymous" }
+object UsernameForPersistence {
+    var usernameProvider: UsernameProvider = object : UsernameProvider {
+        override suspend fun fetchUsername(): String = "anonymous"
+    }
 }
 
 suspend fun <T : PersistentDao<*>> Persist<T>.saveOrUpdate(
