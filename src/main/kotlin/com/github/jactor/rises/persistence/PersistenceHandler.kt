@@ -1,6 +1,5 @@
 package com.github.jactor.rises.persistence
 
-import com.github.jactor.rises.shared.whenTrue
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.springframework.stereotype.Component
 
@@ -23,16 +22,9 @@ object UsernameForPersistence {
 suspend fun <T : PersistentDao<*>> Persist<T>.saveOrUpdate(
     dao: T,
     usernameProvider: UsernameProvider = ContextUsernameProvider(),
-): T {
-    val username = usernameProvider.fetchUsername()
-
-    return invoke(
-        dao.also {
-            dao.isNotPersisted.whenTrue {
-                dao.createdBy(creator = username)
-            } ?: dao.modifiedBy(modifier = username)
-        },
-    )
+): T = usernameProvider.fetchUsername().let { username ->
+    dao.persist(username = username)
+    invoke(dao)
 }
 
 @Component
