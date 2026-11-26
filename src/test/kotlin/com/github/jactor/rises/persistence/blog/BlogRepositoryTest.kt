@@ -7,11 +7,11 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isNotNull
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
+import com.github.jactor.rises.persistence.test.extensions.isNotOlderThan
 import com.github.jactor.rises.persistence.test.initAddress
 import com.github.jactor.rises.persistence.test.initBlog
 import com.github.jactor.rises.persistence.test.initPerson
 import com.github.jactor.rises.persistence.test.initUser
-import com.github.jactor.rises.persistence.test.isNotOlderThan
 import com.github.jactor.rises.persistence.user.User
 import com.github.jactor.rises.persistence.user.UserRole
 import org.junit.jupiter.api.BeforeEach

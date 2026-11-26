@@ -1,1 +1,1 @@
-com.github.jactor.rises.persistence.test.UsernameContextTestLauncherInterceptor
+com.github.jactor.rises.persistence.test.config.UsernameContextTestLauncherInterceptor

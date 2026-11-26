@@ -4,10 +4,10 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import com.github.jactor.rises.persistence.config.RandomUsernameTestConfig
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
-import com.github.jactor.rises.persistence.test.assertAll
-import com.github.jactor.rises.persistence.test.createToken
+import com.github.jactor.rises.persistence.test.config.RandomUsernameTestConfig
+import com.github.jactor.rises.persistence.test.extensions.assertAll
+import com.github.jactor.rises.persistence.test.extensions.createToken
 import com.github.jactor.rises.persistence.test.initCreateUserCommand
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

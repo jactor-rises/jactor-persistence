@@ -5,7 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isSuccess
 import assertk.assertions.isTrue
 import assertk.fail
-import com.github.jactor.rises.persistence.test.containsSubstring
+import com.github.jactor.rises.persistence.test.extensions.containsSubstring
 import com.github.jactor.rises.persistence.user.UserController
 import com.github.jactor.rises.persistence.user.UserRepository
 import com.github.jactor.rises.persistence.user.UserServiceBean

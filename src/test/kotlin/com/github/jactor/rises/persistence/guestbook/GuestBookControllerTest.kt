@@ -6,9 +6,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import com.github.jactor.rises.persistence.Persistent
+import com.github.jactor.rises.persistence.test.extensions.withPersistedData
 import com.github.jactor.rises.persistence.test.initGuestBook
 import com.github.jactor.rises.persistence.test.initGuestBookEntry
-import com.github.jactor.rises.persistence.test.withPersistedData
 import com.github.jactor.rises.shared.api.CreateGuestBookCommand
 import com.github.jactor.rises.shared.api.CreateGuestBookEntryCommand
 import com.github.jactor.rises.shared.api.GuestBookDto

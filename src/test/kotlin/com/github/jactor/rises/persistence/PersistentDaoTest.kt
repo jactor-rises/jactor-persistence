@@ -7,13 +7,13 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isNull
 import com.github.jactor.rises.persistence.blog.BlogEntry
+import com.github.jactor.rises.persistence.test.extensions.withId
 import com.github.jactor.rises.persistence.test.initAddressDao
 import com.github.jactor.rises.persistence.test.initBlog
 import com.github.jactor.rises.persistence.test.initGuestBook
 import com.github.jactor.rises.persistence.test.initGuestBookEntryDao
 import com.github.jactor.rises.persistence.test.initPersonDao
 import com.github.jactor.rises.persistence.test.initUser
-import com.github.jactor.rises.persistence.test.withId
 import org.junit.jupiter.api.Test
 import java.util.UUID
 

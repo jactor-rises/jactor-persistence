@@ -1,6 +1,6 @@
 package com.github.jactor.rises.persistence.admin
 
-import com.github.jactor.rises.persistence.test.PermitAllTestSecurityConfig
+import com.github.jactor.rises.persistence.test.config.PermitAllTestSecurityConfig
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import org.junit.jupiter.api.Test

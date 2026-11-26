@@ -4,9 +4,9 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.github.jactor.rises.persistence.Persistent
+import com.github.jactor.rises.persistence.test.extensions.withId
 import com.github.jactor.rises.persistence.test.initAddress
 import com.github.jactor.rises.persistence.test.initPerson
-import com.github.jactor.rises.persistence.test.withId
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.UUID
