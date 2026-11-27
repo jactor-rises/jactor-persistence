@@ -4,14 +4,12 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import com.github.jactor.rises.persistence.admin.inactiveuser.InactiveUsers
 import com.github.jactor.rises.persistence.test.AbstractSpringBootNoDirtyContextTest
-import com.github.jactor.rises.persistence.user.InactiveUsers
 import com.github.jactor.rises.persistence.user.UserRepository
 import kotlinx.coroutines.flow.singleOrNull
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.r2dbc.andWhere
-import org.jetbrains.exposed.v1.r2dbc.select
 import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.junit.jupiter.api.Test

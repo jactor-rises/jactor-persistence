@@ -1,4 +1,4 @@
-package com.github.jactor.rises.persistence.user
+package com.github.jactor.rises.persistence.admin.inactiveuser
 
 import com.github.jactor.rises.persistence.UUIDv7
 import com.github.jactor.rises.persistence.person.People
